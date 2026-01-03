@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Debut Theme CSS Variables */
+:root {
+  --primary-color: 76, 175, 80; /* Green-500 - Traditional e-commerce */
+  --secondary-color: 96, 125, 139; /* Blue Grey-500 */
+  --accent-color: 255, 87, 34; /* Deep Orange-500 */
+  --success-color: 76, 175, 80; /* Green-500 */
+  --warning-color: 255, 193, 7; /* Amber-500 */
+  --error-color: 244, 67, 54; /* Red-500 */
+  
+  /* Background & Text */
+  --body-bg: 255, 255, 255;
+  --text-color: 33, 37, 41;
+  --primary-contrast-color: 255, 255, 255;
+  --secondary-contrast-color: 248, 249, 250;
+}
+
+body,
+html,
+* {
+  padding: 0;
+  margin: 0;
+  font-optical-sizing: auto;
+  scroll-behavior: smooth;
+  font-display: swap;
+}
+
+body,
+html {
+  background-color: rgb(var(--body-bg));
+  color: rgb(var(--text-color));
+}
+.poppins {
+  font-family: "Barlow", sans-serif;
+}
+
+.playati {
+  font-family: "Barlow", sans-serif;
+}
+
+.border {
+  @apply border-mgray-300;
+}
+
+input,
+select,
+textarea {
+  @apply border border-mgray-300 rounded-md outline-none px-4 py-2 bg-transparent !important;
+}
+
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+/* Hide ALL Nuxt loading indicators */
+[class*="nuxt-loading"],
+[class*="nuxt-progress"],
+.nuxt-loading-indicator,
+#nuxt-loading,
+div[class*="loading-indicator"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
