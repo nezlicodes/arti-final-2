@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white min-h-screen pt-24">
+  <div class="min-h-screen bg-background pt-24">
     <Head>
       <Title>{{ getMetaTitle() }}</Title>
       <Meta name="description" :content="getMetaDescription()" />
@@ -11,27 +11,27 @@
     </div>
 
     <!-- Product Content -->
-    <div v-else-if="product" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <!-- Breadcrumb - Simple and Responsive -->
-      <nav class="flex items-center gap-2 text-sm mb-6 overflow-x-auto pb-2" aria-label="Breadcrumb">
-        <NuxtLink to="/" class="text-gray-600 hover:text-primary whitespace-nowrap">Accueil</NuxtLink>
+    <div v-else-if="product" class="x-container py-6 sm:py-10">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs sm:text-sm mb-6 overflow-x-auto pb-2" aria-label="Breadcrumb">
+        <NuxtLink to="/" class="text-mgray-600 hover:text-primary whitespace-nowrap">Accueil</NuxtLink>
         <span class="text-gray-400">/</span>
-        <NuxtLink to="/products" class="text-gray-600 hover:text-primary whitespace-nowrap">Produits</NuxtLink>
+        <NuxtLink to="/products" class="text-mgray-600 hover:text-primary whitespace-nowrap">Produits</NuxtLink>
         <template v-if="product.category && categoriesEnabled">
           <span class="text-gray-400">/</span>
-          <NuxtLink :to="`/categories/${product.category.slug}`" class="text-gray-600 hover:text-primary whitespace-nowrap">
+          <NuxtLink :to="`/categories/${product.category.slug}`" class="text-mgray-600 hover:text-primary whitespace-nowrap">
             {{ getCategoryName(product.category.name_translations) }}
           </NuxtLink>
         </template>
         <span class="text-gray-400">/</span>
-        <span class="text-gray-900 font-medium truncate">{{ getProductName() }}</span>
+        <span class="text-mgray-950 font-semibold truncate">{{ getProductName() }}</span>
       </nav>
 
-      <div class="lg:grid lg:grid-cols-2 lg:gap-12">
-        <!-- Media Gallery - Responsive -->
-        <div class="mb-8 lg:mb-0">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <!-- Media Gallery -->
+        <div class="lg:sticky lg:top-24 self-start">
           <!-- Main Media Display -->
-          <div class="aspect-square rounded-lg overflow-hidden bg-gray-100 mb-4">
+          <div class="aspect-square rounded-3xl overflow-hidden bg-mgray-50 border border-mgray-200 shadow-sm mb-4">
             <!-- Image Display -->
             <img
               v-if="currentMediaType === 'image'"
@@ -52,14 +52,14 @@
           </div>
 
           <!-- Media Thumbnails - Horizontal Scroll -->
-          <div v-if="allMedia.length > 1" class="flex gap-2 overflow-x-auto pb-2">
+          <div v-if="allMedia.length > 1" class="media-scroll flex gap-2 overflow-x-auto pb-2">
             <!-- Image Thumbnails -->
             <button
               v-for="(image, idx) in product.images"
               :key="'img-' + idx"
               @click="selectMedia('image', image)"
-              class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all relative"
-              :class="currentMediaType === 'image' && mainMedia.url === image.url ? 'border-primary' : 'border-gray-200 hover:border-gray-300'"
+              class="flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden border transition-all relative shadow-sm"
+              :class="currentMediaType === 'image' && mainMedia.url === image.url ? 'border-primary ring-2 ring-primary/20' : 'border-mgray-200 hover:border-mgray-300'"
             >
               <img :src="image.url" :alt="getProductName()" class="w-full h-full object-cover" />
               <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs py-0.5 text-center">
@@ -72,8 +72,8 @@
               v-for="(video, idx) in product.videos"
               :key="'vid-' + idx"
               @click="selectMedia('video', video)"
-              class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all relative"
-              :class="currentMediaType === 'video' && mainMedia.url === video.url ? 'border-primary' : 'border-gray-200 hover:border-gray-300'"
+              class="flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden border transition-all relative shadow-sm"
+              :class="currentMediaType === 'video' && mainMedia.url === video.url ? 'border-primary ring-2 ring-primary/20' : 'border-mgray-200 hover:border-mgray-300'"
             >
               <!-- Video thumbnail preview -->
               <video :src="video.url" class="w-full h-full object-cover" preload="metadata"></video>
@@ -89,7 +89,7 @@
           </div>
 
           <!-- Media Type Indicator -->
-          <div v-if="allMedia.length > 0" class="mt-2 text-center text-xs text-gray-500">
+          <div v-if="allMedia.length > 0" class="mt-3 text-center text-xs text-mgray-600">
             {{ product.images?.length || 0 }} image{{ (product.images?.length || 0) > 1 ? 's' : '' }}
             <span v-if="product.videos && product.videos.length > 0">
               • {{ product.videos.length }} vidéo{{ product.videos.length > 1 ? 's' : '' }}
@@ -97,34 +97,34 @@
           </div>
         </div>
 
-        <!-- Product Info -->
-        <div>
+        <!-- Product Info (Buy box) -->
+        <div class="x-surface-strong p-5 sm:p-7 lg:sticky lg:top-24 self-start">
           <!-- Category -->
-          <div v-if="product.category && categoriesEnabled" class="mb-2">
+          <div v-if="product.category && categoriesEnabled" class="mb-3">
             <NuxtLink
               :to="`/categories/${product.category.slug}`"
-              class="inline-block px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200"
+              class="x-eyebrow bg-mgray-50 border-mgray-200 text-mgray-700 hover:bg-white"
             >
               {{ getCategoryName(product.category.name_translations) }}
             </NuxtLink>
           </div>
 
           <!-- Title -->
-          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-mgray-950 mb-4 leading-tight">
             {{ getProductName() }}
           </h1>
 
           <!-- Price & Stock -->
-          <div class="flex flex-wrap items-center gap-4 pb-6 border-b mb-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-mgray-200 mb-6">
             <div class="flex items-baseline gap-2">
               <p class="text-3xl font-bold text-primary">{{ formatPrice(currentPrice) }}</p>
-              <p v-if="currentComparePrice" class="text-xl text-gray-500 line-through">
+              <p v-if="currentComparePrice" class="text-lg text-mgray-500 line-through">
                 {{ formatPrice(currentComparePrice) }}
               </p>
             </div>
             <span
               class="px-3 py-1 rounded-full text-sm font-medium"
-              :class="currentStock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+:class="currentStock > 0 ? 'bg-green-500/10 text-green-700' : 'bg-red-500/10 text-red-700'"
             >
               {{ currentStock > 0 ? "En stock" : "Rupture de stock" }}
             </span>
@@ -133,19 +133,19 @@
           <!-- Variants -->
           <div v-if="product.has_variants && productOptions.length > 0" class="space-y-6 mb-8">
             <div v-for="option in productOptions" :key="option.id">
-              <h3 class="text-sm font-semibold text-gray-900 mb-3">
+              <h3 class="text-sm font-semibold text-mgray-950 mb-3">
                 {{ getOptionName(option.name_translations) }}
               </h3>
-              <div class="grid grid-cols-3 gap-2">
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 <button
                   v-for="value in option.values"
                   :key="value.id"
                   @click="selectOptionValue(option.id, value.id)"
-                  class="px-4 py-2 text-sm font-medium border-2 rounded-lg transition-all"
+                  class="px-4 py-2.5 text-sm font-semibold border rounded-2xl transition-all"
                   :class="[
                     selectedOptions[option.id] === value.id
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-gray-200 hover:border-gray-300',
+                      ? 'border-primary bg-primary/10 text-primary shadow-sm'
+                      : 'border-mgray-200 hover:border-mgray-300 bg-white',
                     !isOptionValueAvailable(option.id, value.id) && 'opacity-40 cursor-not-allowed'
                   ]"
                   :disabled="!isOptionValueAvailable(option.id, value.id)"
@@ -157,9 +157,9 @@
           </div>
 
           <!-- Description -->
-          <div v-if="getProductDescription()" class="mb-8 pb-8 border-b">
-            <h3 class="text-sm font-semibold text-gray-900 mb-3">Description</h3>
-            <div v-html="getProductDescription()" class="prose prose-sm text-gray-600"></div>
+          <div v-if="getProductDescription()" class="mb-8 pb-8 border-b border-mgray-200">
+            <h3 class="text-sm font-semibold text-mgray-950 mb-3">Description</h3>
+            <div v-html="getProductDescription()" class="prose prose-sm text-mgray-700"></div>
           </div>
 
           <!-- Add to Cart -->
@@ -167,7 +167,7 @@
             <!-- Warning -->
             <div
               v-if="product.has_variants && !isVariantSelected && productOptions.length > 0"
-              class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm"
+              class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-900 text-sm"
             >
               Veuillez sélectionner toutes les options
             </div>
@@ -177,12 +177,12 @@
               <div class="flex gap-3">
                 <!-- Quantity -->
                 <div class="w-32">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Quantité</label>
-                  <div class="flex items-center border-2 border-gray-200 rounded-lg">
+                  <label class="block text-sm font-semibold text-mgray-700 mb-2">Quantité</label>
+                  <div class="flex items-center border border-mgray-200 rounded-2xl bg-white">
                     <button
                       type="button"
                       @click="quantity > 1 && quantity--"
-                      class="w-10 h-10 flex items-center justify-center hover:bg-gray-50"
+                      class="w-10 h-10 flex items-center justify-center hover:bg-mgray-50"
                     >
                       <span class="text-xl">−</span>
                     </button>
@@ -191,12 +191,12 @@
                       v-model.number="quantity"
                       min="1"
                       :max="currentStock"
-                      class="flex-1 text-center border-0 focus:ring-0 font-semibold"
+                      class="flex-1 text-center border-0 focus:ring-0 font-semibold bg-transparent"
                     />
                     <button
                       type="button"
                       @click="quantity < currentStock && quantity++"
-                      class="w-10 h-10 flex items-center justify-center hover:bg-gray-50"
+                      class="w-10 h-10 flex items-center justify-center hover:bg-mgray-50"
                     >
                       <span class="text-xl">+</span>
                     </button>
@@ -205,35 +205,35 @@
 
                 <!-- Add Button -->
                 <div class="flex-1">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                  <label class="block text-sm font-semibold text-mgray-700 mb-2">&nbsp;</label>
                   <button
                     type="submit"
                     :disabled="(product.has_variants && !isVariantSelected) || !currentStock"
-                    class="w-full h-10 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="w-full h-11 rounded-2xl bg-primary text-contrast1 font-semibold hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/10"
                   >
                     Ajouter au panier
                   </button>
                 </div>
               </div>
 
-              <p v-if="currentStock > 0" class="text-sm text-gray-500 text-center">
+              <p v-if="currentStock > 0" class="text-sm text-mgray-600 text-center">
                 {{ currentStock }} article{{ currentStock > 1 ? 's' : '' }} disponible{{ currentStock > 1 ? 's' : '' }}
               </p>
             </form>
           </div>
 
           <!-- Details -->
-          <div class="mt-8 pt-8 border-t">
-            <h3 class="text-sm font-semibold text-gray-900 mb-4">Détails</h3>
+          <div class="mt-8 pt-8 border-t border-mgray-200">
+            <h3 class="text-sm font-semibold text-mgray-950 mb-4">Détails</h3>
             <dl class="space-y-2 text-sm">
               <div class="flex justify-between">
-                <dt class="text-gray-600">Référence</dt>
+                <dt class="text-mgray-600">Référence</dt>
                 <dd class="font-medium">{{ currentSku }}</dd>
               </div>
               <div v-if="product.category && categoriesEnabled" class="flex justify-between">
-                <dt class="text-gray-600">Catégorie</dt>
+                <dt class="text-mgray-600">Catégorie</dt>
                 <dd>
-                  <NuxtLink :to="`/categories/${product.category.slug}`" class="text-primary hover:underline">
+                  <NuxtLink :to="`/categories/${product.category.slug}`" class="text-primary hover:opacity-80">
                     {{ getCategoryName(product.category.name_translations) }}
                   </NuxtLink>
                 </dd>
@@ -247,9 +247,9 @@
     <!-- Error State -->
     <div v-else class="min-h-[80vh] flex items-center justify-center">
       <div class="text-center">
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">Produit introuvable</h3>
-        <p class="text-gray-600 mb-6">Le produit que vous recherchez n'existe pas.</p>
-        <NuxtLink to="/products" class="inline-block px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90">
+        <h3 class="text-xl font-semibold text-mgray-950 mb-2">Produit introuvable</h3>
+        <p class="text-mgray-700 mb-6">Le produit que vous recherchez n'existe pas.</p>
+        <NuxtLink to="/products" class="x-btn-primary">
           Retour aux produits
         </NuxtLink>
       </div>
@@ -266,17 +266,17 @@
     >
       <div
         v-if="showNotification"
-        class="fixed bottom-4 right-4 bg-white rounded-lg shadow-xl p-4 border max-w-sm z-50"
+        class="fixed bottom-4 right-4 x-surface-strong p-4 max-w-sm z-50"
       >
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+          <div class="w-10 h-10 bg-green-500/10 rounded-full flex items-center justify-center">
             <span class="text-green-600 text-xl">✓</span>
           </div>
           <div>
-            <p class="font-semibold text-gray-900">Ajouté au panier</p>
-            <p class="text-sm text-gray-600">Produit ajouté avec succès</p>
+            <p class="font-semibold text-mgray-950">Ajouté au panier</p>
+            <p class="text-sm text-mgray-600">Produit ajouté avec succès</p>
           </div>
-          <button @click="showNotification = false" class="ml-auto text-gray-400 hover:text-gray-600">
+          <button @click="showNotification = false" class="ml-auto text-mgray-400 hover:text-mgray-700">
             <span class="text-xl">×</span>
           </button>
         </div>
@@ -683,7 +683,12 @@ const addToCart = () => {
 };
 
 const formatPrice = (price) => {
-  return `${parseFloat(price).toFixed(2)} DZD`;
+  const value = Number(price || 0);
+  return new Intl.NumberFormat('fr-DZ', {
+    style: 'currency',
+    currency: 'DZD',
+    maximumFractionDigits: 0,
+  }).format(value);
 };
 
 onMounted(async () => {
@@ -700,5 +705,20 @@ useHead({
 <style scoped>
 .prose {
   max-width: none;
+}
+
+/* Hide horizontal scrollbar (still scrollable) for media thumbs */
+.media-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.media-scroll::-webkit-scrollbar-track {
+  background: rgba(var(--body-bg), 1);
+}
+.media-scroll::-webkit-scrollbar-thumb {
+  background: rgba(var(--text-color), 0.18);
+  border-radius: 999px;
+}
+.media-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--text-color), 0.28);
 }
 </style>

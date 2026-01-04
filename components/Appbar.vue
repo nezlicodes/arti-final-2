@@ -1,5 +1,5 @@
 <template>
-  <nav class="w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+  <nav class="fixed top-0 left-0 right-0 w-full z-[100] bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
     <!-- Top Banner -->
     <TopBanner v-if="!hideBanner" />
 
@@ -45,7 +45,7 @@
             </button>
             
             <!-- Minimal Dropdown List -->
-            <div class="absolute top-full left-0 w-64 bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 mt-2">
+            <div class="absolute top-full left-0 w-64 z-[110] bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 mt-2">
               <div class="py-1 max-h-96 overflow-y-auto">
                 <NuxtLink
                   v-for="category in allCategories"
