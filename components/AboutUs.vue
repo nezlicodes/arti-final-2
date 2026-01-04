@@ -1,19 +1,26 @@
 <template>
-  <section v-if="section.is_active" id="about" class="py-16" :dir="isRtl ? 'rtl' : 'ltr'">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <section v-if="section.is_active" id="about" class="x-section relative overflow-hidden" :dir="isRtl ? 'rtl' : 'ltr'">
+    <div class="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent"></div>
+    <div class="x-container relative">
       <!-- Title - Debut Style -->
       <div class="text-center mb-12">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+        <div class="flex justify-center mb-4">
+          <span class="x-eyebrow">
+            <Icon name="ph:book-open-text-fill" class="w-3.5 h-3.5 text-primary" />
+            {{ $t('about.title') || 'About' }}
+          </span>
+        </div>
+        <h2 class="x-title">
           {{ section.content_translations[currentLocale]?.title || 'Notre Histoire' }}
         </h2>
-        <div class="w-16 h-0.5 bg-primary mx-auto mb-6"></div>
+        <div class="x-divider mx-auto"></div>
       </div>
 
       <!-- Content Layout -->
-      <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12" :class="isRtl ? 'lg:flex-row-reverse' : ''">
+      <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 lg:gap-14" :class="isRtl ? 'lg:[direction:rtl]' : ''">
         <!-- Image -->
-        <div v-if="section.image_url" class="w-full lg:w-1/2">
-          <div class="overflow-hidden rounded-lg border border-gray-200">
+        <div v-if="section.image_url" class="w-full">
+          <div class="relative overflow-hidden rounded-3xl border border-mgray-200 shadow-xl">
             <NuxtImg
               :src="section.image_url"
               :alt="section.content_translations[currentLocale]?.title"
@@ -24,10 +31,10 @@
         </div>
 
         <!-- Text Content -->
-        <div class="w-full" :class="section.image_url ? 'lg:w-1/2' : ''">
+        <div class="w-full">
           <div
             v-if="section.content_translations[currentLocale]?.content"
-            class="prose prose-gray max-w-none text-gray-700 leading-relaxed"
+            class="prose prose-gray max-w-none text-mgray-800 leading-relaxed"
             v-html="section.content_translations[currentLocale].content"
           ></div>
           <div v-else class="text-center py-8">

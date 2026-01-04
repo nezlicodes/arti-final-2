@@ -1,20 +1,21 @@
 <template>
   <section
     v-if="isLoaded && isEnabled"
-    class="relative py-24 bg-gradient-to-br from-backgroundColor via-backgroundColor to-backgroundColor/80 overflow-hidden"
+    class="x-section relative overflow-hidden"
   >
+    <div class="absolute inset-0 bg-gradient-to-b from-secondary/5 via-transparent to-transparent"></div>
     <!-- Decorative background elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
       <div class="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative x-container">
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-24 items-start">
         <!-- Left Column - Header Info -->
         <div class="lg:sticky lg:top-24 lg:self-start space-y-8" data-aos="fade-right">
           <!-- Badge -->
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-secondary rounded-full">
+          <div class="x-eyebrow bg-white/80">
             <Icon name="ph:question-fill" class="w-4 h-4 text-primary" />
             <span class="text-sm font-semibold text-primary">{{ headerContent.badge_text }}</span>
           </div>
@@ -22,19 +23,19 @@
           <!-- Title -->
           <div>
             <h2
-              class="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight"
+              class="x-title mb-6"
             >
               {{ headerContent.title }}
             </h2>
-            <p class="text-xl text-foreground/70 leading-relaxed">
+            <p class="x-subtitle text-mgray-700">
               {{ headerContent.subtitle }}
             </p>
           </div>
 
           <!-- Additional Info Card -->
-          <div class="bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-sm rounded-2xl p-6 border border-foreground/10">
+          <div class="x-surface p-6">
             <div class="flex items-start gap-4">
-              <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-secondary flex items-center justify-center">
+              <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
                 <Icon name="ph:lightbulb-fill" class="w-6 h-6 text-primary" />
               </div>
               <div>
@@ -84,33 +85,33 @@
               :data-aos-delay="index * 50"
             >
               <details
-                class="faq-accordion bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-sm rounded-2xl overflow-hidden border border-foreground/10 transition-all duration-500 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+                class="faq-accordion x-surface overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
                 :open="index === 0"
               >
                 <summary
-                  class="flex items-center justify-between cursor-pointer py-6 px-7 font-bold text-lg text-foreground select-none transition-all duration-300 hover:bg-background/30"
+                  class="flex items-center justify-between cursor-pointer py-6 px-7 font-semibold text-lg text-mgray-950 select-none transition-all duration-300 hover:bg-white/40"
                 >
                   <span class="flex items-start gap-4 flex-1 pr-4">
-                    <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-secondary flex items-center justify-center mt-0.5">
+                    <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center mt-0.5">
                       <Icon name="ph:chat-circle-text-fill" class="w-4 h-4 text-primary" />
                     </span>
                     <span class="flex-1">{{ getQuestion(item) }}</span>
                   </span>
-                  <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center transition-all duration-300 group-hover:bg-primary/10">
+                  <div class="flex-shrink-0 w-10 h-10 rounded-2xl bg-mgray-100 flex items-center justify-center transition-all duration-300 group-hover:bg-primary/10">
                     <Icon
                       name="ph:caret-down-bold"
-                      class="w-5 h-5 text-foreground/60 transition-transform duration-300 group-open:rotate-180 group-hover:text-primary"
+                      class="w-5 h-5 text-mgray-600 transition-transform duration-300 group-open:rotate-180 group-hover:text-primary"
                     />
                   </div>
                 </summary>
 
                 <div class="px-7 pb-7">
                   <div class="pl-12">
-                    <div class="h-px bg-gradient-to-r from-foreground/10 to-transparent mb-6"></div>
+                    <div class="h-px bg-gradient-to-r from-mgray-200 to-transparent mb-6"></div>
                     
                     <div
                       v-html="getAnswer(item)"
-                      class="prose prose-base max-w-none text-foreground/70 leading-relaxed prose-p:mb-4 prose-strong:text-foreground prose-strong:font-semibold"
+                      class="prose prose-base max-w-none text-mgray-700 leading-relaxed prose-p:mb-4 prose-strong:text-mgray-950 prose-strong:font-semibold"
                     ></div>
                   </div>
                 </div>

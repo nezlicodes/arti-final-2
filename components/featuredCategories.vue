@@ -1,17 +1,22 @@
 <template>
-  <section class="py-20 bg-white">
-    <div class="container mx-auto px-4">
+  <section class="x-section relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-secondary/5 via-transparent to-transparent"></div>
+    <div class="x-container relative">
       <!-- Section Header -->
-      <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+      <div class="text-center mb-14">
+        <div class="flex justify-center mb-4">
+          <span class="x-eyebrow">
+            <Icon name="ph:grid-four-fill" class="w-3.5 h-3.5 text-primary" />
+            {{ $t('categories.title') || 'Categories' }}
+          </span>
+        </div>
+        <h2 class="x-title">
           {{ sectionTitle }}
         </h2>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        <p class="x-subtitle max-w-2xl mx-auto">
           {{ sectionSubtitle }}
         </p>
-        <div
-          class="mt-8 w-24 h-1 bg-gradient-to-r from-primary-600 to-secondary-600 mx-auto rounded-full"
-        ></div>
+        <div class="x-divider mx-auto"></div>
       </div>
 
       <!-- Loading State -->
@@ -29,17 +34,17 @@
       <!-- Featured Categories Grid -->
       <div
         v-else-if="featuredCategories.length > 0"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
       >
         <NuxtLink
           v-for="(category, index) in featuredCategories"
           :key="category.id"
           :to="`/categories/${category.slug}`"
-          class="group relative bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3"
+          class="group relative x-surface-strong overflow-hidden transition-all duration-500 hover:-translate-y-2"
           :style="{ animationDelay: `${index * 150}ms` }"
         >
           <!-- Category Image -->
-          <div class="relative h-64 overflow-hidden">
+          <div class="relative h-60 sm:h-64 overflow-hidden">
             <NuxtImg
               v-if="category.image_url"
               :src="category.image_url"
@@ -72,10 +77,9 @@
 
             <!-- Featured Badge -->
             <div class="absolute top-4 left-4">
-              <span
-                class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg backdrop-blur-sm"
-              >
-                ⭐ Featured
+              <span class="x-eyebrow bg-white/15 border-white/20 text-white">
+                <Icon name="ph:star-fill" class="w-3.5 h-3.5" />
+                {{ $t('common.featured') || 'Featured' }}
               </span>
             </div>
 
@@ -92,18 +96,16 @@
           </div>
 
           <!-- Category Info -->
-          <div class="p-6">
+          <div class="p-6 lg:p-7">
             <div class="flex items-start justify-between mb-4">
               <div>
-                <h3
-                  class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors duration-300"
-                >
+                <h3 class="text-xl font-semibold tracking-tight text-mgray-950 mb-2 group-hover:text-primary transition-colors duration-300">
                   {{ getCategoryName(category) }}
                 </h3>
 
                 <p
                   v-if="category.description"
-                  class="text-gray-600 text-sm line-clamp-2 leading-relaxed"
+                  class="text-mgray-700 text-sm line-clamp-2 leading-relaxed"
                 >
                   {{ getCategoryDescription(category) }}
                 </p>
@@ -111,10 +113,10 @@
 
               <!-- Arrow Icon -->
               <div
-                class="w-10 h-10 bg-gray-100 group-hover:bg-primary rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ml-4"
+                class="w-10 h-10 bg-primary/10 group-hover:bg-primary rounded-2xl flex items-center justify-center transition-all duration-300 flex-shrink-0 ml-4"
               >
                 <svg
-                  class="w-5 h-5 text-gray-600 group-hover:text-white transition-colors duration-300 transform group-hover:translate-x-1"
+                  class="w-5 h-5 text-primary group-hover:text-white transition-colors duration-300 transform group-hover:translate-x-1"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -131,9 +133,9 @@
 
             <!-- Stats Bar -->
             <div
-              class="flex items-center justify-between pt-4 border-t border-gray-100"
+              class="flex items-center justify-between pt-4 border-t border-mgray-100"
             >
-              <div class="flex items-center space-x-2 text-gray-500 text-sm">
+              <div class="flex items-center space-x-2 text-mgray-500 text-sm">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
@@ -142,7 +144,7 @@
               </div>
 
               <div
-                class="text-sm text-primary font-medium group-hover:opacity-80 transition-colors duration-300"
+                class="text-sm text-primary font-semibold group-hover:opacity-80 transition-colors duration-300"
               >
                 {{ $t("common.explore") || "Explore" }} →
               </div>
@@ -157,27 +159,13 @@
       </div>
 
       <!-- Show All Categories Button -->
-      <div v-if="featuredCategories.length > 0" class="text-center mt-16">
+      <div v-if="featuredCategories.length > 0" class="text-center mt-14">
         <NuxtLink
           to="/categories"
-          class="inline-flex items-center space-x-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+          class="x-btn-primary"
         >
-          <span>{{
-            $t("categories.exploreAll") || "Explore All Categories"
-          }}</span>
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17 8l4 4m0 0l-4 4m4-4H3"
-            ></path>
-          </svg>
+          <span>{{ $t("categories.exploreAll") || "Explore All Categories" }}</span>
+          <Icon name="ph:arrow-right-bold" class="w-4 h-4" />
         </NuxtLink>
       </div>
 
@@ -290,7 +278,6 @@ const loadFeaturedCategories = async () => {
       .eq("is_active", true)
       .eq("is_featured", true)
       .order("display_order", { ascending: true });
-    console.log("da", data);
     if (error) {
       console.error("❌ Error fetching featured categories:", error);
       return;

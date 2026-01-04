@@ -1,7 +1,9 @@
 <template>
   <div v-if="heroData.is_active" class="relative pt-6 w-full overflow-hidden">
     <!-- Hero Section -->
-    <section class="relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-[80vh] flex items-center bg-gray-50">
+    <section class="relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-[82vh] flex items-center">
+      <!-- Subtle grid + vignette -->
+      <div class="absolute inset-0 x-grid-bg opacity-[0.25]"></div>
       <!-- Background Media Container -->
       <div class="absolute inset-0 w-full h-full">
         <!-- Video Background (Priority) -->
@@ -47,42 +49,35 @@
           </div>
 
           <!-- Hero Content -->
-          <div v-else class="max-w-4xl mx-auto text-center">
+          <div v-else class="max-w-5xl mx-auto text-center">
+            <div class="flex justify-center mb-6 animate-fade-in-up">
+              <span class="x-eyebrow bg-white/10 border-white/15 text-white/90">
+                <Icon name="ph:sparkle-fill" class="w-3.5 h-3.5" />
+                {{ $t('common.shop') || 'Shop' }}
+              </span>
+            </div>
             <!-- Title -->
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-4 leading-tight animate-fade-in-up">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight mb-5 leading-[1.05] animate-fade-in-up" style="text-shadow: 0 12px 40px rgba(0,0,0,.35);">
               {{ currentContent.title || defaultHeroData.title }}
             </h1>
 
             <!-- Subtitle -->
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 mb-8 leading-relaxed max-w-2xl mx-auto animate-fade-in-up" style="animation-delay: 0.1s;">
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-10 leading-relaxed max-w-2xl mx-auto animate-fade-in-up" style="animation-delay: 0.1s;">
               {{ currentContent.subtitle || defaultHeroData.subtitle }}
             </p>
 
             <!-- CTA Button -->
-            <div class="flex justify-center mb-16 animate-fade-in-up" style="animation-delay: 0.2s;">
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16 animate-fade-in-up" style="animation-delay: 0.2s;">
               <NuxtLink
                 to="/products"
-                class="group inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold text-white bg-primary rounded-full hover:bg-primary/90 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
+                class="x-btn-primary group px-7 sm:px-9 py-3.5 sm:py-4 text-sm sm:text-base shadow-2xl shadow-black/20"
               >
                 {{ currentContent.button_text || defaultHeroData.button_text }}
-                <Icon name="ph:arrow-right-bold" class="ml-2 w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
+                <Icon name="ph:arrow-right-bold" class="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
               </NuxtLink>
+
             </div>
 
-            <!-- Features -->
-            <div v-if="!loading && !featuresLoading && currentFeatures.length > 0" class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto animate-fade-in-up" style="animation-delay: 0.3s;">
-              <div
-                v-for="(feature, index) in currentFeatures"
-                :key="index"
-                class="text-center text-white group"
-              >
-                <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-white/30 transition-all duration-300">
-                  <Icon :name="feature.icon" class="w-6 h-6 text-white" />
-                </div>
-                <h3 class="font-bold text-white mb-1">{{ feature.title }}</h3>
-                <p class="text-sm text-white/80">{{ feature.description }}</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -113,31 +108,7 @@ const defaultHeroData = {
   background_video: "",
 }
 
-const defaultFeatures = [
-  {
-    icon: "ph:users-three-fill",
-    title: "100M+",
-    description: "produits vendus"
-  },
-  {
-    icon: "ph:globe-hemisphere-west-fill",
-    title: "60+ pays",
-    description: "couverts"
-  },
-  {
-    icon: "ph:package-fill",
-    title: "Livraison DZ",
-    description: "rapide & sécurisée"
-  },
-  {
-    icon: "ph:headset-fill",
-    title: "Support 24/7",
-    description: "toujours disponible"
-  }
-]
-
 const loading = ref(true)
-const featuresLoading = ref(true)
 const videoError = ref(false)
 const videoElement = ref(null)
 
@@ -150,23 +121,9 @@ const heroData = ref({
   }
 })
 
-const featuresData = ref({
-  is_active: true,
-  content_translations: {
-    fr: { features: defaultFeatures },
-    ar: { features: defaultFeatures },
-    en: { features: defaultFeatures }
-  }
-})
-
 const currentContent = computed(() => {
   const content = heroData.value.content_translations?.[currentLocale.value]
   return content || defaultHeroData
-})
-
-const currentFeatures = computed(() => {
-  const content = featuresData.value.content_translations?.[currentLocale.value]
-  return content?.features || defaultFeatures
 })
 
 // Video event handlers
@@ -213,23 +170,8 @@ const loadHeroData = async () => {
   }
 }
 
-const loadFeaturesData = async () => {
-  featuresLoading.value = true
-  try {
-    const { data, error } = await fetchSection('features')
-    if (error) throw error
-    if (data) {
-      featuresData.value = data
-    }
-  } catch (error) {
-    console.error('Error loading features section:', error)
-  } finally {
-    featuresLoading.value = false
-  }
-}
-
 onMounted(async () => {
-  await Promise.all([loadHeroData(), loadFeaturesData()])
+  await loadHeroData()
 })
 
 watch(() => currentContent.value.background_video, (newVideo) => {

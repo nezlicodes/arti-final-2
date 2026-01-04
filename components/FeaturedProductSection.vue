@@ -1,31 +1,64 @@
 <template>
-  <section v-if="section.is_active" class="py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+  <section v-if="section.is_active" class="x-section relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent"></div>
+    <div class="x-container relative">
+      <div class="text-center mb-12">
+        <div class="flex justify-center mb-4">
+          <span class="x-eyebrow">
+            <Icon name="ph:trend-up-bold" class="w-3.5 h-3.5 text-primary" />
+            {{ $t('common.featured') || 'Featured' }}
+          </span>
+        </div>
+        <h2 class="x-title">
           {{ section.content_translations[currentLocale]?.title || fallback.title }}
         </h2>
-        <div class="w-16 h-0.5 bg-primary mx-auto mb-4"></div>
-        <p class="text-base text-gray-600 max-w-2xl mx-auto">
+        <div class="x-divider mx-auto"></div>
+        <p class="x-subtitle max-w-2xl mx-auto">
           {{ section.content_translations[currentLocale]?.subtitle || fallback.subtitle }}
         </p>
       </div>
-      <div v-if="product" class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
-        <div class="order-1 md:order-1 flex justify-center">
-          <NuxtImg v-if="productImage" :src="productImage.url" :alt="product.name" class="w-full max-w-md rounded-xl shadow-md object-cover" />
-          <div v-else class="w-full max-w-md aspect-[4/3] rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
-            {{ $t('common.noImage') || 'No image' }}
+      <div v-if="product" class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center max-w-6xl mx-auto">
+        <div class="order-1 flex justify-center">
+          <div class="relative w-full max-w-lg">
+            <div class="absolute -inset-4 bg-gradient-to-br from-primary/20 via-transparent to-secondary/10 blur-2xl"></div>
+
+            <NuxtImg
+              v-if="productImage"
+              :src="productImage.url"
+              :alt="product.name"
+              class="relative w-full aspect-[4/3] rounded-3xl shadow-2xl object-cover border border-mgray-200"
+            />
+            <div
+              v-else
+              class="relative w-full aspect-[4/3] rounded-3xl bg-background-100 border border-mgray-200 flex items-center justify-center text-mgray-500"
+            >
+              {{ $t('common.noImage') || 'No image' }}
+            </div>
           </div>
         </div>
-        <div class="order-2 md:order-2">
-          <h3 class="text-2xl font-semibold mb-3">{{ product.name }}</h3>
-          <p v-if="currentDescription" class="text-gray-600 mb-5">{{ currentDescription }}</p>
-          <div class="flex items-center gap-4 mb-6">
-            <div v-if="product.price != null" class="text-2xl font-bold text-primary">{{ formatPrice(product.price) }}</div>
+        <div class="order-2">
+          <div class="x-surface-strong p-7 sm:p-9">
+            <h3 class="text-2xl sm:text-3xl font-semibold tracking-tight text-mgray-950 mb-3">
+              {{ product.name }}
+            </h3>
+            <p v-if="currentDescription" class="text-mgray-700 mb-6 leading-relaxed">
+              {{ currentDescription }}
+            </p>
+
+            <div class="flex items-end justify-between gap-6 mb-8">
+              <div>
+                <p class="text-xs font-semibold tracking-wide text-mgray-500 uppercase">{{ $t('common.price') || 'Price' }}</p>
+                <div v-if="product.price != null" class="text-3xl sm:text-4xl font-bold text-primary">
+                  {{ formatPrice(product.price) }}
+                </div>
+              </div>
+            </div>
+
+            <NuxtLink v-if="product.slug" :to="`/products/${product.slug}`" class="x-btn-primary w-full sm:w-auto">
+              {{ $t('common.viewProduct') || 'View product' }}
+              <Icon name="ph:arrow-right-bold" class="w-4 h-4" />
+            </NuxtLink>
           </div>
-          <NuxtLink v-if="product.slug" :to="`/products/${product.slug}`" class="inline-flex items-center px-5 py-3 bg-primary text-white rounded-lg hover:bg-primary-600 transition">
-            {{ $t('common.viewProduct') || 'View product' }}
-          </NuxtLink>
         </div>
       </div>
       <slot />

@@ -3,6 +3,60 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  /* Section spacing + container */
+  .x-section {
+    @apply py-16 sm:py-20;
+  }
+
+  .x-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Editorial header */
+  .x-eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-mgray-200 bg-white/70 px-3 py-1 text-xs font-semibold tracking-wide text-mgray-700 backdrop-blur;
+  }
+
+  .x-title {
+    font-family: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    @apply text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-mgray-950;
+  }
+
+  .x-subtitle {
+    @apply mt-4 text-base sm:text-lg text-mgray-700 leading-relaxed;
+  }
+
+  .x-divider {
+    @apply mt-6 h-px w-24 bg-gradient-to-r from-primary/60 via-primary/20 to-transparent;
+  }
+
+  /* Surfaces */
+  .x-surface {
+    @apply rounded-2xl border border-mgray-200 bg-white/80 shadow-sm backdrop-blur;
+  }
+
+  .x-surface-strong {
+    @apply rounded-3xl border border-mgray-200 bg-white shadow-xl;
+  }
+
+  /* Buttons */
+  .x-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-contrast1 shadow-lg shadow-primary/10 transition hover:brightness-95 active:scale-[0.99];
+  }
+
+  .x-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-mgray-300 bg-white/70 px-6 py-3 text-sm font-semibold text-mgray-900 backdrop-blur transition hover:bg-white;
+  }
+
+  /* Subtle grid background */
+  .x-grid-bg {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(var(--text-color), 0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+}
+
 /* Debut Theme CSS Variables */
 :root {
   --primary-color: 76, 175, 80; /* Green-500 - Traditional e-commerce */

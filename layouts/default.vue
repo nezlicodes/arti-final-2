@@ -26,6 +26,7 @@
       </div>
     </div>
 
+    <Features v-if="!route.path.includes('admin')" />
     <Footer v-if="!route.path.includes('admin')"></Footer>
 
     <ErrorModal

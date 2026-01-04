@@ -1,6 +1,7 @@
 <template>
-  <section v-if="sectionData.is_active" class="testimonials-section bg-white py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section v-if="sectionData.is_active" class="x-section relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent"></div>
+    <div class="x-container relative">
       <!-- Loading State -->
       <div v-if="loading" class="space-y-12">
         <div class="text-center space-y-4">
@@ -20,12 +21,18 @@
       <!-- Content -->
       <div v-else>
         <!-- Header -->
-        <div class="text-center mb-12 space-y-4">
-          <h2 class="text-2xl md:text-3xl font-bold text-gray-900">
+        <div class="text-center mb-12">
+          <div class="flex justify-center mb-4">
+            <span class="x-eyebrow">
+              <Icon name="ph:chat-circle-text-fill" class="w-3.5 h-3.5 text-primary" />
+              {{ $t('testimonials.title') || 'Testimonials' }}
+            </span>
+          </div>
+          <h2 class="x-title">
             {{ currentContent.title || defaultContent.title }}
           </h2>
-          <div class="w-16 h-0.5 bg-primary mx-auto"></div>
-          <p class="text-base text-gray-600 max-w-2xl mx-auto">
+          <div class="x-divider mx-auto"></div>
+          <p class="x-subtitle max-w-2xl mx-auto">
             {{ currentContent.subtitle || defaultContent.subtitle }}
           </p>
         </div>
@@ -50,7 +57,7 @@
                 :key="testimonial.id"
                 class="w-full flex-shrink-0 px-4"
               >
-                <div class="border border-foreground/10 rounded-xl p-6 bg-contrast1 text-primary">
+                <div class="x-surface-strong p-6">
                   <!-- Rating -->
                   <div class="flex space-x-0.5 mb-4">
                     <Icon
@@ -58,26 +65,26 @@
                       :key="i"
                       name="ph:star-fill"
                       class="w-4 h-4"
-                      :class="i <= testimonial.rating ? 'text-foreground' : 'text-foreground/20'"
+                      :class="i <= testimonial.rating ? 'text-primary' : 'text-mgray-200'"
                     />
                   </div>
 
                   <!-- Content -->
-                  <p class="text-sm leading-relaxed mb-6">
-                    "{{ getContent(testimonial) }}"
+                  <p class="text-sm leading-relaxed mb-6 text-mgray-700">
+                    “{{ getContent(testimonial) }}”
                   </p>
 
                   <!-- Author -->
-                  <div class="flex items-center space-x-3 pt-4 border-t border-foreground/10">
-                    <div v-if="testimonial.image_url" class="w-10 h-10 rounded-full overflow-hidden bg-foreground/5 flex-shrink-0">
+                  <div class="flex items-center space-x-3 pt-4 border-t border-mgray-100">
+                    <div v-if="testimonial.image_url" class="w-10 h-10 rounded-full overflow-hidden bg-mgray-100 flex-shrink-0">
                       <NuxtImg :src="testimonial.image_url" :alt="testimonial.customer_name" class="w-full h-full object-cover" />
                     </div>
-                    <div v-else class="w-10 h-10 rounded-full bg-foreground/5 flex items-center justify-center flex-shrink-0">
-                      <Icon name="ph:user" class="w-5 h-5 text-foreground/40" />
+                    <div v-else class="w-10 h-10 rounded-full bg-mgray-100 flex items-center justify-center flex-shrink-0">
+                      <Icon name="ph:user" class="w-5 h-5 text-mgray-400" />
                     </div>
                     <div class="min-w-0">
                       <p class="font-semibold text-sm truncate">{{ testimonial.customer_name }}</p>
-                      <p v-if="getTitle(testimonial)" class="text-sm text-foreground/60 truncate">
+                      <p v-if="getTitle(testimonial)" class="text-sm text-mgray-600 truncate">
                         {{ getTitle(testimonial) }}
                       </p>
                     </div>
@@ -102,7 +109,7 @@
                   <div
                     v-for="testimonial in slide"
                     :key="testimonial.id"
-                    class="border border-foreground/10 rounded-xl p-6 lg:p-8 bg-contrast1 text-primary hover:border-foreground/20 transition-colors duration-300"
+                    class="x-surface-strong p-6 lg:p-8 hover:border-mgray-300 transition-colors duration-300"
                   >
                     <!-- Rating -->
                     <div class="flex space-x-0.5 mb-4 lg:mb-6">
@@ -111,26 +118,26 @@
                         :key="i"
                         name="ph:star-fill"
                         class="w-4 h-4"
-                        :class="i <= testimonial.rating ? 'text-foreground' : 'text-foreground/20'"
+                        :class="i <= testimonial.rating ? 'text-primary' : 'text-mgray-200'"
                       />
                     </div>
 
                     <!-- Content -->
-                    <p class="text-sm leading-relaxed mb-6 lg:mb-8">
-                      "{{ getContent(testimonial) }}"
+                    <p class="text-sm leading-relaxed mb-6 lg:mb-8 text-mgray-700">
+                      “{{ getContent(testimonial) }}”
                     </p>
 
                     <!-- Author -->
-                    <div class="flex items-center space-x-3 pt-4 lg:pt-6 border-t border-foreground/10">
-                      <div v-if="testimonial.image_url" class="w-10 h-10 rounded-full overflow-hidden bg-foreground/5 flex-shrink-0">
+                    <div class="flex items-center space-x-3 pt-4 lg:pt-6 border-t border-mgray-100">
+                      <div v-if="testimonial.image_url" class="w-10 h-10 rounded-full overflow-hidden bg-mgray-100 flex-shrink-0">
                         <NuxtImg :src="testimonial.image_url" :alt="testimonial.customer_name" class="w-full h-full object-cover" />
                       </div>
-                      <div v-else class="w-10 h-10 rounded-full bg-foreground/5 flex items-center justify-center flex-shrink-0">
-                        <Icon name="ph:user" class="w-5 h-5 text-foreground/40" />
+                      <div v-else class="w-10 h-10 rounded-full bg-mgray-100 flex items-center justify-center flex-shrink-0">
+                        <Icon name="ph:user" class="w-5 h-5 text-mgray-400" />
                       </div>
                       <div class="min-w-0">
                         <p class="font-semibold text-sm truncate">{{ testimonial.customer_name }}</p>
-                        <p v-if="getTitle(testimonial)" class="text-sm text-foreground/60 truncate">
+                        <p v-if="getTitle(testimonial)" class="text-sm text-mgray-600 truncate">
                           {{ getTitle(testimonial) }}
                         </p>
                       </div>
