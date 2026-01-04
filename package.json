@@ -25,5 +25,10 @@
     "@oxc-parser/binding-darwin-arm64": "^0.102.0",
     "nuxt-lodash": "^2.5.3",
     "sharp": "^0.34.5"
+  },
+  "optionalDependencies": {
+    "@oxc-transform/binding-darwin-arm64": "^0.96.0",
+    "@oxc-transform/binding-darwin-x64": "^0.96.0",
+    "@oxc-transform/binding-darwin-universal": "^0.96.0"
   }
 }
