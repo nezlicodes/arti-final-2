@@ -1,12 +1,20 @@
 <template>
   <div>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-36">
-      <h1 class="text-3xl font-medium tracking-tight text-mgray-900">
+    <div class="x-container pt-32 sm:pt-36 pb-16">
+      <div class="mb-8">
+        <div class="x-eyebrow">{{ $t('cart.title') }}</div>
+        <h1 class="mt-4 x-title">{{ $t('cart.title') }}</h1>
+        <p class="x-subtitle">{{ $t('cart.startAdding') }}</p>
+        <div class="x-divider"></div>
+      </div>
+
+      <h1 class="sr-only">
         {{ $t('cart.title') }}
       </h1>
 
-      <div v-if="!cartItems.length" class="mt-12 text-center">
-        <svg
+      <div v-if="!cartItems.length" class="mt-10">
+        <div class="x-surface-strong p-8 sm:p-10 text-center">
+          <svg
           class="mx-auto h-12 w-12 text-mgray-400"
           fill="none"
           viewBox="0 0 24 24"
@@ -26,17 +34,15 @@
         <p class="mt-1 text-sm text-mgray-500">
           {{ $t('cart.startAdding') }}
         </p>
-        <div class="mt-6">
-          <NuxtLink
-            to="/products"
-            class="inline-flex items-center rounded-md border border-transparent bg-primary px-4 py-2 text-sm font-medium text-contrast1 shadow-sm hover:opacity-95 focus:outline-none"
-          >
+        <div class="mt-8 flex items-center justify-center">
+          <NuxtLink to="/products" class="x-btn-primary">
             {{ $t('cart.continueShopping') }}
           </NuxtLink>
         </div>
+        </div>
       </div>
 
-      <div v-else class="mt-12">
+      <div v-else class="mt-10">
         <div
           class="lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16"
         >
@@ -48,29 +54,29 @@
 
             <ul
               role="list"
-              class="divide-y divide-mgray-200 border-t border-b border-mgray-200"
+              class="divide-y divide-mgray-200"
             >
               <li
                 v-for="item in cartItems"
                 :key="item.id"
-                class="flex py-6 sm:py-8"
+                class="flex gap-4 sm:gap-6 py-6 sm:py-7"
               >
                 <div class="flex-shrink-0">
                   <NuxtImg
                     :src="item.image || '/images/placeholders/placeholder-product.svg'"
                     :alt="item.name"
-                    class="h-24 w-24 rounded-lg object-cover object-center sm:h-32 sm:w-32"
+                    class="h-24 w-24 rounded-2xl object-cover object-center sm:h-32 sm:w-32 border border-mgray-200 bg-white"
                   />
                 </div>
 
-                <div class="ml-4 flex flex-1 flex-col sm:ml-6">
+                <div class="flex flex-1 flex-col">
                   <div>
                     <div class="flex justify-between">
                       <div>
                         <h3 class="text-sm">
                           <NuxtLink
                             :to="'/products/' + item.slug"
-                            class="font-medium text-mgray-700 hover:text-mgray-800"
+                            class="font-semibold text-mgray-950 hover:text-primary transition-colors"
                           >
                             {{ item.name }}
                           </NuxtLink>
@@ -91,23 +97,21 @@
                           </div>
                         </div>
                       </div>
-                      <p class="ml-4 text-sm font-medium text-mgray-900">
+                      <p class="ml-4 text-sm font-semibold text-mgray-950">
                         {{ formatCurrency(item.price * item.quantity) }}
                       </p>
                     </div>
-                    <p class="mt-1 text-sm text-mgray-500">
+                    <p class="mt-1 text-sm text-mgray-600">
                       {{ formatCurrency(item.price) }} {{ $t('cart.unitPrice') }}
                     </p>
                   </div>
 
                   <div class="mt-4 flex flex-1 items-end justify-between">
                     <div class="flex items-center space-x-2">
-                      ><label :for="'quantity-' + item.id" class="sr-only"
-                        >{{ $t('cart.quantity') }}</label
-                      >
+                      <label :for="'quantity-' + item.id" class="sr-only">{{ $t('cart.quantity') }}</label>
                       <button
                         @click="updateQuantity(item.id, item.quantity - 1)"
-                        class="rounded-md px-2 py-1 text-mgray-600 hover:bg-mgray-100"
+                        class="w-10 h-10 rounded-xl border border-mgray-200 bg-white text-mgray-800 hover:bg-mgray-50 disabled:opacity-40 disabled:cursor-not-allowed"
                         :disabled="item.quantity <= 1"
                       >
                         -
@@ -117,12 +121,12 @@
                         v-model.number="item.quantity"
                         type="number"
                         min="1"
-                        class="w-16 rounded-md border-mgray-300 text-center text-sm"
+                        class="w-16 rounded-xl border-mgray-300 text-center text-sm bg-white"
                         @change="updateQuantity(item.id, item.quantity)"
                       />
                       <button
                         @click="updateQuantity(item.id, item.quantity + 1)"
-                        class="rounded-md px-2 py-1 text-mgray-600 hover:bg-mgray-100"
+                        class="w-10 h-10 rounded-xl border border-mgray-200 bg-white text-mgray-800 hover:bg-mgray-50"
                       >
                         +
                       </button>
@@ -142,9 +146,10 @@
           <!-- Récapitulatif de la commande -->
           <section
             aria-labelledby="summary-heading"
-            class="mt-16 rounded-lg bg-mgray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
+            class="mt-10 lg:col-span-5 lg:mt-0"
           >
-            <h2 id="summary-heading" class="text-lg font-medium text-mgray-900">
+            <div class="x-surface-strong p-5 sm:p-6 lg:p-8 sticky top-24" >
+            <h2 id="summary-heading" class="text-lg font-semibold text-mgray-950">
               {{ $t('cart.orderSummary') }}
             </h2>
 
@@ -168,14 +173,14 @@
             <div class="mt-6">
               <button
                 type="button"
-                class="w-full rounded-md border border-transparent bg-primary px-4 py-3 text-base font-medium text-contrast1 shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 transition-all duration-300"
+                class="x-btn-primary w-full"
                 @click="proceedToCheckout"
               >
                 {{ $t('cart.proceedToCheckout') }}
               </button>
             </div>
 
-            <div class="mt-6 text-center text-sm text-mgray-500">
+            <div class="mt-5 text-center text-sm text-mgray-600">
               <p>
                 {{ $t('cart.or') }}
                 <NuxtLink
@@ -187,6 +192,7 @@
                 </NuxtLink>
               </p>
             </div>
+          </div>
           </section>
         </div>
 
@@ -194,7 +200,7 @@
         <div class="mt-8">
           <button
             type="button"
-            class="text-sm font-medium text-red-600 hover:text-red-500"
+            class="text-sm font-semibold text-red-600 hover:text-red-500"
             @click="clearCart"
           >
             Vider le panier

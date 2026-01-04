@@ -1,19 +1,18 @@
 <template>
   <div>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div class="x-container pt-32 sm:pt-36 pb-16">
       <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-medium tracking-tight text-mgray-900">
-          {{ $t("checkout.title") }}
-        </h1>
-        <p class="mt-2 text-sm text-mgray-600">
-          {{ $t("checkout.subtitle") }}
-        </p>
+      <div class="mb-10">
+        <div class="x-eyebrow">{{ $t("checkout.title") }}</div>
+        <h1 class="mt-4 x-title">{{ $t("checkout.title") }}</h1>
+        <p class="x-subtitle">{{ $t("checkout.subtitle") }}</p>
+        <div class="x-divider"></div>
       </div>
 
       <!-- Empty Cart Message -->
-      <div v-if="!cartItems.length" class="mt-12 text-center">
-        <svg
+      <div v-if="!cartItems.length" class="mt-10">
+        <div class="x-surface-strong p-8 sm:p-10 text-center">
+          <svg
           class="mx-auto h-12 w-12 text-mgray-400"
           fill="none"
           viewBox="0 0 24 24"
@@ -30,16 +29,12 @@
         <h3 class="mt-2 text-lg font-medium text-mgray-900">
           Votre panier est vide
         </h3>
-        <p class="mt-1 text-sm text-mgray-500">
+        <p class="mt-1 text-sm text-mgray-600">
           Ajoutez des articles avant de passer commande
         </p>
-        <div class="mt-6">
-          <NuxtLink
-            to="/products"
-            class="inline-flex items-center rounded-md border border-transparent bg-primary px-4 py-2 text-sm font-medium text-contrast1 shadow-sm hover:opacity-95"
-          >
-            Voir les produits
-          </NuxtLink>
+        <div class="mt-8 flex items-center justify-center">
+          <NuxtLink to="/products" class="x-btn-primary">Voir les produits</NuxtLink>
+        </div>
         </div>
       </div>
 
@@ -48,7 +43,7 @@
         <!-- Success Message -->
         <div
           v-if="orderSuccess"
-          class="mb-8 rounded-lg bg-green-50 border border-green-200 p-6"
+          class="mb-8 rounded-2xl bg-green-500/10 border border-green-500/20 p-6"
         >
           <div class="flex">
             <div class="flex-shrink-0">
@@ -79,7 +74,7 @@
               <div class="mt-4">
                 <button
                   @click="returnToHome"
-                  class="inline-flex items-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
+                  class="inline-flex items-center justify-center rounded-full bg-green-600 px-5 py-2.5 text-sm font-semibold text-white hover:brightness-95"
                 >
                   Retour à l'accueil
                 </button>
@@ -91,7 +86,7 @@
         <!-- Error Message -->
         <div
           v-if="formError"
-          class="mb-8 rounded-lg bg-red-50 border border-red-200 p-4"
+          class="mb-8 rounded-2xl bg-red-500/10 border border-red-500/20 p-4"
         >
           <div class="flex">
             <div class="flex-shrink-0">
@@ -118,14 +113,15 @@
         <!-- Main Checkout Grid -->
         <div
           v-if="!orderSuccess"
-          class="lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16"
+          class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-x-12 xl:gap-x-16"
         >
           <!-- Checkout Form - Left Side -->
           <div class="lg:col-span-7">
             <form @submit.prevent="handleSubmit" class="space-y-8">
+              <div class="x-surface-strong p-5 sm:p-7">
               <!-- Personal Information -->
               <section>
-                <h2 class="text-lg font-medium text-mgray-900 mb-4">
+                <h2 class="text-lg font-semibold text-mgray-950 mb-4">
                   {{ $t("checkout.personalInfo") }}
                 </h2>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -141,7 +137,7 @@
                       v-model="form.firstName"
                       type="text"
                       required
-                      class="block w-full rounded-md border-mgray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      class="block w-full rounded-2xl border-mgray-300 bg-white/80 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       :placeholder="$t('checkout.firstNamePlaceholder')"
                     />
                   </div>
@@ -158,7 +154,7 @@
                       v-model="form.lastName"
                       type="text"
                       required
-                      class="block w-full rounded-md border-mgray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      class="block w-full rounded-2xl border-mgray-300 bg-white/80 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       :placeholder="$t('checkout.lastNamePlaceholder')"
                     />
                   </div>
@@ -176,7 +172,7 @@
                       type="tel"
                       required
                       pattern="[0-9]{10}"
-                      class="block w-full rounded-md border-mgray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      class="block w-full rounded-2xl border-mgray-300 bg-white/80 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       :placeholder="$t('checkout.phoneNumberPlaceholder')"
                     />
                     <p class="mt-1 text-xs text-mgray-500">
@@ -186,9 +182,11 @@
                 </div>
               </section>
 
+              <div class="h-px bg-mgray-200"></div>
+
               <!-- Shipping Information -->
               <section>
-                <h2 class="text-lg font-medium text-mgray-900 mb-4">
+                <h2 class="text-lg font-semibold text-mgray-950 mb-4">
                   {{ $t("checkout.shippingInfo") }}
                 </h2>
                 <div class="grid grid-cols-1 gap-4">
@@ -205,7 +203,7 @@
                       v-model="form.deliveryType"
                       required
                       @change="handleDeliveryTypeChange"
-                      class="block w-full rounded-md border-mgray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      class="block w-full rounded-2xl border-mgray-300 bg-white/80 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                     >
                       <option :value="null">Sélectionner un type</option>
                       <option value="stopdesk">Stop Desk</option>
@@ -227,7 +225,7 @@
                         v-model="form.wilayaId"
                         required
                         @change="handleWilayaChange"
-                        class="block w-full rounded-md border-mgray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        class="block w-full rounded-2xl border-mgray-300 bg-white/80 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       >
                         <option :value="null">
                           {{ $t("checkout.selectWilaya") }}
@@ -258,7 +256,7 @@
                         required
                         @change="handleCommuneChange"
                         :disabled="!form.wilayaId || loadingCommunes"
-                        class="block w-full rounded-md border-mgray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm disabled:bg-mgray-100 disabled:cursor-not-allowed"
+                        class="block w-full rounded-2xl border-mgray-300 bg-white/80 shadow-sm focus:border-primary focus:ring-primary sm:text-sm disabled:bg-mgray-100 disabled:cursor-not-allowed"
                       >
                         <option :value="null">
                           {{
@@ -280,9 +278,11 @@
                 </div>
               </section>
 
+              <div class="h-px bg-mgray-200"></div>
+
               <!-- Additional Information -->
               <section>
-                <h2 class="text-lg font-medium text-mgray-900 mb-4">
+                <h2 class="text-lg font-semibold text-mgray-950 mb-4">
                   {{ $t("checkout.additionalInfo") }}
                 </h2>
                 <div>
@@ -296,11 +296,12 @@
                     id="message"
                     v-model="form.message"
                     rows="3"
-                    class="block w-full rounded-md border-mgray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm resize-none"
+                    class="block w-full rounded-2xl border-mgray-300 bg-white/80 shadow-sm focus:border-primary focus:ring-primary sm:text-sm resize-none"
                     :placeholder="$t('checkout.messagePlaceholder')"
                   ></textarea>
                 </div>
               </section>
+              </div>
             </form>
           </div>
 
@@ -309,19 +310,17 @@
             aria-labelledby="summary-heading"
             class="mt-10 lg:col-span-5 lg:mt-0"
           >
-            <div
-              class="rounded-lg bg-mgray-50 px-4 py-6 sm:p-6 lg:p-8 sticky top-4"
-            >
+            <div class="x-surface-strong p-5 sm:p-6 lg:p-8 sticky top-24">
               <h2
                 id="summary-heading"
-                class="text-lg font-medium text-mgray-900 mb-4"
+                class="text-lg font-semibold text-mgray-950 mb-4"
               >
                 Récapitulatif de la commande
               </h2>
 
               <!-- Cart Items -->
               <ul
-                class="divide-y divide-mgray-200 border-t border-b border-mgray-200 py-4 mb-6"
+                class="divide-y divide-mgray-200 py-4 mb-6"
               >
                 <li
                   v-for="item in cartItems"
@@ -334,7 +333,7 @@
                       '/images/placeholders/placeholder-product.svg'
                     "
                     :alt="item.name"
-                    class="h-16 w-16 flex-shrink-0 rounded-md object-cover"
+                    class="h-16 w-16 flex-shrink-0 rounded-2xl object-cover border border-mgray-200 bg-white"
                   />
                   <div class="flex flex-1 flex-col">
                     <div class="flex justify-between">
@@ -352,7 +351,7 @@
                       <span
                         v-for="(value, name) in item.options"
                         :key="name"
-                        class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-mgray-200 text-mgray-800 mr-1"
+                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-mgray-100 text-mgray-800 mr-1"
                       >
                         {{ name }}: {{ value }}
                       </span>
@@ -407,7 +406,7 @@
                   type="submit"
                   @click="handleSubmit"
                   :disabled="submitting || !canSubmit"
-                  class="w-full rounded-md border border-transparent bg-primary px-4 py-3 text-base font-medium text-contrast1 shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  class="x-btn-primary w-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     v-if="submitting"
