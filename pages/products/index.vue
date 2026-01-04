@@ -1,33 +1,24 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-background">
     <!-- Hero Section -->
-    <section
-      class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white py-20 overflow-hidden"
-    >
-      <!-- Animated Background -->
-      <div class="absolute inset-0">
-        <div
-          class="absolute top-1/4 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-xl animate-pulse"
-        ></div>
-        <div
-          class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-xl animate-pulse"
-          style="animation-delay: 1s"
-        ></div>
-        <div
-          class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"
-        ></div>
-      </div>
+    <section class="relative overflow-hidden text-white">
+      <!-- Premium hero background using existing theme tokens -->
+      <div class="absolute inset-0 bg-gradient-to-br from-mgray-950 via-mgray-950 to-black"></div>
+      <div class="absolute inset-0 opacity-[0.16] x-grid-bg"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,rgba(var(--primary-color),0.35),transparent_55%),radial-gradient(900px_500px_at_90%_20%,rgba(var(--secondary-color),0.22),transparent_60%),linear-gradient(to_bottom,rgba(0,0,0,0.55),rgba(0,0,0,0.75))]"></div>
+      <div class="relative x-container py-16 sm:py-20">
+        <!-- Animated Background (kept subtle) -->
+        <div class="absolute inset-0 pointer-events-none">
+          <div class="absolute top-1/4 left-10 w-72 h-72 bg-primary/15 rounded-full blur-2xl animate-pulse"></div>
+          <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-secondary/15 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s"></div>
+          <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+        </div>
 
-      <div class="relative container mx-auto px-4 text-center">
-        <div class="max-w-4xl mx-auto">
+        <div class="relative max-w-5xl mx-auto text-center">
           <!-- Loading State -->
           <div v-if="heroLoading" class="space-y-4">
-            <div
-              class="h-16 bg-white/20 rounded w-3/4 mx-auto animate-pulse"
-            ></div>
-            <div
-              class="h-6 bg-white/20 rounded w-1/2 mx-auto animate-pulse"
-            ></div>
+            <div class="h-16 bg-white/20 rounded w-3/4 mx-auto animate-pulse"></div>
+            <div class="h-6 bg-white/20 rounded w-1/2 mx-auto animate-pulse"></div>
             <div class="flex justify-center items-center space-x-8 mt-8">
               <div class="h-12 w-16 bg-white/20 rounded animate-pulse"></div>
               <div class="h-12 w-16 bg-white/20 rounded animate-pulse"></div>
@@ -37,10 +28,7 @@
           <!-- Content -->
           <div v-else>
             <!-- Badge -->
-            <div
-              v-if="currentHeroContent.badge_text"
-              class="inline-flex items-center px-4 py-2 mb-8 text-sm font-medium text-blue-300 bg-blue-500/10 backdrop-blur-sm rounded-full border border-blue-500/20"
-            >
+            <div v-if="currentHeroContent.badge_text" class="x-eyebrow bg-white/10 border-white/20 text-white/90 mb-8">
               <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fill-rule="evenodd"
@@ -51,45 +39,29 @@
               {{ currentHeroContent.badge_text }}
             </div>
 
-            <h1
-              class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
-            >
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.05]" style="text-shadow: 0 16px 50px rgba(0,0,0,.45);">
               {{ currentHeroContent.title }}
-              <span
-                class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
-              >
-                {{ currentHeroContent.highlight_text }}
-              </span>
+              <span class="text-primary">{{ currentHeroContent.highlight_text }}</span>
               <br v-if="currentHeroContent.subtitle" />
               {{ currentHeroContent.subtitle }}
             </h1>
-            <p
-              class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
-            >
+            <p class="text-base sm:text-lg md:text-2xl text-white/85 mb-10 max-w-3xl mx-auto leading-relaxed">
               {{ currentHeroContent.description }}
             </p>
 
             <!-- Stats -->
-            <div
-              class="flex justify-center items-center space-x-8 text-gray-300"
-            >
-              <div class="text-center">
-                <p class="text-3xl font-bold text-white">
-                  {{ products.length }}+
-                </p>
-                <p class="text-sm">
+            <div class="mt-10 grid grid-cols-2 gap-4 sm:gap-6 max-w-lg mx-auto">
+              <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur px-5 py-4">
+                <p class="text-3xl font-bold text-white">{{ products.length }}+</p>
+                <p class="mt-1 text-xs sm:text-sm text-white/70">
                   {{ currentHeroContent.stats?.products_label || "Produits" }}
                 </p>
               </div>
-              <div class="w-px h-12 bg-gray-600"></div>
-              <div class="text-center">
-                <p class="text-3xl font-bold text-white">
-                  {{ categories.length }}+
-                </p>
-                <p class="text-sm">
-                  {{
-                    currentHeroContent.stats?.categories_label || "Catégories"
-                  }}
+
+              <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur px-5 py-4">
+                <p class="text-3xl font-bold text-white">{{ categories.length }}+</p>
+                <p class="mt-1 text-xs sm:text-sm text-white/70">
+                  {{ currentHeroContent.stats?.categories_label || "Catégories" }}
                 </p>
               </div>
             </div>
@@ -100,36 +72,35 @@
 
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <section class="x-section">
+      <div class="x-container">
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Sidebar Filters -->
-        <aside class="lg:w-64 flex-shrink-0">
-          <div class="bg-white rounded-lg border border-gray-200 sticky top-4">
+        <aside class="lg:w-72 flex-shrink-0">
+          <div class="x-surface-strong sticky top-4">
             <!-- Filter Header -->
             <div
-              class="p-4 border-b border-gray-200 flex items-center justify-between"
+              class="p-5 border-b border-mgray-200 flex items-center justify-between"
             >
-              <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+              <h3 class="font-semibold text-mgray-950 flex items-center gap-2">
                 <Icon name="ph:funnel" class="w-5 h-5" />
                 Filters
               </h3>
               <button
                 v-if="activeFiltersCount > 0"
                 @click="clearAllFilters"
-                class="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                class="text-sm text-primary hover:opacity-80 font-semibold"
               >
                 Clear all
               </button>
             </div>
 
             <div
-              class="p-4 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto"
+              class="p-5 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto filters-scroll"
             >
               <!-- Search -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2"
-                  >Search</label
-                >
+                <label class="block text-xs font-semibold tracking-wide text-mgray-700 mb-2 uppercase">Search</label>
                 <div class="relative">
                   <Icon
                     name="ph:magnifying-glass"
@@ -139,16 +110,14 @@
                     v-model="searchQuery"
                     type="text"
                     placeholder="Search products..."
-                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    class="w-full pl-10 pr-4 py-2.5 border border-mgray-200 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm bg-white/80 shadow-sm"
                   />
                 </div>
               </div>
 
               <!-- Categories -->
               <div>
-                <h4 class="text-sm font-medium text-gray-900 mb-3">
-                  Categories
-                </h4>
+                <h4 class="text-xs font-semibold tracking-wide text-mgray-800 mb-3 uppercase">Categories</h4>
                 <div class="space-y-2">
                   <label
                     v-for="category in categories"
@@ -159,7 +128,7 @@
                       type="checkbox"
                       v-model="selectedCategories"
                       :value="category.id"
-                      class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      class="w-4 h-4 rounded border-mgray-300 text-primary focus:ring-primary/30"
                     />
                     <span
                       class="text-sm text-gray-700 group-hover:text-gray-900"
@@ -172,36 +141,30 @@
 
               <!-- Price Range -->
               <div>
-                <h4 class="text-sm font-medium text-gray-900 mb-3">
-                  Price Range
-                </h4>
+                <h4 class="text-xs font-semibold tracking-wide text-mgray-800 mb-3 uppercase">Price range</h4>
                 <div class="space-y-3">
                   <div class="grid grid-cols-2 gap-2">
                     <div>
-                      <label class="block text-xs text-gray-600 mb-1"
-                        >Min</label
-                      >
+                      <label class="block text-[11px] font-semibold text-mgray-600 mb-1 uppercase tracking-wide">Min</label>
                       <input
                         v-model.number="priceRange.min"
                         type="number"
                         placeholder="0"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full px-3 py-2.5 text-sm border border-mgray-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white/70"
                       />
                     </div>
                     <div>
-                      <label class="block text-xs text-gray-600 mb-1"
-                        >Max</label
-                      >
+                      <label class="block text-[11px] font-semibold text-mgray-600 mb-1 uppercase tracking-wide">Max</label>
                       <input
                         v-model.number="priceRange.max"
                         type="number"
                         placeholder="10000"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full px-3 py-2.5 text-sm border border-mgray-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white/70"
                       />
                     </div>
                   </div>
                   <div
-                    class="flex items-center justify-between text-xs text-gray-500"
+                    class="flex items-center justify-between text-xs text-mgray-600"
                   >
                     <span>{{ priceRange.min }} DZD</span>
                     <span>{{ priceRange.max }} DZD</span>
@@ -211,15 +174,13 @@
 
               <!-- Availability -->
               <div>
-                <h4 class="text-sm font-medium text-gray-900 mb-3">
-                  Availability
-                </h4>
+                <h4 class="text-xs font-semibold tracking-wide text-mgray-800 mb-3 uppercase">Availability</h4>
                 <div class="space-y-2">
                   <label class="flex items-center gap-2 cursor-pointer group">
                     <input
                       type="checkbox"
                       v-model="showInStockOnly"
-                      class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      class="w-4 h-4 rounded border-mgray-300 text-primary focus:ring-primary/30"
                     />
                     <span
                       class="text-sm text-gray-700 group-hover:text-gray-900"
@@ -230,7 +191,7 @@
                     <input
                       type="checkbox"
                       v-model="showOnSaleOnly"
-                      class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      class="w-4 h-4 rounded border-mgray-300 text-primary focus:ring-primary/30"
                     />
                     <span
                       class="text-sm text-gray-700 group-hover:text-gray-900"
@@ -242,7 +203,7 @@
 
               <!-- Special Filters -->
               <div>
-                <h4 class="text-sm font-medium text-gray-900 mb-3">Special</h4>
+                <h4 class="text-xs font-semibold tracking-wide text-mgray-800 mb-3 uppercase">Special</h4>
                 <div class="flex flex-wrap gap-2">
                   <button
                     v-for="filter in quickFilters"
@@ -251,8 +212,8 @@
                     class="px-3 py-1.5 text-xs font-medium rounded-full transition-all"
                     :class="
                       filter.active
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-primary text-contrast1'
+                        : 'bg-mgray-100 text-mgray-800 hover:bg-mgray-200'
                     "
                   >
                     {{ filter.label }}
@@ -266,26 +227,28 @@
         <!-- Products Section -->
         <main class="flex-1 min-w-0">
           <!-- Toolbar -->
-          <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+          <div class="x-surface p-4 sm:p-5 mb-6 sticky top-4 z-10">
             <div
               class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
             >
               <!-- Results Count -->
-              <div class="flex items-center gap-2 text-sm text-gray-600">
-                <span class="font-medium text-gray-900">{{
+              <div class="flex items-center gap-2 text-sm text-mgray-700">
+                <span class="inline-flex items-center gap-2 rounded-full border border-mgray-200 bg-white/70 px-3 py-1 backdrop-blur">
+                <span class="font-semibold text-mgray-950">{{
                   filteredProducts.length
                 }}</span>
                 {{
                   filteredProducts.length === 1 ? "product" : "products"
                 }}
                 found
+                  </span>
               </div>
 
               <!-- Sort & View Options -->
               <div class="flex items-center gap-3">
                 <select
                   v-model="sortBy"
-                  class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-medium"
+                  class="px-4 py-2.5 border border-mgray-200 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-semibold bg-white/80 shadow-sm"
                 >
                   <option value="newest">Newest</option>
                   <option value="name_asc">Name: A-Z</option>
@@ -294,13 +257,11 @@
                   <option value="price_high">Price: High to Low</option>
                 </select>
 
-                <div
-                  class="hidden sm:flex items-center gap-1 border border-gray-300 rounded-lg p-1"
-                >
+                <div class="hidden sm:flex items-center gap-1 border border-mgray-200 rounded-full p-1 bg-white/70 backdrop-blur shadow-sm">
                   <button
                     @click="viewMode = 'grid'"
                     :class="
-                      viewMode === 'grid' ? 'bg-gray-100' : 'hover:bg-gray-50'
+                      viewMode === 'grid' ? 'bg-mgray-100' : 'hover:bg-white'
                     "
                     class="p-2 rounded transition-colors"
                   >
@@ -309,7 +270,7 @@
                   <button
                     @click="viewMode = 'list'"
                     :class="
-                      viewMode === 'list' ? 'bg-gray-100' : 'hover:bg-gray-50'
+                      viewMode === 'list' ? 'bg-mgray-100' : 'hover:bg-white'
                     "
                     class="p-2 rounded transition-colors"
                   >
@@ -322,17 +283,17 @@
             <!-- Active Filters Pills -->
             <div
               v-if="activeFiltersList.length > 0"
-              class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200"
+              class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-mgray-200"
             >
               <div
                 v-for="(filter, index) in activeFiltersList"
                 :key="index"
-                class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full"
+                class="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-sm rounded-full"
               >
                 <span>{{ filter }}</span>
                 <button
                   @click="removeFilter(filter)"
-                  class="hover:text-blue-900"
+                  class="hover:opacity-80"
                 >
                   <Icon name="ph:x" class="w-3 h-3" />
                 </button>
@@ -369,10 +330,11 @@
               <div
                 v-for="product in paginatedProducts"
                 :key="product.id"
-                class="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300"
+                class="group x-surface-strong overflow-hidden hover:border-mgray-300 hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5"
               >
                 <!-- Image -->
-                <div class="relative aspect-square overflow-hidden bg-gray-100">
+                <div class="relative aspect-square overflow-hidden bg-mgray-50">
+                  <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(900px_400px_at_50%_0%,rgba(var(--primary-color),0.18),transparent_60%)]"></div>
                   <NuxtLink :to="`/products/${product.slug}`" class="block">
                     <img
                       :src="
@@ -384,38 +346,38 @@
                     />
                   </NuxtLink>
 
-                  <!-- Sale Badge -->
-                  <div
-                    v-if="
-                      product.sale_price && product.sale_price < product.price
-                    "
-                    class="absolute top-3 left-3"
-                  >
+                  <!-- Badges + Wishlist (avoid overlap) -->
+                  <div class="absolute top-3 left-3 flex flex-col items-start gap-2">
                     <span
-                      class="inline-block bg-red-600 text-white text-xs font-bold px-2 py-1 rounded"
+                      v-if="product.sale_price && product.sale_price < product.price"
+                      class="inline-flex items-center gap-1 rounded-full bg-red-600 text-white text-[11px] font-bold px-2.5 py-1 shadow"
                     >
+                      <Icon name="ph:tag" class="w-3.5 h-3.5" />
                       SALE
                     </span>
-                  </div>
 
-                  <!-- Stock Badge -->
-                  <div
-                    v-if="getStockQuantity(product) <= 0"
-                    class="absolute top-3 right-3"
-                  >
                     <span
-                      class="inline-block bg-gray-900 text-white text-xs font-bold px-2 py-1 rounded"
+                      v-if="getStockQuantity(product) <= 0"
+                      class="inline-flex items-center gap-1 rounded-full bg-mgray-950 text-white text-[11px] font-bold px-2.5 py-1 shadow"
                     >
                       OUT OF STOCK
                     </span>
                   </div>
+
+                  <button
+                    class="absolute top-3 right-3 w-9 h-9 bg-white/85 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:bg-white transition"
+                    aria-label="Add to wishlist"
+                    @click.prevent
+                  >
+                    <Icon name="ph:heart" class="w-5 h-5 text-mgray-800 hover:text-red-500" />
+                  </button>
 
                   <!-- Quick Actions -->
                   <div
                     class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
                   >
                     <button
-                      class="w-full bg-white hover:bg-gray-900 text-gray-900 hover:text-white font-semibold py-3 rounded-lg transition-colors duration-300 shadow-lg"
+                      class="w-full rounded-2xl bg-white/95 hover:bg-mgray-950 text-mgray-950 hover:text-white font-semibold py-3 transition-colors duration-300 shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                       :disabled="getStockQuantity(product) <= 0"
                       @click.stop="addToCart(product)"
                     >
@@ -431,50 +393,33 @@
                     </button>
                   </div>
 
-                  <!-- Wishlist Button -->
-                  <button
-                    class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-red-50"
-                  >
-                    <Icon
-                      name="ph:heart"
-                      class="w-5 h-5 text-gray-700 hover:text-red-500"
-                    />
-                  </button>
+                  <!-- Wishlist handled above -->
                 </div>
 
                 <!-- Product Info -->
                 <div class="p-4">
                   <div class="mb-2">
-                    <p
-                      class="text-xs text-gray-500 uppercase tracking-wide mb-1"
-                    >
+                    <p class="text-[11px] text-mgray-600 uppercase tracking-wide mb-1">
                       {{ getCategoryName(product.category) }}
                     </p>
-                    <h3
-                      class="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2"
-                    >
+                    <h3 class="font-semibold text-mgray-950 group-hover:text-primary transition-colors line-clamp-2">
                       <NuxtLink :to="`/products/${product.slug}`">
                         {{ getProductName(product) }}
                       </NuxtLink>
                     </h3>
                   </div>
 
-                  <!-- Rating (placeholder) -->
-                  <div class="flex items-center gap-1 mb-2">
+                  <!-- Rating (decorative placeholder) -->
+                  <div class="flex items-center gap-1.5 mb-3">
                     <div class="flex">
-                      <Icon
-                        v-for="i in 5"
-                        :key="i"
-                        name="ph:star-fill"
-                        class="w-3 h-3 text-yellow-400"
-                      />
+                      <Icon v-for="i in 5" :key="i" name="ph:star-fill" class="w-3 h-3 text-yellow-400" />
                     </div>
-                    <span class="text-xs text-gray-500">(24)</span>
+                    <span class="text-[11px] text-mgray-500">(24)</span>
                   </div>
 
                   <!-- Price -->
                   <div class="flex items-baseline gap-2">
-                    <span class="text-lg font-bold text-gray-900">
+                    <span class="text-lg font-bold text-mgray-950">
                       {{ formatPrice(product.sale_price || product.price) }}
                     </span>
                     <span
@@ -488,22 +433,19 @@
                   </div>
 
                   <!-- Stock Indicator -->
-                  <div class="mt-3 flex items-center gap-1.5">
-                    <div
-                      class="w-2 h-2 rounded-full"
-                      :class="
+                  <div class="mt-4 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-1.5">
+                      <div
+                       class="w-2 h-2 rounded-full"
+                       :class="
                         getStockQuantity(product) > 0
                           ? 'bg-green-500'
                           : 'bg-red-500'
                       "
                     ></div>
                     <span
-                      class="text-xs font-medium"
-                      :class="
-                        getStockQuantity(product) > 0
-                          ? 'text-green-700'
-                          : 'text-red-700'
-                      "
+                      class="text-xs font-semibold"
+                      :class="getStockQuantity(product) > 0 ? 'text-green-700' : 'text-red-700'"
                     >
                       {{
                         getStockQuantity(product) > 0
@@ -511,6 +453,14 @@
                           : "Out of Stock"
                       }}
                     </span>
+                    </div>
+
+                    <NuxtLink
+                      :to="`/products/${product.slug}`"
+                      class="text-xs font-semibold text-primary hover:opacity-80"
+                    >
+                      View
+                    </NuxtLink>
                   </div>
                 </div>
               </div>
@@ -567,9 +517,8 @@
                         </div>
 
                         <!-- Description (truncated) -->
-                        <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-                          High-quality product with premium features and
-                          excellent performance.
+                        <p class="text-sm text-mgray-700 mb-4 line-clamp-2">
+                          {{ getProductDescription(product) || 'High-quality product with premium features and excellent performance.' }}
                         </p>
 
                         <!-- Stock & Price -->
@@ -621,7 +570,7 @@
                       <!-- Actions -->
                       <div class="flex flex-col gap-2 ml-4">
                         <button
-                          class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-lg hover:border-red-500 hover:bg-red-50 transition-colors"
+                          class="w-10 h-10 flex items-center justify-center border border-mgray-300 rounded-xl hover:border-red-500 hover:bg-red-50 transition-colors"
                         >
                           <Icon
                             name="ph:heart"
@@ -629,8 +578,9 @@
                           />
                         </button>
                         <button
-                          class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors"
+                          class="px-6 py-3 bg-mgray-950 hover:brightness-95 text-white font-semibold rounded-2xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                           :disabled="getStockQuantity(product) <= 0"
+                          @click.stop="addToCart(product)"
                         >
                           <Icon
                             name="ph:shopping-cart-simple"
@@ -647,11 +597,11 @@
 
             <!-- Pagination -->
             <div v-if="totalPages > 1" class="mt-8 flex justify-center">
-              <nav class="flex items-center gap-2">
+              <nav class="inline-flex items-center gap-2 x-surface p-2 rounded-full backdrop-blur">
                 <button
                   @click="currentPage--"
                   :disabled="currentPage === 1"
-                  class="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  class="px-4 py-2 border border-mgray-200 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mgray-100"
                 >
                   <Icon name="ph:caret-left" class="w-4 h-4" />
                 </button>
@@ -662,10 +612,10 @@
                   @click="currentPage = page"
                   :class="
                     currentPage === page
-                      ? 'bg-blue-600 text-white'
-                      : 'border border-gray-300 hover:bg-gray-50'
+                      ? 'bg-primary text-contrast1'
+                      : 'border border-mgray-200 text-mgray-800 hover:bg-mgray-100'
                   "
-                  class="px-4 py-2 rounded-lg font-medium transition-colors"
+                  class="px-4 py-2 rounded-full font-semibold transition-colors"
                 >
                   {{ page }}
                 </button>
@@ -673,7 +623,7 @@
                 <button
                   @click="currentPage++"
                   :disabled="currentPage === totalPages"
-                  class="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  class="px-4 py-2 border border-mgray-200 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mgray-100"
                 >
                   <Icon name="ph:caret-right" class="w-4 h-4" />
                 </button>
@@ -684,7 +634,7 @@
           <!-- Empty State -->
           <div
             v-else
-            class="bg-white rounded-lg border border-gray-200 p-12 text-center"
+            class="x-surface-strong p-12 text-center"
           >
             <div class="max-w-md mx-auto">
               <div
@@ -704,7 +654,7 @@
               </p>
               <button
                 @click="clearAllFilters"
-                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+                class="x-btn-primary"
               >
                 Clear All Filters
               </button>
@@ -712,7 +662,8 @@
           </div>
         </main>
       </div>
-    </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -735,7 +686,12 @@ const getStockQuantity = (product) => {
 };
 
 const formatPrice = (price) => {
-  return `${price?.toLocaleString()} DZD`;
+  const value = Number(price || 0);
+  return new Intl.NumberFormat('fr-DZ', {
+    style: 'currency',
+    currency: 'DZD',
+    maximumFractionDigits: 0,
+  }).format(value);
 };
 
 const { fetchSection } = useContentSections();
@@ -815,9 +771,24 @@ const getProductName = (product) => {
     product.name_translations[currentLocale.value] ||
     product.name_translations.fr ||
     product.name_translations.en ||
+    product.name_translations.ar ||
     product.name ||
     ""
   );
+};
+
+const getProductDescription = (product) => {
+  const t = product?.description_translations;
+  if (t && typeof t === 'object') {
+    return (
+      t[currentLocale.value] ||
+      t.en ||
+      t.fr ||
+      t.ar ||
+      ""
+    );
+  }
+  return product?.description || "";
 };
 
 // Filtered products
@@ -1126,27 +1097,33 @@ const addToCart = (product) => {
 </script>
 
 <style scoped>
-/* Custom scrollbar for filters */
-aside::-webkit-scrollbar {
-  width: 6px;
+/* Custom scrollbar for the filters scroll container */
+.filters-scroll::-webkit-scrollbar {
+  width: 8px;
 }
 
-aside::-webkit-scrollbar-track {
-  background: #f1f5f9;
+.filters-scroll::-webkit-scrollbar-track {
+  background: rgba(var(--body-bg), 1);
+  border-radius: 999px;
 }
 
-aside::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+.filters-scroll::-webkit-scrollbar-thumb {
+  background: rgba(var(--text-color), 0.22);
+  border-radius: 999px;
 }
 
-aside::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+.filters-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--text-color), 0.32);
 }
 
-/* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, transform, opacity;
+/* Smooth transitions (scoped to avoid affecting every nested element) */
+.x-surface,
+.x-surface-strong,
+button,
+a,
+input,
+select {
+  transition-property: color, background-color, border-color, transform, opacity, box-shadow, filter;
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

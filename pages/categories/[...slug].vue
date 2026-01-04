@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white min-h-screen">
+  <div class="min-h-screen bg-background">
     <Head>
       <Title>{{ getCategoryName() || 'Catégorie' }}</Title>
       <Meta
@@ -26,7 +26,8 @@
 
     <div v-if="!loading && !error">
       <!-- Hero Section Redesigned -->
-      <section class="relative bg-gray-900 overflow-hidden">
+      <section class="relative bg-gray-950 overflow-hidden">
+        <div class="absolute inset-0 x-grid-bg opacity-[0.18]"></div>
         <!-- Background Media -->
         <div class="absolute inset-0 parallax-bg" ref="parallaxElement">
           <video
@@ -46,13 +47,13 @@
             class="w-full h-full object-cover transform transition-transform duration-100 ease-out"
             ref="imageElement"
           />
-          <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70"></div>
+          <div class="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/75"></div>
         </div>
 
         <!-- Content -->
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20" ref="contentElement">
+        <div class="relative x-container py-16 sm:py-20" ref="contentElement">
           <!-- Breadcrumb -->
-          <nav class="flex items-center gap-2 text-sm mb-4 text-white/80 overflow-x-auto pb-2">
+          <nav class="flex items-center gap-2 text-sm mb-6 text-white/80 overflow-x-auto pb-2">
             <NuxtLink to="/" class="hover:text-white whitespace-nowrap">Accueil</NuxtLink>
             <span>/</span>
             <NuxtLink to="/products" class="hover:text-white whitespace-nowrap">Produits</NuxtLink>
@@ -61,20 +62,20 @@
           </nav>
 
           <!-- Title + Description in Glass Card -->
-          <div class="backdrop-blur-md bg-white/10 border border-white/10 rounded-2xl p-6 sm:p-8 shadow-xl">
+          <div class="x-surface-strong backdrop-blur-md bg-white/10 border border-white/15 p-6 sm:p-8 shadow-2xl shadow-black/30">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div class="flex-1">
-                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight" style="text-shadow: 0 12px 40px rgba(0,0,0,.35);">
                   {{ getCategoryName() }}
                 </h1>
                 <p
                   v-if="getCategoryDescription()"
                   v-html="getCategoryDescription()"
-                  class="mt-3 max-w-2xl text-base sm:text-lg text-white/90"
+                  class="mt-4 max-w-2xl text-base sm:text-lg text-white/85 leading-relaxed"
                 ></p>
               </div>
               <div class="shrink-0">
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-white border border-white/20">
+                <div class="x-eyebrow bg-white/10 border-white/20 text-white">
                   <span class="w-2 h-2 rounded-full bg-primary"></span>
                   <span class="font-semibold">{{ products.length }} produit{{ products.length > 1 ? 's' : '' }}</span>
                 </div>
@@ -85,19 +86,20 @@
       </section>
 
       <!-- Content -->
-      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <section class="x-section">
+        <div class="x-container">
         <!-- Controls Bar -->
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-          <div class="flex items-center gap-2 text-sm text-gray-600">
+        <div class="x-surface p-4 sm:p-5 mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center gap-2 text-sm text-mgray-700">
             <span class="hidden sm:inline">Tous les produits</span>
             <span class="sm:hidden font-semibold">{{ products.length }} résultat{{ products.length > 1 ? 's' : '' }}</span>
           </div>
           <div class="flex items-center gap-3">
-            <label for="sort" class="text-sm text-gray-600">Trier</label>
+            <label for="sort" class="text-sm text-mgray-700 font-semibold">Trier</label>
             <select
               id="sort"
               v-model="sortBy"
-              class="px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+              class="px-3 py-2 border border-mgray-200 rounded-xl text-sm bg-white/80 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
             >
               <option value="created_at:desc">Nouveautés</option>
               <option value="price:asc">Prix: bas à haut</option>
@@ -117,7 +119,7 @@
                 v-for="product in paginatedProducts"
                 :key="product.id"
                 :to="`/products/${product.slug}`"
-                class="product-card group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-gray-300 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+                class="product-card group x-surface-strong overflow-hidden hover:border-mgray-300 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
               >
                 <!-- Product Image -->
                 <div class="relative aspect-square overflow-hidden bg-gray-100">
@@ -160,21 +162,21 @@
 
                 <!-- Product Info -->
                 <div class="p-4 relative">
-                  <h4 class="font-semibold text-gray-900 text-sm mb-2.5 line-clamp-2 min-h-[2.5rem] group-hover:text-primary transition-colors duration-300">
+                  <h4 class="font-semibold text-mgray-950 text-sm mb-2.5 line-clamp-2 min-h-[2.5rem] group-hover:text-primary transition-colors duration-300">
                     {{ getProductName(product.name_translations) }}
                   </h4>
                   <div class="flex items-baseline gap-2 mb-1">
-                    <p class="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors duration-300">
+                    <p class="text-lg font-bold text-mgray-950 group-hover:text-primary transition-colors duration-300">
                       {{ product.price.toFixed(2) }} DZD
                     </p>
                     <p
                       v-if="product.compare_at_price && product.compare_at_price > product.price"
-                      class="text-sm text-gray-500 line-through"
+                      class="text-sm text-mgray-500 line-through"
                     >
                       {{ product.compare_at_price.toFixed(2) }} DZD
                     </p>
                   </div>
-                  <p v-if="product.compare_at_price && product.compare_at_price > product.price" class="text-xs text-green-600 font-medium">
+                  <p v-if="product.compare_at_price && product.compare_at_price > product.price" class="text-xs text-green-700 font-semibold">
                     Économisez {{ (product.compare_at_price - product.price).toFixed(2) }} DZD
                   </p>
                   <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/0 via-primary to-primary/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
@@ -193,11 +195,11 @@
 
             <!-- Pagination -->
             <div v-if="totalPages > 1" class="mt-10 flex justify-center">
-              <nav class="inline-flex items-center gap-2 bg-white rounded-2xl shadow-lg p-2 border border-gray-200">
+              <nav class="inline-flex items-center gap-2 x-surface p-2 rounded-full">
                 <button
                   :disabled="currentPage === 1"
                   @click="currentPage--"
-                  class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                  class="px-3 py-2 rounded-full text-sm font-semibold text-mgray-800 hover:bg-mgray-100 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   ←
                 </button>
@@ -207,7 +209,7 @@
                   @click="currentPage = page"
                   :class="[
                     'px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300',
-                    currentPage === page ? 'bg-primary text-white shadow-lg scale-110' : 'text-gray-700 hover:bg-gray-100',
+                    currentPage === page ? 'bg-primary text-contrast1 shadow-lg scale-110' : 'text-mgray-800 hover:bg-mgray-100',
                   ]"
                 >
                   {{ page }}
@@ -215,13 +217,14 @@
                 <button
                   :disabled="currentPage === totalPages"
                   @click="currentPage++"
-                  class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                  class="px-3 py-2 rounded-full text-sm font-semibold text-mgray-800 hover:bg-mgray-100 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   →
                 </button>
               </nav>
             </div>
           </main>
+        </div>
         </div>
       </section>
     </div>
@@ -397,9 +400,9 @@ definePageMeta({
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 0.75rem;
+  border-radius: 1.5rem;
   padding: 2px;
-  background: linear-gradient(135deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  background: linear-gradient(135deg, transparent, rgba(var(--primary-color), 0.18), transparent);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -427,25 +430,6 @@ definePageMeta({
 /* Smooth transitions for parallax */
 .transform {
   transition: transform 0.1s ease-out;
-}
-
-/* Enhanced gradients */
-.bg-gradient-to-br {
-  background: linear-gradient(
-    to bottom right,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.3) 50%,
-    rgba(0, 0, 0, 0.6) 100%
-  );
-}
-
-.bg-gradient-to-t {
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.6) 0%,
-    transparent 50%,
-    rgba(0, 0, 0, 0.2) 100%
-  );
 }
 
 /* Mobile optimizations - disable parallax on mobile */

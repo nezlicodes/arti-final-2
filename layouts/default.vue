@@ -18,7 +18,7 @@
       :class="[
         user && route.path.includes('admin')
           ? ['pt-6 sm:pt-0 sm:pl-16', sidebarExpanded ? 'sm:pl-64' : 'sm:pl-16']
-          : 'pt-8',
+          : '',
       ]"
     >
       <div>
