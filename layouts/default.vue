@@ -10,6 +10,7 @@
       v-if="user && route.path.includes('admin')"
       @sidebar-state="updateSidebarState"
     ></Sidebar>
+    <PreviewTopBanner v-if="!route.path.includes('admin')" />
     <Appbar v-if="!route.path.includes('admin')"></Appbar>
 
     <div

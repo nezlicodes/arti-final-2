@@ -1,4 +1,8 @@
 {
+  "previewBanner": {
+    "lead": "Try the preview",
+    "text": "See what your store could look like in seconds"
+  },
   "nav": {
     "home": "Home",
     "categories": "Categories",

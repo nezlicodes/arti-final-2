@@ -1,4 +1,8 @@
 {
+  "previewBanner": {
+    "lead": "Testez l’aperçu",
+    "text": "Découvrez à quoi votre boutique pourrait ressembler en quelques secondes"
+  },
   "nav": {
     "home": "Accueil",
     "categories": "Catégories",

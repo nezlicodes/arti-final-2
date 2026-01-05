@@ -45,12 +45,13 @@ export const BUSINESS_PRESETS: Record<BusinessId, BusinessPreset> = {
       }
     },
     colors: {
-      primaryColor: '59, 130, 246',
+      // modern storefront: blue + slate
+      primaryColor: '37, 99, 235', // blue-600
       primaryContrastColor: '255, 255, 255',
-      secondaryColor: '236, 72, 153',
+      secondaryColor: '15, 23, 42', // slate-900
       secondaryContrastColor: '255, 255, 255',
       bodyBg: '255, 255, 255',
-      textColor: '17, 24, 39'
+      textColor: '15, 23, 42'
     }
   },
   restaurant: {
@@ -66,11 +67,12 @@ export const BUSINESS_PRESETS: Record<BusinessId, BusinessPreset> = {
       }
     },
     colors: {
-      primaryColor: '185, 28, 28', // red-700
+      // deep red + warm gold
+      primaryColor: '153, 27, 27', // red-800
       primaryContrastColor: '255, 255, 255',
-      secondaryColor: '245, 158, 11', // amber-500
-      secondaryContrastColor: '17, 24, 39',
-      bodyBg: '255, 251, 235', // amber-50
+      secondaryColor: '202, 138, 4', // amber-600
+      secondaryContrastColor: '255, 255, 255',
+      bodyBg: '255, 253, 247',
       textColor: '17, 24, 39'
     }
   },
@@ -87,11 +89,12 @@ export const BUSINESS_PRESETS: Record<BusinessId, BusinessPreset> = {
       }
     },
     colors: {
-      primaryColor: '13, 148, 136', // teal-600
+      // forest green + clay
+      primaryColor: '21, 128, 61', // green-700
       primaryContrastColor: '255, 255, 255',
-      secondaryColor: '124, 58, 237', // violet-600
+      secondaryColor: '180, 83, 9', // amber-700
       secondaryContrastColor: '255, 255, 255',
-      bodyBg: '250, 250, 249',
+      bodyBg: '253, 252, 250',
       textColor: '28, 25, 23'
     }
   },
@@ -109,11 +112,12 @@ export const BUSINESS_PRESETS: Record<BusinessId, BusinessPreset> = {
       }
     },
     colors: {
-      primaryColor: '217, 70, 239',
+      // soft rose + cocoa
+      primaryColor: '236, 72, 153', // pink-500
       primaryContrastColor: '255, 255, 255',
-      secondaryColor: '251, 146, 60',
-      secondaryContrastColor: '17, 24, 39',
-      bodyBg: '255, 255, 255',
+      secondaryColor: '120, 53, 15', // amber-900-ish
+      secondaryContrastColor: '255, 255, 255',
+      bodyBg: '255, 251, 253',
       textColor: '17, 24, 39'
     }
   },
@@ -131,11 +135,12 @@ export const BUSINESS_PRESETS: Record<BusinessId, BusinessPreset> = {
       }
     },
     colors: {
-      primaryColor: '120, 53, 15',
+      // espresso + sand
+      primaryColor: '69, 26, 3', // amber-950
       primaryContrastColor: '255, 255, 255',
-      secondaryColor: '234, 179, 8',
-      secondaryContrastColor: '17, 24, 39',
-      bodyBg: '255, 251, 235',
+      secondaryColor: '161, 98, 7', // amber-700
+      secondaryContrastColor: '255, 255, 255',
+      bodyBg: '255, 252, 248',
       textColor: '17, 24, 39'
     }
   },
@@ -153,11 +158,12 @@ export const BUSINESS_PRESETS: Record<BusinessId, BusinessPreset> = {
       }
     },
     colors: {
-      primaryColor: '99, 102, 241',
+      // royal indigo + champagne
+      primaryColor: '79, 70, 229', // indigo-600
       primaryContrastColor: '255, 255, 255',
-      secondaryColor: '244, 114, 182',
-      secondaryContrastColor: '17, 24, 39',
-      bodyBg: '250, 250, 249',
+      secondaryColor: '180, 83, 9', // amber-700
+      secondaryContrastColor: '255, 255, 255',
+      bodyBg: '252, 252, 251',
       textColor: '17, 24, 39'
     }
   },
@@ -175,12 +181,13 @@ export const BUSINESS_PRESETS: Record<BusinessId, BusinessPreset> = {
       }
     },
     colors: {
-      primaryColor: '15, 118, 110',
+      // sage + charcoal
+      primaryColor: '5, 150, 105', // emerald-600
       primaryContrastColor: '255, 255, 255',
-      secondaryColor: '37, 99, 235',
+      secondaryColor: '31, 41, 55', // gray-800
       secondaryContrastColor: '255, 255, 255',
-      bodyBg: '250, 250, 249',
-      textColor: '28, 25, 23'
+      bodyBg: '252, 252, 249',
+      textColor: '31, 41, 55'
     }
   },
 
@@ -197,9 +204,10 @@ export const BUSINESS_PRESETS: Record<BusinessId, BusinessPreset> = {
       }
     },
     colors: {
-      primaryColor: '59, 130, 246',
+      // monochrome with bold accent
+      primaryColor: '17, 24, 39', // gray-900
       primaryContrastColor: '255, 255, 255',
-      secondaryColor: '236, 72, 153',
+      secondaryColor: '236, 72, 153', // pink-500
       secondaryContrastColor: '255, 255, 255',
       bodyBg: '255, 255, 255',
       textColor: '17, 24, 39'

@@ -67,7 +67,6 @@
 
         <!-- Right section -->
         <div class="flex items-center gap-2">
-          <BusinessPreviewSwitcher class="block" />
           <!-- Language Switcher -->
           <LangSwitcher />
           
