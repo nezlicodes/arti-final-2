@@ -1,9 +1,13 @@
 <template>
-  <section v-if="section.is_active" id="about" class="x-section relative overflow-hidden" :dir="isRtl ? 'rtl' : 'ltr'">
-    <div class="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent"></div>
-    <div class="x-container relative">
-      <!-- Title - Debut Style -->
-      <div class="text-center mb-12">
+  <section
+    v-if="section.is_active"
+    id="about"
+    class="x-section"
+    :dir="isRtl ? 'rtl' : 'ltr'"
+  >
+    <div class="x-container">
+      <!-- Title (same as original intent; no extra copy) -->
+      <div class="text-center mb-10">
         <div class="flex justify-center mb-4">
           <span class="x-eyebrow">
             <Icon name="ph:book-open-text-fill" class="w-3.5 h-3.5 text-primary" />
@@ -16,11 +20,14 @@
         <div class="x-divider mx-auto"></div>
       </div>
 
-      <!-- Content Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 lg:gap-14" :class="isRtl ? 'lg:[direction:rtl]' : ''">
+      <!-- Simple elegant layout: image + content; no extra elements -->
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 items-start gap-10 lg:gap-14"
+        :class="isRtl ? 'lg:[direction:rtl]' : ''"
+      >
         <!-- Image -->
         <div v-if="section.image_url" class="w-full">
-          <div class="relative overflow-hidden rounded-3xl border border-mgray-200 shadow-xl">
+          <div class="about-media">
             <NuxtImg
               :src="section.image_url"
               :alt="section.content_translations?.[currentLocale]?.title"
@@ -34,12 +41,14 @@
         <div class="w-full">
           <div
             v-if="section.content_translations?.[currentLocale]?.content"
-            class="prose prose-gray max-w-none text-mgray-800 leading-relaxed"
+            class="about-prose prose prose-gray max-w-none text-mgray-800"
             v-html="section.content_translations?.[currentLocale]?.content"
           ></div>
           <div v-else class="text-center py-8">
-            <Icon name="ph:info-circle" class="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p class="text-gray-500">{{ $t('about.noContent') || 'Aucun contenu disponible' }}</p>
+            <Icon name="ph:info-circle" class="w-12 h-12 mx-auto mb-4 text-mgray-300" />
+            <p class="text-mgray-600">
+              {{ $t('about.noContent') || 'Aucun contenu disponible' }}
+            </p>
           </div>
         </div>
       </div>
@@ -101,38 +110,37 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* Elegant, minimal styling (no heavy rounded borders) */
 
-
-.prose p {
-  @apply mb-4;
+.about-media {
+  @apply overflow-hidden;
+  border-radius: 0.5rem; /* subtle, not pill/large */
 }
 
-.prose h3 {
-  @apply text-xl font-semibold mb-3 ;
+.about-prose :deep(p) {
+  @apply mb-4 leading-relaxed;
 }
 
-.prose ul,
-.prose ol {
-  @apply ml-6 mb-4;
+.about-prose :deep(h2),
+.about-prose :deep(h3) {
+  @apply mt-7 mb-3 font-semibold text-mgray-950;
 }
 
-.prose ul {
-  @apply list-disc;
+.about-prose :deep(ul),
+.about-prose :deep(ol) {
+  @apply my-4 pl-6;
 }
 
-.prose ol {
-  @apply list-decimal;
+.about-prose :deep(li) {
+  @apply mb-2 text-mgray-800;
 }
 
-.prose li {
-  @apply mb-2;
+.about-prose :deep(strong) {
+  @apply font-semibold text-mgray-950;
 }
 
-.prose strong {
-  @apply font-semibold;
-}
-
-.prose a {
-  @apply text-primary hover:underline;
+.about-prose :deep(a) {
+  @apply underline;
+  color: rgba(var(--primary-color), 1);
 }
 </style>
