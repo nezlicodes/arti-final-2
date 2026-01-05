@@ -4,10 +4,7 @@
       
       <!-- Section Header -->
       <div class="text-center mb-16 lg:mb-20">
-        <div class="inline-flex items-center px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-600 mb-6 shadow-sm">
-          <Icon name="ph:star-fill" class="w-4 h-4 text-yellow-500 mr-2" />
-          Featured Product
-        </div>
+       
         <h2 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
           {{ section.content_translations?.[currentLocale]?.title || fallbackTitle }}
         </h2>
@@ -91,16 +88,12 @@
               <NuxtLink
                 v-if="product.slug"
                 :to="`/products/${product.slug}`"
-                class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-black text-white text-lg font-semibold rounded-2xl hover:bg-gray-800 transition-all duration-200 group"
+                class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-primary text-contrast1 text-lg font-semibold rounded-2xl hover:bg-gray-800 transition-all duration-200 group"
               >
                 {{ $t("common.viewProduct") || "View Product" }}
                 <Icon name="ph:arrow-right-bold" class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
               </NuxtLink>
               
-              <button class="inline-flex items-center justify-center px-6 py-4 border-2 border-gray-200 text-gray-700 text-lg font-semibold rounded-2xl hover:border-gray-300 hover:bg-gray-50 transition-colors duration-200">
-                <Icon name="ph:heart" class="w-5 h-5 mr-2" />
-                Save
-              </button>
             </div>
 
            <Features/>
