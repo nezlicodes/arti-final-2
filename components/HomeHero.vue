@@ -1,7 +1,7 @@
 <template>
   <div v-if="heroData.is_active" class="relative  w-full overflow-hidden">
     <!-- Hero Section -->
-    <section class="relative min-h-[60vh] sm:min-h-[70vh]  flex items-center">
+    <section class="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[75vh]  flex items-center">
       <!-- Subtle grid + vignette -->
       <div class="absolute inset-0 x-grid-bg opacity-[0.25]"></div>
       <!-- Background Media Container -->
@@ -39,8 +39,8 @@
       </div>
 
       <!-- Content Container -->
-      <div class="relative w-full">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <div class="relative w-full" data-aos="fade-up">
+        <div class="x-container py-12 sm:py-16 lg:py-20">
           <!-- Loading state -->
           <div v-if="loading" class="max-w-3xl mx-auto text-center space-y-4">
             <div class="h-12 sm:h-14 bg-white/20 rounded-lg w-3/4 mx-auto animate-pulse"></div>

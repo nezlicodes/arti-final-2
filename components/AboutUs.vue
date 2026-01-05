@@ -7,7 +7,7 @@
   >
     <div class="x-container">
       <!-- Title (same as original intent; no extra copy) -->
-      <div class="text-center mb-10">
+      <div class="text-center mb-14" data-aos="fade-up">
         <h2 class="x-title">
           {{ section.content_translations?.[currentLocale]?.title || 'Notre Histoire' }}
         </h2>
@@ -18,6 +18,8 @@
       <div
         class="grid grid-cols-1 lg:grid-cols-2 items-start gap-10 lg:gap-14"
         :class="isRtl ? 'lg:[direction:rtl]' : ''"
+        data-aos="fade-up"
+        data-aos-delay="100"
       >
         <!-- Image -->
         <div v-if="section.image_url" class="w-full">

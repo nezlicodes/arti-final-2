@@ -3,7 +3,7 @@
     <div class="absolute inset-0 bg-gradient-to-b from-secondary/5 via-transparent to-transparent"></div>
     <div class="x-container relative">
       <!-- Section Header -->
-      <div class="text-center mb-14">
+      <div class="text-center mb-14" data-aos="fade-up">
         <h2 class="x-title">
           {{ sectionTitle }}
         </h2>
@@ -29,6 +29,8 @@
       <div
         v-else-if="featuredCategories.length > 0"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+        data-aos="fade-up"
+        data-aos-delay="100"
       >
         <NuxtLink
           v-for="(category, index) in featuredCategories"
@@ -143,7 +145,7 @@
       </div>
 
       <!-- Show All Categories Button -->
-      <div v-if="featuredCategories.length > 0" class="text-center mt-14">
+      <div v-if="featuredCategories.length > 0" class="text-center mt-14" data-aos="fade-up" data-aos-delay="150">
         <NuxtLink
           to="/categories"
           class="x-btn-primary"

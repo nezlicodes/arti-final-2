@@ -21,7 +21,7 @@
       <!-- Content -->
       <div v-else>
         <!-- Header -->
-        <div class="text-center mb-12">
+        <div class="text-center mb-14" data-aos="fade-up">
           <h2 class="x-title">
             {{ currentContent.title || defaultContent.title }}
           </h2>
@@ -39,7 +39,7 @@
         </div>
 
         <!-- Testimonials Carousel -->
-        <div v-else>
+        <div v-else data-aos="fade-up" data-aos-delay="100">
           <!-- Mobile Carousel -->
           <div class="md:hidden overflow-hidden">
             <div 

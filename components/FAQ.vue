@@ -12,7 +12,7 @@
         <div class="x-divider mx-auto"></div>
       </header>
 
-      <div class="mx-auto mt-10 max-w-3xl" data-aos="fade-up" data-aos-delay="100">
+      <div class="mx-auto mt-10 max-w-3xl" data-aos="fade-up" data-aos-delay="150">
         <!-- Loading State -->
         <div v-if="loading" class="space-y-3">
           <div v-for="i in 6" :key="i" class="animate-pulse">

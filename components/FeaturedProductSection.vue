@@ -3,7 +3,7 @@
     <div class="x-container relative">
       
       <!-- Section Header -->
-      <div class="text-center mb-14">
+      <div class="text-center mb-14" data-aos="fade-up">
         <h2 class="x-title">
           {{ section.content_translations?.[currentLocale]?.title || fallbackTitle }}
         </h2>
@@ -14,7 +14,7 @@
       </div>
 
       <!-- Featured Product Card -->
-      <div v-if="product" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+      <div v-if="product" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100" data-aos="fade-up" data-aos-delay="100">
         <div class="grid lg:grid-cols-2 gap-0">
           
           <!-- Product Image -->
