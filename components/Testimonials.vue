@@ -22,12 +22,6 @@
       <div v-else>
         <!-- Header -->
         <div class="text-center mb-12">
-          <div class="flex justify-center mb-4">
-            <span class="x-eyebrow">
-              <Icon name="ph:chat-circle-text-fill" class="w-3.5 h-3.5 text-primary" />
-              {{ $t('testimonials.title') || 'Testimonials' }}
-            </span>
-          </div>
           <h2 class="x-title">
             {{ currentContent.title || defaultContent.title }}
           </h2>

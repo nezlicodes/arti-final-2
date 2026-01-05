@@ -4,12 +4,6 @@
     <div class="x-container relative">
       <!-- Section Header -->
       <div class="text-center mb-14">
-        <div class="flex justify-center mb-4">
-          <span class="x-eyebrow">
-            <Icon name="ph:grid-four-fill" class="w-3.5 h-3.5 text-primary" />
-            {{ $t('categories.title') || 'Categories' }}
-          </span>
-        </div>
         <h2 class="x-title">
           {{ sectionTitle }}
         </h2>

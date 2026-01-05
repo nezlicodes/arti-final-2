@@ -2,16 +2,14 @@
   <section v-if="isLoaded && isEnabled" class="x-section">
     <div class="x-container">
       <!-- Shopify-like section header (centered, simple) -->
-      <header class="mx-auto max-w-2xl text-center" data-aos="fade-up">
-        <p class="text-xs font-semibold tracking-widest text-mgray-600 uppercase">
-          {{ headerContent.badge_text }}
-        </p>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-mgray-950">
+      <header class="text-center mb-14" data-aos="fade-up">
+        <h2 class="x-title">
           {{ headerContent.title }}
         </h2>
-        <p class="mt-4 text-base sm:text-lg text-mgray-700 leading-relaxed">
+        <p class="x-subtitle">
           {{ headerContent.subtitle }}
         </p>
+        <div class="x-divider mx-auto"></div>
       </header>
 
       <div class="mx-auto mt-10 max-w-3xl" data-aos="fade-up" data-aos-delay="100">

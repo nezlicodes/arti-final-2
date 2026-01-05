@@ -1,16 +1,16 @@
 <template>
-  <section v-if="section.is_active" class="py-20 lg:py-28 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section v-if="section.is_active" class="x-section relative overflow-hidden">
+    <div class="x-container relative">
       
       <!-- Section Header -->
-      <div class="text-center mb-16 lg:mb-20">
-       
-        <h2 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+      <div class="text-center mb-14">
+        <h2 class="x-title">
           {{ section.content_translations?.[currentLocale]?.title || fallbackTitle }}
         </h2>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        <p class="x-subtitle max-w-2xl mx-auto">
           {{ section.content_translations?.[currentLocale]?.subtitle || fallbackSubtitle }}
         </p>
+        <div class="x-divider mx-auto"></div>
       </div>
 
       <!-- Featured Product Card -->
@@ -32,13 +32,6 @@
               </div>
             </div>
             
-            <!-- Product Badge -->
-            <div class="absolute top-6 left-6">
-              <span class="inline-flex items-center px-3 py-1.5 bg-black/90 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
-                <Icon name="ph:lightning-fill" class="w-3 h-3 mr-1" />
-                Featured
-              </span>
-            </div>
           </div>
 
           <!-- Product Details -->

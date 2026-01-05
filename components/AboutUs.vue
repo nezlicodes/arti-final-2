@@ -8,12 +8,6 @@
     <div class="x-container">
       <!-- Title (same as original intent; no extra copy) -->
       <div class="text-center mb-10">
-        <div class="flex justify-center mb-4">
-          <span class="x-eyebrow">
-            <Icon name="ph:book-open-text-fill" class="w-3.5 h-3.5 text-primary" />
-            {{ $t('about.title') || 'About' }}
-          </span>
-        </div>
         <h2 class="x-title">
           {{ section.content_translations?.[currentLocale]?.title || 'Notre Histoire' }}
         </h2>
