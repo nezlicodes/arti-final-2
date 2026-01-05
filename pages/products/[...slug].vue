@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-background pt-24">
+  <div class="min-h-screen bg-background pt-4">
     <Head>
       <Title>{{ getMetaTitle() }}</Title>
       <Meta name="description" :content="getMetaDescription()" />
@@ -11,7 +11,7 @@
     </div>
 
     <!-- Product Content -->
-    <div v-else-if="product" class="x-container py-6 sm:py-10">
+    <div v-else-if="product" class="x-container py-6">
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-xs sm:text-sm mb-6 overflow-x-auto pb-2" aria-label="Breadcrumb">
         <NuxtLink to="/" class="text-mgray-600 hover:text-primary whitespace-nowrap">Accueil</NuxtLink>

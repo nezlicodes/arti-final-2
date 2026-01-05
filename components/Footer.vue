@@ -344,7 +344,7 @@
         </div>
 
         <p class="text-center">
-          Propulsé par <a href="https://cinqcinq.dev">CinqCinq.dev</a>
+          Propulsé par <a href="https://livraison-disponible.com">Livraison Disponible</a>
         </p>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="x-container pt-32 sm:pt-36 pb-16">
+    <div class="x-container pt-8 pb-16">
       <!-- Header -->
       <div class="mb-10">
         <div class="x-eyebrow">{{ $t("checkout.title") }}</div>

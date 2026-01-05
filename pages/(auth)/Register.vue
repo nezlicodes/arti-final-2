@@ -5,7 +5,7 @@
         Créez votre espace créatif
       </h1>
       <p class="text-mgray-600">
-        Rejoignez CinqCinq et lancez votre boutique en ligne
+        Rejoignez Livraison Disponible et lancez votre boutique en ligne
       </p>
     </div>
 
@@ -209,11 +209,11 @@ const register = async () => {
 };
 
 useHead({
-  title: "Inscription | CinqCinq",
+  title: "Inscription | Livraison Disponible",
   meta: [
     {
       name: "description",
-      content: "Créez votre compte CinqCinq et lancez votre boutique en ligne",
+      content: "Créez votre compte Livraison Disponible et lancez votre boutique en ligne",
     },
   ],
 });

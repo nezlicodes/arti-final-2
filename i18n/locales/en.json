@@ -69,7 +69,18 @@
     "outOfStock": "Out of Stock",
     "description": "Description",
     "specifications": "Specifications",
-    "reviews": "Reviews"
+    "reviews": "Reviews",
+
+    "search": "Search products…",
+    "allCategories": "All categories",
+    "results": "results",
+    "clear": "Clear",
+    "sort": {
+      "featured": "Featured",
+      "priceAsc": "Price: Low to high",
+      "priceDesc": "Price: High to low",
+      "nameAsc": "Name: A–Z"
+    }
   },
   "cart": {
     "title": "Shopping Cart",

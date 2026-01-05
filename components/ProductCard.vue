@@ -61,7 +61,7 @@
       </h3>
 
       <div class="flex items-baseline gap-2">
-        <span class="text-lg sm:text-xl font-bold text-purple-600">{{ formatPrice(product.price) }}</span>
+        <span class="text-lg sm:text-xl font-bold ">{{ formatPrice(product.price) }}</span>
         <span v-if="hasDiscount" class="text-xs text-gray-500 line-through">{{ formatPrice(product.compare_at_price) }}</span>
       </div>
 

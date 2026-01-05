@@ -69,7 +69,18 @@
     "outOfStock": "Rupture de stock",
     "description": "Description",
     "specifications": "Spécifications",
-    "reviews": "Avis"
+    "reviews": "Avis",
+
+    "search": "Rechercher des produits…",
+    "allCategories": "Toutes les catégories",
+    "results": "résultats",
+    "clear": "Effacer",
+    "sort": {
+      "featured": "En vedette",
+      "priceAsc": "Prix : croissant",
+      "priceDesc": "Prix : décroissant",
+      "nameAsc": "Nom : A–Z"
+    }
   },
   "cart": {
     "title": "Panier",

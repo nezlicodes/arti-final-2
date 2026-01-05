@@ -8,7 +8,7 @@
       <div class="flex items-center justify-between">
         <!-- Logo with same styling as sidebar -->
         <NuxtLink to="/admin" class="home flex items-center">
-          <span class="font-medium text-gray-700 text-xl">CinqCinq</span>
+          <span class="font-medium text-gray-700 text-xl">Livraison Disponible</span>
         </NuxtLink>
 
         <!-- Mobile menu button with updated styling -->

@@ -108,7 +108,7 @@
         <p class="text-mgray-600">
           Pas encore de compte?
           <a
-            href="https://cinqcinq.dev/register"
+            href="https://livraison-disponible.com//register"
             class="text-blue-600 hover:underline font-medium"
           >
             Créez votre espace en ligne
@@ -190,11 +190,11 @@ const resendConfirmationEmail = async () => {
 };
 
 useHead({
-  title: "Connexion | CinqCinq",
+  title: "Connexion | Livraison Disponible",
   meta: [
     {
       name: "description",
-      content: "Connectez-vous à votre espace créatif CinqCinq",
+      content: "Connectez-vous à votre espace créatif Livraison Disponible",
     },
   ],
 });

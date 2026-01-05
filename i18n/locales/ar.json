@@ -69,7 +69,18 @@
     "outOfStock": "غير متوفر",
     "description": "الوصف",
     "specifications": "المواصفات",
-    "reviews": "التقييمات"
+    "reviews": "التقييمات",
+
+    "search": "ابحث عن منتجات…",
+    "allCategories": "كل الفئات",
+    "results": "نتائج",
+    "clear": "مسح",
+    "sort": {
+      "featured": "المميز",
+      "priceAsc": "السعر: من الأقل إلى الأعلى",
+      "priceDesc": "السعر: من الأعلى إلى الأقل",
+      "nameAsc": "الاسم: A–Z"
+    }
   },
   "cart": {
     "title": "سلة التسوق",

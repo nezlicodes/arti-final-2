@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="x-container pt-32 sm:pt-36 pb-16">
+    <div class="x-container pt-8 pb-16">
       <div class="mb-8">
         <div class="x-eyebrow">{{ $t('cart.title') }}</div>
         <h1 class="mt-4 x-title">{{ $t('cart.title') }}</h1>

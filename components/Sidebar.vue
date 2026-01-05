@@ -19,7 +19,7 @@
               <span v-else>A</span>
             </div>
             <span v-if="isExpanded" class="ml-3 font-bold text-white text-lg"
-              >CinqCinq</span
+              >Livraison Disponible</span
             >
           </NuxtLink>
 
