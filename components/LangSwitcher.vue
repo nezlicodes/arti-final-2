@@ -57,7 +57,7 @@
     >
       <div
         v-if="isOpen"
-        class="absolute z-50 right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border border-gray-200"
+        class="absolute z-[9999] right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border border-gray-200"
       >
         <button
           v-for="lang in availableLocales"

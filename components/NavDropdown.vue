@@ -29,7 +29,7 @@
     <div
       v-if="isOpen"
       :id="`${id}-menu`"
-      class="absolute left-0 mt-2 w-64 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-[110] origin-top-left"
+      class="absolute left-0 mt-2 w-64 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-[9999] origin-top-left"
       style="animation: dropdownFade 0.2s ease-out"
       role="menu"
     >

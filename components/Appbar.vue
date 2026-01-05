@@ -1,5 +1,5 @@
 <template>
-  <nav class="w-full bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+  <nav class="w-full bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm relative z-[10000]">
     <!-- Top Banner -->
     <TopBanner v-if="!hideBanner" />
 
@@ -38,14 +38,14 @@
           </NuxtLink>
           
           <!-- Categories Dropdown -->
-          <div class="relative group">
+          <div class="relative group z-[10001]">
             <button class="nav-link flex items-center gap-2">
               <span>{{ $t('nav.categories') || 'Catégories' }}</span>
               <Icon name="ph:caret-down-bold" class="w-4 h-4 transition-transform group-hover:rotate-180" />
             </button>
             
             <!-- Minimal Dropdown List -->
-            <div class="absolute top-full left-0 w-64 z-[110] bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 mt-2">
+            <div class="absolute top-full left-0 w-64 z-[10002] bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 mt-2">
               <div class="py-1 max-h-96 overflow-y-auto">
                 <NuxtLink
                   v-for="category in allCategories"

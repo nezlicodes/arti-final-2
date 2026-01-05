@@ -24,7 +24,7 @@
     >
       <div
         v-if="isOpen"
-        class="absolute mt-2 w-48 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+        class="absolute mt-2 w-48 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-[9999]"
         :class="isRtl ? 'left-0' : 'right-0'"
       >
         <div class="py-1" role="menu">

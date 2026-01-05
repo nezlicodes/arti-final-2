@@ -1,44 +1,39 @@
 <template>
-  <section v-if="sectionData.is_active" class="py-8 bg-primary text-contrast1 border-y border-primary/20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section v-if="sectionData.is_active" class="py-16 lg:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      
       <!-- Loading State -->
-      <div v-if="loading" class="grid grid-cols-2 lg:grid-cols-4 gap-8">
-        <div v-for="n in 4" :key="n" class="flex flex-col items-center text-center space-y-3">
-          <div class="w-12 h-12 rounded-full bg-contrast1/10 animate-pulse"></div>
-          <div class="space-y-2 w-full">
-            <div class="h-5 bg-contrast1/10 rounded w-20 mx-auto animate-pulse"></div>
-            <div class="h-4 bg-contrast1/10 rounded w-24 mx-auto animate-pulse"></div>
+      <div v-if="loading" class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16">
+        <div v-for="n in 4" :key="n" class="text-center space-y-3">
+          <div class="w-8 h-8 rounded-lg bg-gray-200 animate-pulse mx-auto"></div>
+          <div class="space-y-2">
+            <div class="h-6 bg-gray-200 rounded w-16 mx-auto animate-pulse"></div>
+            <div class="h-4 bg-gray-200 rounded w-20 mx-auto animate-pulse"></div>
           </div>
         </div>
       </div>
 
       <!-- Features Grid -->
-      <div v-else class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div v-else class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16">
         <div
           v-for="(feature, index) in currentFeatures"
           :key="`feature-${index}`"
-          class="group relative flex flex-col items-center text-center"
+          class="text-center space-y-4"
         >
-          <!-- Divider (except for last item on desktop) -->
-          <div
-            v-if="index < currentFeatures.length - 1"
-            class="hidden lg:block absolute top-1/2 -right-6 -translate-y-1/2 w-px h-12 bg-contrast1/20"
-          ></div>
-
           <!-- Icon -->
-          <div class="mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-secondary/10 text-secondary group-hover:bg-contrast1/20 transition-all duration-300">
+          <div class="flex items-center justify-center w-8 h-8 mx-auto text-gray-700">
             <Icon
               :name="feature.icon"
-              class="w-6 h-6"
+              class="w-8 h-8"
             />
           </div>
 
           <!-- Content -->
-          <div class="space-y-1">
-            <h3 class="text-base sm:text-lg font-bold text-contrast1">
+          <div class="space-y-2">
+            <h3 class="text-lg lg:text-xl font-bold text-gray-900">
               {{ feature.title }}
             </h3>
-            <p class="text-sm text-contrast1/80">
+            <p class="text-sm text-gray-600 font-medium">
               {{ feature.description }}
             </p>
           </div>
