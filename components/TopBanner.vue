@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="section.is_active && section.content_translations[currentLocale]?.text"
+    v-if="section.is_active && section.content_translations?.[currentLocale]?.text"
     class="bg-primary  text-contrast1 text-center py-3 text-sm font-medium relative overflow-hidden group"
   >
     <!-- Animated gradient overlay -->
@@ -10,7 +10,7 @@
     
     <!-- Banner text -->
     <span class="relative z-10">
-      {{ section.content_translations[currentLocale].text }}
+      {{ section.content_translations?.[currentLocale]?.text }}
     </span>
   </div>
 </template>

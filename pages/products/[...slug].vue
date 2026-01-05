@@ -286,7 +286,8 @@
 </template>
 
 <script setup>
-const supabase = useSupabaseClient();
+const { fetchProduct: fetchProductData } = useProducts();
+const supabase = useSupabaseClient(); // kept for variants/videos if needed
 const route = useRoute();
 const { locale } = useI18n();
 
@@ -440,39 +441,28 @@ const currentSku = computed(() => {
   return product.value?.sku || "";
 });
 
-const fetchProduct = async () => {
+const fetchProductDetails = async () => {
+  loading.value = true;
   try {
-    const { data: productResult, error: productError } = await supabase
-      .from("products")
-      .select(`
-        *, 
-        category:categories(name_translations, slug), 
-        images:product_images(url, position, is_primary),
-        videos:product_videos(url, position, duration, mime_type, thumbnail_url)
-      `)
-      .eq("slug", route.params.slug)
-      .eq("is_active", true)
-      .single();
+    const productResult = await fetchProductData(String(route.params.slug));
 
-    if (productError) throw productError;
     if (!productResult) {
-      loading.value = false;
       return;
     }
 
     product.value = productResult;
-    
+
     // Sort images
     const images = productResult.images?.sort((a, b) => {
       if (a.is_primary) return -1;
       if (b.is_primary) return 1;
-      return a.position - b.position;
+      return (a.position || 0) - (b.position || 0);
     }) || [];
-    
+
     // Sort videos by position
-    const videos = productResult.videos?.sort((a, b) => a.position - b.position) || [];
-    
-    // Set main media - prioritize primary image, then first image, then first video
+    const videos = (productResult.videos || [])?.sort?.((a, b) => (a.position || 0) - (b.position || 0)) || [];
+
+    // Set main media
     if (images.length > 0) {
       mainMedia.value = { url: images[0].url, type: 'image' };
       currentMediaType.value = 'image';
@@ -600,7 +590,7 @@ const fetchFeaturesConfig = async () => {
       .from("features_config")
       .select("categories_enabled")
       .single();
-    
+
     if (data) {
       categoriesEnabled.value = data.categories_enabled;
     }
@@ -608,6 +598,22 @@ const fetchFeaturesConfig = async () => {
     console.error("Error fetching features config:", err);
   }
 };
+
+watch(
+  () => route.params.slug,
+  async () => {
+    // reset selection state
+    selectedOptions.value = {}
+    variants.value = []
+    productOptions.value = []
+    await fetchProductDetails()
+  },
+  { immediate: true }
+)
+
+onMounted(() => {
+  fetchFeaturesConfig()
+})
 
 const selectOptionValue = (optionTypeId, optionValueId) => {
   console.log("Selecting option:", optionTypeId, optionValueId);

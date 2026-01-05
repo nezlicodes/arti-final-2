@@ -156,7 +156,7 @@ const headerContent = computed(() => {
   if (!headerData.value?.content_translations) {
     return defaultHeaderContent;
   }
-  return headerData.value.content_translations[currentLocale.value] || defaultHeaderContent;
+  return headerData.value.content_translations?.[currentLocale.value] || defaultHeaderContent;
 });
 
 // Translation helpers for FAQ items

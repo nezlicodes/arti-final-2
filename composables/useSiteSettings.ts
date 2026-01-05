@@ -46,8 +46,11 @@ export const useSiteSettings = () => {
   // Computed settings that react to language changes
   const siteSettings = computed(() => {
     const currentLocale = getCurrentLocale()
-    
-    return {
+
+    // Optional business preview overrides (for public visitors)
+    const { preset, effectiveColors } = useBusinessPreview()
+
+    const base = {
       siteName: rawSiteConfig.value.site_name_translations?.[currentLocale] || rawSiteConfig.value.site_name_translations?.['fr'] || '',
       siteDescription: rawSiteConfig.value.site_description_translations?.[currentLocale] || rawSiteConfig.value.site_description_translations?.['fr'] || '',
       siteLogo: rawSiteConfig.value.site_logo || '',
@@ -64,6 +67,31 @@ export const useSiteSettings = () => {
       socialLinks: rawSiteConfig.value.social_links || {},
       defaultMetaTitle: rawSiteConfig.value.default_meta_title_translations?.[currentLocale] || rawSiteConfig.value.default_meta_title_translations?.['fr'] || '',
       defaultMetaDescription: rawSiteConfig.value.default_meta_description_translations?.[currentLocale] || rawSiteConfig.value.default_meta_description_translations?.['fr'] || ''
+    }
+
+    // If DB is empty (common in demo) OR visitor wants preview, use preset copy/colors.
+    // We treat "empty" as no configured site name.
+    const hasDbBranding = Boolean(base.siteName?.trim())
+
+    const siteName = hasDbBranding
+      ? base.siteName
+      : (preset.value.site.siteNameTranslations?.[currentLocale] || preset.value.site.siteNameTranslations?.fr || base.siteName)
+
+    const siteDescription = hasDbBranding
+      ? base.siteDescription
+      : (preset.value.site.siteDescriptionTranslations?.[currentLocale] || preset.value.site.siteDescriptionTranslations?.fr || base.siteDescription)
+
+    return {
+      ...base,
+      siteName,
+      siteDescription,
+      // For colors we always allow preview overrides to apply (user-facing preview feature)
+      primaryColor: effectiveColors.value.primaryColor || base.primaryColor,
+      primaryContrastColor: effectiveColors.value.primaryContrastColor || base.primaryContrastColor,
+      secondaryColor: effectiveColors.value.secondaryColor || base.secondaryColor,
+      secondaryContrastColor: effectiveColors.value.secondaryContrastColor || base.secondaryContrastColor,
+      bodyBg: effectiveColors.value.bodyBg || base.bodyBg,
+      textColor: effectiveColors.value.textColor || base.textColor
     }
   })
 

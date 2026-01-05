@@ -34,7 +34,9 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
     minify: true,
     prerender: {
-      crawlLinks: true,
+      // Avoid crawler causing build failures when template links to routes
+      // that are not enabled in this project.
+      crawlLinks: false,
       routes: ['/'],
       ignore: ['/admin']
     },

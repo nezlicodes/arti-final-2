@@ -233,10 +233,10 @@
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from "vue";
-import { useSupabaseClient } from "#imports";
 import { useRoute } from "vue-router";
 
-const supabase = useSupabaseClient();
+const { fetchCategory } = useCategories();
+const { fetchProducts } = useProducts();
 const route = useRoute();
 const { locale } = useI18n();
 
@@ -298,14 +298,7 @@ const fetchData = async () => {
   error.value = null;
 
   try {
-    const { data: categoryData, error: categoryError } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("slug", slugParam.value)
-      .eq("is_active", true)
-      .single();
-
-    if (categoryError) throw categoryError;
+    const categoryData = await fetchCategory(String(slugParam.value), false);
     if (!categoryData) {
       error.value = "Catégorie introuvable";
       return;
@@ -313,24 +306,30 @@ const fetchData = async () => {
 
     category.value = categoryData;
 
+    // Sorting is handled client-side for preview data.
+    const data = await fetchProducts({ categoryId: categoryData.id, active: true });
+
+    // Client-side sort
     const [field, direction] = sortBy.value.split(":");
-    let orderField = field;
-    if (field === 'name') {
-      orderField = `name_translations->>fr`;
-    }
+    const dir = direction === 'asc' ? 1 : -1;
+    const sorted = [...(data || [])].sort((a, b) => {
+      if (field === 'name') {
+        const an = (a?.name || '').toString().toLowerCase();
+        const bn = (b?.name || '').toString().toLowerCase();
+        return an.localeCompare(bn) * dir;
+      }
+      if (field === 'price') {
+        return ((Number(a?.price) || 0) - (Number(b?.price) || 0)) * dir;
+      }
+      // default created_at
+      const ad = new Date(a?.created_at || 0).getTime();
+      const bd = new Date(b?.created_at || 0).getTime();
+      return (ad - bd) * dir;
+    });
 
-    const { data: productsData, error: productsError } = await supabase
-      .from("products")
-      .select("*, images:product_images(url, position)")
-      .eq("category_id", categoryData.id)
-      .eq("is_active", true)
-      .order(orderField, { ascending: direction === "asc" });
-
-    if (productsError) throw productsError;
-
-    products.value = (productsData || []).map(product => ({
+    products.value = sorted.map(product => ({
       ...product,
-      images: product.images?.sort((a, b) => a.position - b.position)
+      images: product.images?.sort?.((a, b) => (a.position || 0) - (b.position || 0)) || product.images
     }));
   } catch (err) {
     console.error("Error:", err);

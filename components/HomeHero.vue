@@ -50,12 +50,7 @@
 
           <!-- Hero Content -->
           <div v-else class="max-w-5xl mx-auto text-center">
-            <div class="flex justify-center mb-6 animate-fade-in-up">
-              <span class="x-eyebrow bg-white/10 border-white/15 text-white/90">
-                <Icon name="ph:sparkle-fill" class="w-3.5 h-3.5" />
-                {{ $t('common.shop') || 'Shop' }}
-              </span>
-            </div>
+        
             <!-- Title -->
             <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight mb-5 leading-[1.05] animate-fade-in-up" style="text-shadow: 0 12px 40px rgba(0,0,0,.35);">
               {{ currentContent.title || defaultHeroData.title }}
@@ -69,7 +64,7 @@
             <!-- CTA Button -->
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16 animate-fade-in-up" style="animation-delay: 0.2s;">
               <NuxtLink
-                to="/products"
+                :to="currentContent.button_link || '/products'"
                 class="x-btn-primary group px-7 sm:px-9 py-3.5 sm:py-4 text-sm sm:text-base shadow-2xl shadow-black/20"
               >
                 {{ currentContent.button_text || defaultHeroData.button_text }}
@@ -85,7 +80,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const { fetchSection } = useContentSections()
 const supabase = useSupabaseClient()
 const { locale } = useI18n()
@@ -100,10 +95,91 @@ const getCurrentLocale = () => {
 
 const currentLocale = computed(() => getCurrentLocale())
 
+const { businessId } = useBusinessPreview()
+
+const HERO_PRESETS: Record<string, any> = {
+  ecommerce: {
+    title: "Shop smarter, live better",
+    subtitle: "Browse trending products and discover great deals.",
+    button_text: "Shop now",
+    button_link: "/products",
+    background_image: "/images/placeholders/ready-to-wear/hero.jpg",
+    background_video: "",
+  },
+  restaurant: {
+    title: "Fresh food, warm atmosphere",
+    subtitle: "Explore our menu and discover today’s best dishes.",
+    button_text: "See the menu",
+    button_link: "/products",
+    background_image: "/images/placeholders/reataurant/hero.jpg",
+    background_video: "",
+  },
+  artisan: {
+    title: "Handmade with care",
+    subtitle: "Unique creations crafted locally, just for you.",
+    button_text: "Discover creations",
+    button_link: "/products",
+    background_image: "/images/placeholders/artisan/hero.jpg",
+    background_video: "",
+  },
+  patisserie: {
+    title: "Sweet moments, baked daily",
+    subtitle: "Explore cakes, pastries and fresh treats.",
+    button_text: "See treats",
+    button_link: "/products",
+    background_image: "/images/placeholders/patisserie/hero.jpg",
+    background_video: "",
+  },
+  leather: {
+    title: "Leather goods that last",
+    subtitle: "Premium craftsmanship, timeless pieces.",
+    button_text: "Explore collection",
+    button_link: "/products",
+    background_image: "/images/placeholders/leather/hero.jpg",
+    background_video: "",
+  },
+  jewellery: {
+    title: "Shine every day",
+    subtitle: "Rings, necklaces and elegant details.",
+    button_text: "Browse jewellery",
+    button_link: "/products",
+    background_image: "/images/placeholders/jewellery/hero.jpg",
+    background_video: "",
+  },
+  'home-decor': {
+    title: "Make your home feel like you",
+    subtitle: "Decor pieces for every room and mood.",
+    button_text: "Discover decor",
+    button_link: "/products",
+    background_image: "/images/placeholders/home-decor/spacejoy-IH7wPsjwomc-unsplash.jpg",
+    background_video: "",
+  },
+  'ready-to-wear': {
+    title: "New looks, curated for you",
+    subtitle: "Trendy pieces and everyday essentials.",
+    button_text: "Shop fashion",
+    button_link: "/products",
+    background_image: "/images/placeholders/ready-to-wear/hero.jpg",
+    background_video: "",
+  }
+}
+
 const defaultHeroData = {
   title: "Bienvenue dans notre magasin",
   subtitle: "Découvrez des produits incroyables à des prix avantageux",
   button_text: "Voir les produits",
+  button_link: "/products",
+  background_image: "",
+  background_video: "",
+}
+
+// Empty translations ensure business presets can show until (and unless) the DB has real hero content.
+// Previously we initialized translations with default copy, which prevented preset switching.
+const emptyHeroData = {
+  title: "",
+  subtitle: "",
+  button_text: "",
+  button_link: "",
   background_image: "",
   background_video: "",
 }
@@ -115,15 +191,43 @@ const videoElement = ref(null)
 const heroData = ref({
   is_active: true,
   content_translations: {
-    en: { ...defaultHeroData },
-    fr: { ...defaultHeroData },
-    ar: { ...defaultHeroData }
+    en: { ...emptyHeroData },
+    fr: { ...emptyHeroData },
+    ar: { ...emptyHeroData }
   }
 })
 
 const currentContent = computed(() => {
   const content = heroData.value.content_translations?.[currentLocale.value]
-  return content || defaultHeroData
+
+  const b = String(businessId.value)
+  const preset = HERO_PRESETS[b] || HERO_PRESETS.ecommerce
+
+  // Base hero = DB content (if present), otherwise defaults
+  const base = {
+    ...defaultHeroData,
+    ...(content || {})
+  }
+
+  // Always ensure we have a nice background even if DB content is missing media
+  const withMediaFallback = {
+    ...base,
+    background_image: base.background_image || preset.background_image,
+    background_video: base.background_video || preset.background_video,
+    button_link: base.button_link || preset.button_link || defaultHeroData.button_link,
+    button_text: base.button_text || preset.button_text,
+  }
+
+  // IMPORTANT: When previewing a non-default business type, force hero content to match the business preset.
+  // This guarantees the hero switches when changing business type, even if the DB has hero content.
+  if (b && b !== 'ecommerce') {
+    return {
+      ...withMediaFallback,
+      ...preset,
+    }
+  }
+
+  return withMediaFallback
 })
 
 // Video event handlers

@@ -438,9 +438,9 @@ const sectionData = ref({
 const currentContent = computed(() => {
   // Prefer using full translations for reactive locale switching
   const localized = sectionData.value.content_translations
-    ? sectionData.value.content_translations[currentLocale.value] ||
-      sectionData.value.content_translations['fr'] ||
-      sectionData.value.content_translations['en'] ||
+    ? sectionData.value.content_translations?.[currentLocale.value] ||
+      sectionData.value.content_translations?.['fr'] ||
+      sectionData.value.content_translations?.['en'] ||
       {}
     : sectionData.value.content || {};
   return { ...defaultContent, ...localized };

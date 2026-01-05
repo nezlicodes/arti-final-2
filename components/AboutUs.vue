@@ -11,7 +11,7 @@
           </span>
         </div>
         <h2 class="x-title">
-          {{ section.content_translations[currentLocale]?.title || 'Notre Histoire' }}
+          {{ section.content_translations?.[currentLocale]?.title || 'Notre Histoire' }}
         </h2>
         <div class="x-divider mx-auto"></div>
       </div>
@@ -23,7 +23,7 @@
           <div class="relative overflow-hidden rounded-3xl border border-mgray-200 shadow-xl">
             <NuxtImg
               :src="section.image_url"
-              :alt="section.content_translations[currentLocale]?.title"
+              :alt="section.content_translations?.[currentLocale]?.title"
               class="w-full h-full object-cover"
               loading="lazy"
             />
@@ -33,9 +33,9 @@
         <!-- Text Content -->
         <div class="w-full">
           <div
-            v-if="section.content_translations[currentLocale]?.content"
+            v-if="section.content_translations?.[currentLocale]?.content"
             class="prose prose-gray max-w-none text-mgray-800 leading-relaxed"
-            v-html="section.content_translations[currentLocale].content"
+            v-html="section.content_translations?.[currentLocale]?.content"
           ></div>
           <div v-else class="text-center py-8">
             <Icon name="ph:info-circle" class="w-12 h-12 mx-auto mb-4 text-gray-300" />

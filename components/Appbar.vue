@@ -67,6 +67,7 @@
 
         <!-- Right section -->
         <div class="flex items-center gap-2">
+          <BusinessPreviewSwitcher class="block" />
           <!-- Language Switcher -->
           <LangSwitcher />
           
@@ -251,18 +252,12 @@ const loadSectionData = async () => {
   }
 }
 
+const { fetchCategories } = useCategories()
+
 const loadCategories = async () => {
   try {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("id, name_translations, slug, is_featured, is_active, display_order")
-      .eq("is_active", true)
-      .order("display_order", { ascending: true })
-
-    if (error) throw error
-    if (data) {
-      categories.value = data
-    }
+    const data = await fetchCategories({ active: true })
+    categories.value = data || []
   } catch (error) {
     console.error("Error fetching categories:", error)
   }

@@ -8,6 +8,8 @@ type Category = Database['public']['Tables']['categories']['Row']
 export const useCategories = () => {
   const supabase = useSupabaseClient<Database>()
   const nuxtApp = useNuxtApp()
+
+  const { businessId } = useBusinessPreview()
   
   // Get current locale safely
   const getCurrentLocale = () => {
@@ -32,27 +34,65 @@ export const useCategories = () => {
     const locale = getCurrentLocale()
     const { featured, active = true, withProductCount = false } = filters
 
-    let query = supabase
-      .from('categories')
-      .select(withProductCount ? '*, products(count)' : '*')
-      .eq('is_active', active)
-      .order('name_translations->fr', { ascending: true })
+    // If visitor selected a non-default business, force preview catalog
+    if (businessId.value !== 'ecommerce') {
+      const { getCatalogForBusiness } = await import('~/utils/business-catalogs')
+      const catalog = getCatalogForBusiness(businessId.value as any)
 
-    if (featured !== undefined) {
-      query = query.eq('is_featured', featured)
+      let cats = catalog.categories.filter(c => (active ? c.is_active : true))
+      if (featured !== undefined) cats = cats.filter(c => Boolean(c.is_featured) === featured)
+
+      return cats.map(c => ({
+        ...c,
+        name: c.name,
+        description: c.description || '',
+        name_translations: { fr: c.name, en: c.name, ar: c.name },
+        description_translations: { fr: c.description || '', en: c.description || '', ar: c.description || '' },
+        product_count: withProductCount ? catalog.products.filter(p => p.category_id === c.id).length : 0
+      }))
     }
 
-    const { data, error } = await query
+    // Preview-first: if backend is empty/unavailable, show business-specific catalog
+    try {
+      let query = supabase
+        .from('categories')
+        .select(withProductCount ? '*, products(count)' : '*')
+        .eq('is_active', active)
+        .order('name_translations->fr', { ascending: true })
 
-    if (error) throw error
+      if (featured !== undefined) {
+        query = query.eq('is_featured', featured)
+      }
 
-    // Transform data to include localized fields
-    return data?.map(category => ({
-      ...category,
-      name: category.name_translations?.[locale] || category.name_translations?.['fr'] || '',
-      description: category.description_translations?.[locale] || category.description_translations?.['fr'] || '',
-      product_count: withProductCount && Array.isArray(category.products) ? category.products.length : 0
-    })) || []
+      const { data, error } = await query
+
+      if (!error && data && data.length > 0) {
+        return data.map(category => ({
+          ...category,
+          name: category.name_translations?.[locale] || category.name_translations?.['fr'] || '',
+          description: category.description_translations?.[locale] || category.description_translations?.['fr'] || '',
+          product_count: withProductCount && Array.isArray((category as any).products) ? (category as any).products.length : 0
+        }))
+      }
+    } catch (e) {
+      // ignore and fall back to preview
+    }
+
+    const { getCatalogForBusiness } = await import('~/utils/business-catalogs')
+    const catalog = getCatalogForBusiness(businessId.value)
+
+    let cats = catalog.categories.filter(c => (active ? c.is_active : true))
+    if (featured !== undefined) cats = cats.filter(c => Boolean(c.is_featured) === featured)
+
+    return cats.map(c => ({
+      ...c,
+      // mimic DB shape used by components
+      name: c.name,
+      description: c.description || '',
+      name_translations: { fr: c.name, en: c.name, ar: c.name },
+      description_translations: { fr: c.description || '', en: c.description || '', ar: c.description || '' },
+      product_count: withProductCount ? catalog.products.filter(p => p.category_id === c.id).length : 0
+    }))
   }
 
   /**
@@ -60,29 +100,65 @@ export const useCategories = () => {
    */
   const fetchCategory = async (idOrSlug: string, withProducts = false) => {
     const locale = getCurrentLocale()
-    
-    let query = supabase
-      .from('categories')
-      .select(withProducts ? '*, products(*)' : '*')
-      .eq('is_active', true)
 
-    // Check if it's a UUID or slug
-    if (idOrSlug.includes('-') && idOrSlug.length > 30) {
-      query = query.eq('id', idOrSlug)
-    } else {
-      query = query.eq('slug', idOrSlug)
+    // If visitor selected a non-default business, force preview catalog
+    if (businessId.value !== 'ecommerce') {
+      const { getCatalogForBusiness } = await import('~/utils/business-catalogs')
+      const catalog = getCatalogForBusiness(businessId.value as any)
+
+      const match = catalog.categories.find(c => c.id === idOrSlug || c.slug === idOrSlug)
+      if (!match) throw new Error('Category not found')
+
+      return {
+        ...match,
+        name: match.name,
+        description: match.description || '',
+        name_translations: { fr: match.name, en: match.name, ar: match.name },
+        description_translations: { fr: match.description || '', en: match.description || '', ar: match.description || '' },
+        products: withProducts ? catalog.products.filter(p => p.category_id === match.id) : undefined
+      } as any
     }
 
-    const { data, error } = await query.single()
+    try {
+      let query = supabase
+        .from('categories')
+        .select(withProducts ? '*, products(*)' : '*')
+        .eq('is_active', true)
 
-    if (error) throw error
+      // Check if it's a UUID or slug
+      if (idOrSlug.includes('-') && idOrSlug.length > 30) {
+        query = query.eq('id', idOrSlug)
+      } else {
+        query = query.eq('slug', idOrSlug)
+      }
 
-    // Transform data to include localized fields
+      const { data, error } = await query.single()
+
+      if (!error && data) {
+        return {
+          ...data,
+          name: data.name_translations?.[locale] || data.name_translations?.['fr'] || '',
+          description: data.description_translations?.[locale] || data.description_translations?.['fr'] || ''
+        }
+      }
+    } catch (e) {
+      // ignore and fall back to preview
+    }
+
+    const { getCatalogForBusiness } = await import('~/utils/business-catalogs')
+    const catalog = getCatalogForBusiness(businessId.value)
+
+    const match = catalog.categories.find(c => c.id === idOrSlug || c.slug === idOrSlug)
+    if (!match) throw new Error('Category not found')
+
     return {
-      ...data,
-      name: data.name_translations?.[locale] || data.name_translations?.['fr'] || '',
-      description: data.description_translations?.[locale] || data.description_translations?.['fr'] || ''
-    }
+      ...match,
+      name: match.name,
+      description: match.description || '',
+      name_translations: { fr: match.name, en: match.name, ar: match.name },
+      description_translations: { fr: match.description || '', en: match.description || '', ar: match.description || '' },
+      products: withProducts ? catalog.products.filter(p => p.category_id === match.id) : undefined
+    } as any
   }
 
   /**

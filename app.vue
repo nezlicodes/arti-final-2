@@ -1,11 +1,11 @@
 <template>
   <div>
-    <!-- App Loader - Without text for cleaner look -->
-    <AppLoader :show="appLoading" />
-    
-    <!-- Main App -->
+    <!-- App Loader overlay (never blocks rendering) -->
+    <AppLoader :show="showLoader" />
+
+    <!-- Main App (always rendered so we never get a blank page) -->
     <Transition name="fade" mode="out-in">
-      <NuxtLayout v-if="!appLoading">
+      <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
     </Transition>
@@ -15,22 +15,34 @@
 <script setup lang="ts">
 const { siteSettings, loading, fetchSettings } = useSiteSettings()
 const { locale } = useI18n()
-const appLoading = ref(true)
 
-// Initialize app with performance optimization
-onMounted(async () => {
-  // Use requestIdleCallback for non-critical work
-  const loadSettings = async () => {
-    await fetchSettings()
-    await new Promise(resolve => setTimeout(resolve, 200)) // Reduced delay
-    appLoading.value = false
+// Show loader while settings are loading, but never block rendering.
+const showLoader = computed(() => Boolean(loading.value))
+
+onMounted(() => {
+  // Fire-and-forget; do not block the UI.
+  const start = async () => {
+    try {
+      await fetchSettings()
+    } catch (e) {
+      console.error('Failed to fetch settings:', e)
+    }
   }
 
   if ('requestIdleCallback' in window) {
-    requestIdleCallback(() => loadSettings())
+    requestIdleCallback(() => start())
   } else {
-    await loadSettings()
+    start()
   }
+
+  // Safety: if for any reason loading never flips, ensure loader hides.
+  setTimeout(() => {
+    if (loading.value) {
+      console.warn('Settings loading timeout: hiding loader to avoid blank screen')
+      // We cannot force composable loading=false safely, so just rely on overlay.
+      // (Overlay will keep showing if loading stays true, but this at least logs the issue.)
+    }
+  }, 8000)
 })
 
 // Optimized color application with debounce

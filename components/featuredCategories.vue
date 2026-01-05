@@ -75,13 +75,7 @@
               class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"
             ></div>
 
-            <!-- Featured Badge -->
-            <div class="absolute top-4 left-4">
-              <span class="x-eyebrow bg-white/15 border-white/20 text-white">
-                <Icon name="ph:star-fill" class="w-3.5 h-3.5" />
-                {{ $t('common.featured') || 'Featured' }}
-              </span>
-            </div>
+          
 
             <!-- View Products Button -->
             <div
@@ -143,11 +137,7 @@
                 </svg>
               </div>
 
-              <div
-                class="text-sm text-primary font-semibold group-hover:opacity-80 transition-colors duration-300"
-              >
-                {{ $t("common.explore") || "Explore" }} →
-              </div>
+            
             </div>
           </div>
 
@@ -200,49 +190,61 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const { locale } = useI18n();
 const supabase = useSupabaseClient();
+const { fetchCategories } = useCategories();
 
 // State
 const featuredCategories = ref([]);
 const loading = ref(true);
 
+const { businessId } = useBusinessPreview()
+
+const BUSINESS_SECTION_COPY: Record<string, any> = {
+  ecommerce: {
+    en: { title: 'Featured', subtitle: 'Handpicked categories showcasing our most popular and trending products' },
+    fr: { title: 'Catégories populaires', subtitle: 'Découvrez les catégories les plus appréciées du moment' },
+    ar: { title: 'الفئات المميزة', subtitle: 'فئات مختارة من الأكثر شعبية' },
+  },
+  restaurant: {
+    en: { title: 'Menu', subtitle: 'Explore starters, mains, desserts and drinks' },
+    fr: { title: 'Notre menu', subtitle: 'Entrées, plats, desserts et boissons' },
+    ar: { title: 'قائمة الطعام', subtitle: 'مقبلات، أطباق، حلويات ومشروبات' },
+  },
+  artisan: {
+    en: { title: 'Collections', subtitle: 'Ceramics, leather, jewelry and home decor' },
+    fr: { title: 'Collections', subtitle: 'Céramique, cuir, bijoux et décoration' },
+    ar: { title: 'مجموعات', subtitle: 'خزف، جلد، مجوهرات وديكور' },
+  }
+}
+
 // Section data
 const sectionData = ref({
   is_active: true,
-  content_translations: {
-    en: {
-      title: "Featured",
-      subtitle:
-        "Handpicked categories showcasing our most popular and trending products",
-    },
-    fr: {
-      title: "Populaires",
-      subtitle:
-        "Catégories sélectionnées présentant nos produits les plus populaires et tendance",
-    },
-    ar: {
-      title: "المميزة",
-      subtitle: "فئات مختارة تعرض منتجاتنا الأكثر شعبية ورواجاً",
-    },
-  },
+  content_translations: BUSINESS_SECTION_COPY[String(businessId.value)] || BUSINESS_SECTION_COPY.ecommerce,
 });
 
 // Computed properties for title and subtitle based on current language
 const sectionTitle = computed(() => {
+  const b = BUSINESS_SECTION_COPY[String(businessId.value)] || BUSINESS_SECTION_COPY.ecommerce
   return (
     sectionData.value.content_translations?.[locale.value]?.title ||
     sectionData.value.content_translations?.fr?.title ||
-    "Populaires"
+    b?.[locale.value]?.title ||
+    b?.fr?.title ||
+    'Categories'
   );
 });
 
 const sectionSubtitle = computed(() => {
+  const b = BUSINESS_SECTION_COPY[String(businessId.value)] || BUSINESS_SECTION_COPY.ecommerce
   return (
     sectionData.value.content_translations?.[locale.value]?.subtitle ||
     sectionData.value.content_translations?.fr?.subtitle ||
-    "Catégories sélectionnées présentant nos produits les plus populaires et tendance"
+    b?.[locale.value]?.subtitle ||
+    b?.fr?.subtitle ||
+    ''
   );
 });
 
@@ -270,22 +272,8 @@ const loadFeaturedCategories = async () => {
   loading.value = true;
 
   try {
-    const { data, error } = await supabase
-      .from("categories")
-      .select(
-        "id, name_translations, slug, is_featured, is_active, display_order, description_translations, image_url"
-      )
-      .eq("is_active", true)
-      .eq("is_featured", true)
-      .order("display_order", { ascending: true });
-    if (error) {
-      console.error("❌ Error fetching featured categories:", error);
-      return;
-    }
-
-    if (data) {
-      featuredCategories.value = data;
-    }
+    const data = await fetchCategories({ featured: true, active: true });
+    featuredCategories.value = data || [];
   } catch (error) {
     console.error("Error loading featured categories:", error);
   } finally {
@@ -325,6 +313,11 @@ const fetchData = async () => {
 };
 
 onMounted(async () => {
+  await fetchData();
+});
+
+// Reload categories when switching preview business
+watch(businessId, async () => {
   await fetchData();
 });
 

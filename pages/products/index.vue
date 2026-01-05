@@ -696,7 +696,8 @@ const formatPrice = (price) => {
 
 const { fetchSection } = useContentSections();
 const { locale } = useI18n();
-const supabase = useSupabaseClient();
+const { fetchProducts } = useProducts();
+const { fetchCategories } = useCategories();
 
 // Current locale
 const currentLocale = computed(() => locale.value);
@@ -996,14 +997,8 @@ const loadHeroData = async () => {
 
 const loadCategories = async () => {
   try {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("id, name_translations, slug, is_active, display_order")
-      .eq("is_active", true)
-      .order("display_order", { ascending: true });
-
-    if (error) throw error;
-    if (data) categories.value = data;
+    const data = await fetchCategories({ active: true });
+    categories.value = data || [];
   } catch (error) {
     console.error("Error loading categories:", error);
   }
@@ -1011,20 +1006,8 @@ const loadCategories = async () => {
 
 const loadProducts = async () => {
   try {
-    const { data, error } = await supabase
-      .from("products")
-      .select(
-        `
-        *,
-        category:categories(id, name_translations, slug),
-        images:product_images(id, url, is_primary)
-      `
-      )
-      .eq("is_active", true)
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-    if (data) products.value = data;
+    const data = await fetchProducts({ active: true });
+    products.value = data || [];
   } catch (error) {
     console.error("Error loading products:", error);
   }

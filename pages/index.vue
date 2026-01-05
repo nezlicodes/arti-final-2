@@ -1,11 +1,14 @@
 <template>
   <div>
     <HomeHero />
+
+    <!-- Keep existing sections but respect feature flags -->
     <FeaturedProductSection />
-    <FeaturedCategories />
+
+    <FeaturedCategories v-if="categoriesEnabled" />
     <AboutUs />
-    <FAQ />
-    <Testimonials />
+    <FAQ v-if="faqEnabled" />
+    <Testimonials v-if="testimonialsEnabled" />
   </div>
 </template>
 
