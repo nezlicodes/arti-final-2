@@ -1,5 +1,5 @@
 <template>
-  <nav class="fixed top-0 left-0 right-0 w-full z-[100] bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+  <nav class="w-full bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
     <!-- Top Banner -->
     <TopBanner v-if="!hideBanner" />
 

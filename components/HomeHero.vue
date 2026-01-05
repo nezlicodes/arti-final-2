@@ -1,7 +1,7 @@
 <template>
-  <div v-if="heroData.is_active" class="relative pt-6 w-full overflow-hidden">
+  <div v-if="heroData.is_active" class="relative  w-full overflow-hidden">
     <!-- Hero Section -->
-    <section class="relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-[82vh] flex items-center">
+    <section class="relative min-h-[60vh] sm:min-h-[70vh]  flex items-center">
       <!-- Subtle grid + vignette -->
       <div class="absolute inset-0 x-grid-bg opacity-[0.25]"></div>
       <!-- Background Media Container -->
