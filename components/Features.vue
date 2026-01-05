@@ -1,46 +1,34 @@
 <template>
-  <section v-if="sectionData.is_active" class="py-16 lg:py-20 bg-white">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <!-- Loading State -->
-      <div v-if="loading" class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16">
-        <div v-for="n in 4" :key="n" class="text-center space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-gray-200 animate-pulse mx-auto"></div>
-          <div class="space-y-2">
-            <div class="h-6 bg-gray-200 rounded w-16 mx-auto animate-pulse"></div>
-            <div class="h-4 bg-gray-200 rounded w-20 mx-auto animate-pulse"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Features Grid -->
-      <div v-else class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16">
-        <div
-          v-for="(feature, index) in currentFeatures"
-          :key="`feature-${index}`"
-          class="text-center space-y-4"
-        >
-          <!-- Icon -->
-          <div class="flex items-center justify-center w-8 h-8 mx-auto text-gray-700">
-            <Icon
-              :name="feature.icon"
-              class="w-8 h-8"
-            />
-          </div>
-
-          <!-- Content -->
-          <div class="space-y-2">
-            <h3 class="text-lg lg:text-xl font-bold text-gray-900">
-              {{ feature.title }}
-            </h3>
-            <p class="text-sm text-gray-600 font-medium">
-              {{ feature.description }}
-            </p>
-          </div>
+  <div v-if="sectionData.is_active" class="x-features" aria-label="Store benefits">
+    <!-- Loading State -->
+    <div v-if="loading" class="x-features__row" aria-busy="true" aria-live="polite">
+      <div v-for="n in 4" :key="n" class="x-features__cell">
+        <div class="x-features__icon-skel" />
+        <div class="space-y-2">
+          <div class="x-features__line-skel w-16" />
+          <div class="x-features__line-skel w-24" />
         </div>
       </div>
     </div>
-  </section>
+
+    <!-- Features -->
+    <div v-else class="x-features__row">
+      <div
+        v-for="(feature, index) in currentFeatures"
+        :key="`feature-${index}`"
+        class="x-features__cell"
+      >
+        <div class="x-features__icon">
+          <Icon :name="feature.icon" class="w-4 h-4" />
+        </div>
+
+        <div class="min-w-0">
+          <p class="x-features__title">{{ feature.title }}</p>
+          <p class="x-features__desc">{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -113,3 +101,59 @@ onMounted(async () => {
   await loadSectionData();
 });
 </script>
+
+<style scoped>
+/* Dawn / Shopify-like: simple row, subtle dividers, no card boxes */
+.x-features {
+  @apply mt-8 pt-6 border-t border-mgray-200;
+}
+
+.x-features__row {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2;
+}
+
+.x-features__cell {
+  @apply flex items-start gap-3 px-0 py-4;
+}
+
+/* vertical dividers on large screens */
+@media (min-width: 1024px) {
+  .x-features__cell {
+    @apply px-6;
+  }
+  .x-features__cell:not(:nth-child(2n)) {
+    @apply border-r border-mgray-200;
+  }
+}
+
+/* small divider between rows on mobile/tablet */
+@media (max-width: 1023px) {
+  .x-features__cell {
+    @apply border-b border-mgray-200;
+  }
+  .x-features__cell:last-child {
+    @apply border-b-0;
+  }
+}
+
+.x-features__icon {
+  @apply mt-0.5 inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-mgray-50 text-mgray-800;
+}
+
+.x-features__title {
+  @apply text-sm font-semibold text-mgray-950 leading-snug;
+}
+
+.x-features__desc {
+  @apply mt-1 text-xs text-mgray-600 leading-relaxed;
+}
+
+/* Skeleton */
+.x-features__icon-skel {
+  @apply mt-0.5 h-8 w-8 flex-none rounded-full bg-mgray-100 animate-pulse;
+}
+
+.x-features__line-skel {
+  @apply h-3 rounded bg-mgray-100 animate-pulse;
+}
+</style>
