@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" ref="dropdownRef">
+  <div class="relative z-[10001]" ref="dropdownRef">
     <button
       @click="toggleDropdown"
       class="flex items-center relative gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -57,7 +57,7 @@
     >
       <div
         v-if="isOpen"
-        class="absolute z-[9999] right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border border-gray-200"
+        class="absolute z-[10002] right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border border-gray-200"
       >
         <button
           v-for="lang in availableLocales"
