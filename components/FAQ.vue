@@ -1,123 +1,86 @@
 <template>
-  <section
-    v-if="isLoaded && isEnabled"
-    class="x-section relative overflow-hidden"
-  >
-    <div class="absolute inset-0 bg-gradient-to-b from-secondary/5 via-transparent to-transparent"></div>
-    <!-- Decorative background elements -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-      <div class="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
-    </div>
+  <section v-if="isLoaded && isEnabled" class="x-section">
+    <div class="x-container">
+      <!-- Shopify-like section header (centered, simple) -->
+      <header class="mx-auto max-w-2xl text-center" data-aos="fade-up">
+        <p class="text-xs font-semibold tracking-widest text-mgray-600 uppercase">
+          {{ headerContent.badge_text }}
+        </p>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-mgray-950">
+          {{ headerContent.title }}
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-mgray-700 leading-relaxed">
+          {{ headerContent.subtitle }}
+        </p>
+      </header>
 
-    <div class="relative x-container">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-24 items-start">
-        <!-- Left Column - Header Info -->
-        <div class="lg:sticky lg:top-24 lg:self-start space-y-8" data-aos="fade-right">
-          <!-- Badge -->
-          <div class="x-eyebrow bg-white/80">
-            <Icon name="ph:question-fill" class="w-4 h-4 text-primary" />
-            <span class="text-sm font-semibold text-primary">{{ headerContent.badge_text }}</span>
-          </div>
-
-          <!-- Title -->
-          <div>
-            <h2
-              class="x-title mb-6"
-            >
-              {{ headerContent.title }}
-            </h2>
-            <p class="x-subtitle text-mgray-700">
-              {{ headerContent.subtitle }}
-            </p>
-          </div>
-
-          <!-- Additional Info Card -->
-          <div class="x-surface p-6">
-            <div class="flex items-start gap-4">
-              <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <Icon name="ph:lightbulb-fill" class="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 class="font-bold text-foreground mb-2">{{ headerContent.help_card_title }}</h3>
-                <p class="text-sm text-foreground/60 leading-relaxed">
-                  {{ headerContent.help_card_description }}
-                </p>
-              </div>
-            </div>
+      <div class="mx-auto mt-10 max-w-3xl" data-aos="fade-up" data-aos-delay="100">
+        <!-- Loading State -->
+        <div v-if="loading" class="space-y-3">
+          <div v-for="i in 6" :key="i" class="animate-pulse">
+            <div class="h-14 rounded-xl bg-mgray-100/60"></div>
           </div>
         </div>
 
-        <!-- Right Column - FAQ Accordion -->
-        <div data-aos="fade-left">
-          <!-- Loading State -->
-          <div v-if="loading" class="space-y-4">
-            <div v-for="i in 5" :key="i" class="animate-pulse">
-              <div class="h-20 bg-background/30 rounded-2xl"></div>
-            </div>
-          </div>
+        <!-- No results message -->
+        <div
+          v-else-if="filteredItems.length === 0"
+          class="rounded-2xl border border-mgray-200 bg-white p-8 text-center"
+        >
+          <h3 class="text-lg font-semibold text-mgray-950">
+            {{ headerContent.no_questions_title }}
+          </h3>
+          <p class="mt-2 text-mgray-700">
+            {{ headerContent.no_questions_description }}
+          </p>
+        </div>
 
-          <!-- No results message -->
-          <div
-            v-else-if="filteredItems.length === 0"
-            class="text-center py-20 bg-gradient-to-br from-background/30 to-background/10 rounded-3xl border border-foreground/10"
+        <!-- FAQ Accordion (Shopify/Dawn-like) -->
+        <div v-else class="divide-y divide-mgray-200 rounded-2xl border border-mgray-200 bg-white">
+          <details
+            v-for="(item, index) in filteredItems"
+            :key="item.id"
+            class="group faq-accordion"
+            :data-aos="'fade-up'"
+            :data-aos-delay="index * 40"
           >
-            <div
-              class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 mb-6"
+            <summary
+              class="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-5 text-left"
             >
-              <Icon name="ph:question" class="w-10 h-10 text-primary" />
-            </div>
-            <h3 class="text-2xl font-bold text-foreground mb-3">
-              {{ headerContent.no_questions_title }}
-            </h3>
-            <p class="text-foreground/60 text-lg">
-              {{ headerContent.no_questions_description }}
-            </p>
-          </div>
+              <span class="text-base sm:text-lg font-medium text-mgray-950">
+                {{ getQuestion(item) }}
+              </span>
 
-          <!-- FAQ Accordion -->
-          <div v-else class="space-y-4">
-            <div
-              v-for="(item, index) in filteredItems"
-              :key="item.id"
-              class="faq-item group"
-              :data-aos="'fade-up'"
-              :data-aos-delay="index * 50"
-            >
-              <details
-                class="faq-accordion x-surface overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
-                :open="index === 0"
+              <!-- Plus / Minus toggle -->
+              <span
+                class="relative flex h-10 w-10 flex-none items-center justify-center rounded-full border border-mgray-200 bg-white text-mgray-700 transition-colors group-hover:bg-mgray-50 group-hover:text-mgray-950"
+                aria-hidden="true"
               >
-                <summary
-                  class="flex items-center justify-between cursor-pointer py-6 px-7 font-semibold text-lg text-mgray-950 select-none transition-all duration-300 hover:bg-white/40"
-                >
-                  <span class="flex items-start gap-4 flex-1 pr-4">
-                    <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center mt-0.5">
-                      <Icon name="ph:chat-circle-text-fill" class="w-4 h-4 text-primary" />
-                    </span>
-                    <span class="flex-1">{{ getQuestion(item) }}</span>
-                  </span>
-                  <div class="flex-shrink-0 w-10 h-10 rounded-2xl bg-mgray-100 flex items-center justify-center transition-all duration-300 group-hover:bg-primary/10">
-                    <Icon
-                      name="ph:caret-down-bold"
-                      class="w-5 h-5 text-mgray-600 transition-transform duration-300 group-open:rotate-180 group-hover:text-primary"
-                    />
-                  </div>
-                </summary>
+                <span class="absolute inset-0 grid place-items-center transition-opacity duration-200 group-open:opacity-0 opacity-100">
+                  <Icon name="ph:plus" class="h-5 w-5" />
+                </span>
+                <span class="absolute inset-0 grid place-items-center transition-opacity duration-200 opacity-0 group-open:opacity-100">
+                  <Icon name="ph:minus" class="h-5 w-5" />
+                </span>
+              </span>
+            </summary>
 
-                <div class="px-7 pb-7">
-                  <div class="pl-12">
-                    <div class="h-px bg-gradient-to-r from-mgray-200 to-transparent mb-6"></div>
-                    
-                    <div
-                      v-html="getAnswer(item)"
-                      class="prose prose-base max-w-none text-mgray-700 leading-relaxed prose-p:mb-4 prose-strong:text-mgray-950 prose-strong:font-semibold"
-                    ></div>
-                  </div>
-                </div>
-              </details>
+            <div class="px-6 pb-6">
+              <div class="pt-4 border-t border-mgray-200">
+                <div
+                  v-html="getAnswer(item)"
+                  class="prose prose-base max-w-none text-mgray-700 leading-relaxed"
+                ></div>
+              </div>
             </div>
-          </div>
+          </details>
+        </div>
+
+        <!-- Optional helper note (very Shopify-ish) -->
+        <div class="mt-6 text-center text-sm text-mgray-600">
+          <span class="font-medium text-mgray-800">{{ headerContent.help_card_title }}</span>
+          <span class="mx-2">·</span>
+          <span>{{ headerContent.help_card_description }}</span>
         </div>
       </div>
     </div>
@@ -245,7 +208,7 @@ onMounted(fetchFaqData);
 </script>
 
 <style scoped>
-/* Remove default details styling */
+/* Remove default details marker */
 details summary::-webkit-details-marker,
 details summary::marker {
   display: none;
@@ -255,34 +218,36 @@ details summary {
   list-style: none;
 }
 
-/* Accordion animation */
-.faq-accordion[open] {
-  @apply shadow-xl shadow-primary/10;
+/* Shopify-ish accordion behavior */
+.faq-accordion {
+  @apply transition-colors;
 }
 
-.faq-accordion[open] summary {
-  @apply bg-background/20;
+.faq-accordion[open] > summary {
+  @apply bg-mgray-50;
 }
 
-/* Smooth content reveal with scale effect */
+/* Subtle reveal animation */
 details[open] > summary ~ * {
-  animation: expandContent 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: faqExpand 0.25s ease-out;
 }
 
-@keyframes expandContent {
+@keyframes faqExpand {
   from {
     opacity: 0;
-    transform: translateY(-12px) scale(0.98);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
-/* Hover effects */
-.faq-item:hover .faq-accordion {
-  @apply transform scale-[1.01];
+/* Focus styles for accessibility */
+details summary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--primary-color), 0.25);
+  border-radius: 0.75rem;
 }
 
 /* Prose styling */
@@ -294,30 +259,8 @@ details[open] > summary ~ * {
   @apply mb-0;
 }
 
-:deep(.prose strong) {
-  @apply font-semibold;
-  color: rgb(var(--color-foreground));
-}
-
 :deep(.prose a) {
-  @apply transition-colors underline;
-  color: rgb(var(--color-primary));
-}
-
-:deep(.prose a:hover) {
-  opacity: 0.8;
-}
-
-:deep(.prose ul) {
-  @apply my-4 space-y-2;
-}
-
-:deep(.prose li) {
-  color: rgb(var(--color-foreground) / 0.7);
-}
-
-/* Smooth transitions */
-* {
-  @apply transition-colors duration-300;
+  @apply underline;
+  color: rgba(var(--primary-color), 1);
 }
 </style>
