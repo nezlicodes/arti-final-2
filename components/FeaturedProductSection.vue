@@ -1,85 +1,114 @@
 <template>
-  <section v-if="section.is_active" class="x-section relative overflow-hidden">
-    <div
-      class="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent"
-    ></div>
-    <div class="x-container relative">
-      <div class="text-center mb-12">
-        <h2 class="x-title">
-          {{
-            section.content_translations?.[currentLocale]?.title ||
-            fallbackTitle
-          }}
+  <section v-if="section.is_active" class="py-20 lg:py-28 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center mb-16 lg:mb-20">
+        <div class="inline-flex items-center px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-600 mb-6 shadow-sm">
+          <Icon name="ph:star-fill" class="w-4 h-4 text-yellow-500 mr-2" />
+          Featured Product
+        </div>
+        <h2 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+          {{ section.content_translations?.[currentLocale]?.title || fallbackTitle }}
         </h2>
-        <div class="x-divider mx-auto"></div>
-        <p class="x-subtitle max-w-2xl mx-auto">
-          {{
-            section.content_translations?.[currentLocale]?.subtitle ||
-            fallbackSubtitle
-          }}
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          {{ section.content_translations?.[currentLocale]?.subtitle || fallbackSubtitle }}
         </p>
       </div>
-      <div
-        v-if="product"
-        class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center max-w-6xl mx-auto"
-      >
-        <div class="order-1 flex justify-center">
-          <div class="relative w-full max-w-lg">
-            <div
-              class="absolute -inset-4 bg-gradient-to-br from-primary/20 via-transparent to-secondary/10 blur-2xl"
-            ></div>
 
+      <!-- Featured Product Card -->
+      <div v-if="product" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+        <div class="grid lg:grid-cols-2 gap-0">
+          
+          <!-- Product Image -->
+          <div class="relative aspect-square lg:aspect-auto bg-gray-50">
             <NuxtImg
               v-if="productImage"
               :src="productImage.url"
               :alt="product.name"
-              class="relative w-full aspect-[4/3] rounded-3xl shadow-2xl object-cover border border-mgray-200"
+              class="w-full h-full object-cover"
             />
-            <div
-              v-else
-              class="relative w-full aspect-[4/3] rounded-3xl bg-background-100 border border-mgray-200 flex items-center justify-center text-mgray-500"
-            >
-              {{ $t("common.noImage") || "No image" }}
+            <div v-else class="w-full h-full flex items-center justify-center">
+              <div class="text-center space-y-4">
+                <Icon name="ph:package" class="w-20 h-20 text-gray-300 mx-auto" />
+                <p class="text-gray-400 font-medium">Product Image</p>
+              </div>
+            </div>
+            
+            <!-- Product Badge -->
+            <div class="absolute top-6 left-6">
+              <span class="inline-flex items-center px-3 py-1.5 bg-black/90 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
+                <Icon name="ph:lightning-fill" class="w-3 h-3 mr-1" />
+                Featured
+              </span>
             </div>
           </div>
-        </div>
-        <div class="order-2">
-          <div class="x-surface-strong p-7 sm:p-9">
-            <h3
-              class="text-2xl sm:text-3xl font-semibold tracking-tight text-mgray-950 mb-3"
-            >
+
+          <!-- Product Details -->
+          <div class="p-8 lg:p-12 flex flex-col justify-center">
+            
+            <!-- Product Name -->
+            <h3 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
               {{ product.name }}
             </h3>
-            <p
-              v-if="currentDescription"
-              class="text-mgray-700 mb-6 leading-relaxed"
-            >
-              {{ currentDescription }}
-            </p>
 
-            <div class="flex items-end justify-between gap-6 mb-8">
-              <div>
-               
-                <div
-                  v-if="product.price != null"
-                  class="text-3xl sm:text-4xl font-bold text-primary"
-                >
-                  {{ formatPrice(product.price) }}
+            <!-- Price -->
+            <div class="flex items-baseline space-x-4 mb-8">
+              <span v-if="product.price != null" class="text-4xl lg:text-5xl font-bold text-gray-900">
+                {{ formatPrice(product.price) }}
+              </span>
+              <span v-if="product.original_price && product.original_price > product.price" 
+                    class="text-xl text-gray-400 line-through">
+                {{ formatPrice(product.original_price) }}
+              </span>
+              <span v-if="product.original_price && product.original_price > product.price"
+                    class="inline-flex items-center px-2.5 py-1 bg-red-100 text-red-800 text-sm font-semibold rounded-full">
+                {{ Math.round(((product.original_price - product.price) / product.original_price) * 100) }}% OFF
+              </span>
+            </div>
+
+            <!-- Description -->
+            <div v-if="product.description || currentDescription" class="mb-8">
+              <p class="text-lg text-gray-600 leading-relaxed">
+                {{ product.description || currentDescription }}
+              </p>
+            </div>
+
+            <!-- Features -->
+            <div v-if="product.features && product.features.length" class="mb-10">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4">What's included:</h4>
+              <div class="grid grid-cols-1 gap-3">
+                <div v-for="feature in product.features.slice(0, 4)" :key="feature" 
+                     class="flex items-center">
+                  <div class="w-2 h-2 bg-green-500 rounded-full mr-3 flex-shrink-0"></div>
+                  <span class="text-gray-700">{{ feature }}</span>
                 </div>
               </div>
             </div>
 
-            <NuxtLink
-              v-if="product.slug"
-              :to="`/products/${product.slug}`"
-              class="x-btn-primary w-full sm:w-auto"
-            >
-              {{ $t("common.viewProduct") || "View product" }}
-              <Icon name="ph:arrow-right-bold" class="w-4 h-4" />
-            </NuxtLink>
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 mb-8">
+              <NuxtLink
+                v-if="product.slug"
+                :to="`/products/${product.slug}`"
+                class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-black text-white text-lg font-semibold rounded-2xl hover:bg-gray-800 transition-all duration-200 group"
+              >
+                {{ $t("common.viewProduct") || "View Product" }}
+                <Icon name="ph:arrow-right-bold" class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+              </NuxtLink>
+              
+              <button class="inline-flex items-center justify-center px-6 py-4 border-2 border-gray-200 text-gray-700 text-lg font-semibold rounded-2xl hover:border-gray-300 hover:bg-gray-50 transition-colors duration-200">
+                <Icon name="ph:heart" class="w-5 h-5 mr-2" />
+                Save
+              </button>
+            </div>
+
+           <Features/>
+
           </div>
         </div>
       </div>
+
       <slot />
     </div>
   </section>
