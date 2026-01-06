@@ -1,5 +1,5 @@
 <template>
-  <nav class="w-full bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm relative z-[10000]">
+  <nav class="w-full bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm relative z-[10]">
     <!-- Top Banner -->
     <TopBanner v-if="!hideBanner" />
 

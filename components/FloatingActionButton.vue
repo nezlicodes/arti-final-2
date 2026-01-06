@@ -1,52 +1,38 @@
 <template>
-  <div class="relative" ref="rootEl">
-    <button
-      type="button"
-      class="preview-trigger"
-      @click="open = !open"
-    >
-      <div class="preview-trigger__icon">
-        <Icon name="ph:storefront-bold" class="w-4 h-4" />
-      </div>
-      <div class="preview-trigger__content">
-        <span class="preview-trigger__label">Preview</span>
-        <span class="preview-trigger__value">{{ preset.label }}</span>
-      </div>
-      <Icon 
-        name="ph:caret-down-bold" 
-        class="preview-trigger__arrow"
-        :class="{ 'rotate-180': open }"
-      />
+  <div class="floating-button-wrapper" ref="rootEl">
+    <button class="floating-action-button" @click="isOpen = !isOpen">
+      <span class="floating-action-button__glow"></span>
+      <span class="floating-action-button__icon">✨</span>
+      <span class="floating-action-button__text">
+        {{ $t('floatingButton.text') || 'Try Demo' }}
+      </span>
     </button>
 
-    <Transition name="dropdown-fade">
-      <div
-        v-if="open"
-        class="dropdown-panel"
-      >
-        <!-- Header -->
-        <div class="dropdown-panel__header">
-          <div class="dropdown-panel__header-content">
-            <div class="header-icon">
-              <Icon name="ph:storefront-bold" class="w-5 h-5" />
-            </div>
+    <!-- Dropdown positioned above the button -->
+    <Transition name="dropdown">
+      <div v-if="isOpen" class="floating-dropdown">
+        <div class="dropdown-header">
+          <div class="flex items-start gap-3">
+            <span class="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+              <Icon name="ph:storefront-bold" class="w-4 h-4 text-primary" />
+            </span>
             <div>
-              <h3 class="header-title">Business Preview</h3>
-              <p class="header-subtitle">Customize your store's look and feel</p>
+              <p class="text-sm font-bold text-gray-950">Business preview</p>
+              <p class="text-xs text-gray-600 mt-0.5">Switch the preset and tweak colors.</p>
             </div>
           </div>
           <button
-            class="close-button"
-            @click="open = false"
+            class="rounded-lg p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+            @click="isOpen = false"
             aria-label="Close"
           >
             <Icon name="ph:x-bold" class="w-4 h-4" />
           </button>
         </div>
 
-        <div class="divider" />
+        <div class="h-px bg-gray-200" />
 
-        <div class="dropdown-panel__body">
+        <div class="dropdown-body">
           <!-- Business type -->
           <div class="form-section">
             <label class="form-label">
@@ -123,12 +109,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { BUSINESS_PRESETS, type BusinessId } from '~/utils/business-presets'
 
-const { businessId, preset, effectiveColors, setBusiness, setColorOverrides, reset } = useBusinessPreview()
-
-const open = ref(false)
+const isOpen = ref(false)
 const rootEl = ref<HTMLElement | null>(null)
+
+const { businessId, preset, effectiveColors, setBusiness, setColorOverrides, reset } = useBusinessPreview()
 
 const businessOptions = computed(() => Object.values(BUSINESS_PRESETS))
 
@@ -166,11 +153,11 @@ const onSecondaryHex = (e: Event) => {
 }
 
 const onClickOutside = (evt: MouseEvent) => {
-  if (!open.value) return
+  if (!isOpen.value) return
   const el = rootEl.value
   if (!el) return
   if (evt.target instanceof Node && !el.contains(evt.target)) {
-    open.value = false
+    isOpen.value = false
   }
 }
 
@@ -184,118 +171,109 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Trigger Button */
-.preview-trigger {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.875rem;
-  padding: 0.75rem 1.125rem;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 2px solid transparent;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #111827;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 0 0 1px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  overflow: hidden;
+.floating-button-wrapper {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
 }
 
-.preview-trigger::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.5) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.preview-trigger:hover {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-  border-color: rgba(var(--primary-rgb-values), 0.2);
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.08),
-    0 0 0 1px rgba(var(--primary-rgb-values), 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  transform: translateY(-2px);
-}
-
-.preview-trigger:hover::before {
-  opacity: 1;
-}
-
-.preview-trigger:active {
-  transform: translateY(0);
-  box-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.1),
-    inset 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.preview-trigger__icon {
+.floating-action-button {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  background: linear-gradient(135deg, var(--primary-rgb) 0%, var(--secondary-rgb) 100%);
-  border-radius: 0.625rem;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3rem;
   color: white;
-  flex-shrink: 0;
-  box-shadow: 
-    0 4px 8px rgba(var(--primary-rgb-values), 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  animation: float-bounce 3s ease-in-out infinite;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-.preview-trigger__icon::after {
-  content: '';
+.floating-action-button:hover {
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+}
+
+.floating-action-button:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.floating-action-button__glow {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 100%);
-  border-radius: 0.625rem;
+  inset: -3px;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  animation: glow-rotate 2.5s linear infinite;
+  border-radius: 3rem;
 }
 
-.preview-trigger__content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.125rem;
+.floating-action-button__icon {
+  position: relative;
+  z-index: 1;
+  font-size: 1.5rem;
+  animation: sparkle-pulse 2s ease-in-out infinite;
 }
 
-.preview-trigger__label {
-  font-size: 0.625rem;
-  font-weight: 500;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
+.floating-action-button__text {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
 }
 
-.preview-trigger__value {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #111827;
+@keyframes float-bounce {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
-.preview-trigger__arrow {
-  width: 1rem;
-  height: 1rem;
-  color: #9ca3af;
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
+@keyframes glow-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* Dropdown Panel */
-.dropdown-panel {
-  position: absolute;
-  right: 0;
-  margin-top: 0.625rem;
+@keyframes sparkle-pulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.2) rotate(-10deg);
+  }
+  50% {
+    transform: scale(1) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.2) rotate(10deg);
+  }
+}
+
+/* Floating Dropdown */
+.floating-dropdown {
+  position: fixed;
+  bottom: 6rem;
+  right: 2rem;
   width: 420px;
-  max-width: calc(100vw - 2rem);
+  max-width: calc(100vw - 4rem);
   background: white;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 1.25rem;
@@ -304,12 +282,13 @@ onBeforeUnmount(() => {
     0 16px 32px -8px rgba(0, 0, 0, 0.08),
     0 0 0 1px rgba(0, 0, 0, 0.02),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  z-index: 9998;
+  max-height: calc(100vh - 10rem);
   overflow: hidden;
-  z-index: 20050;
   backdrop-filter: blur(20px);
 }
 
-.dropdown-panel__header {
+.dropdown-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -319,13 +298,13 @@ onBeforeUnmount(() => {
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-.dropdown-panel__header-content {
+.dropdown-header .flex {
   display: flex;
   align-items: flex-start;
   gap: 0.875rem;
 }
 
-.header-icon {
+.dropdown-header .inline-flex {
   position: relative;
   display: flex;
   align-items: center;
@@ -342,7 +321,7 @@ onBeforeUnmount(() => {
     inset 0 2px 0 rgba(255, 255, 255, 0.25);
 }
 
-.header-icon::before {
+.dropdown-header .inline-flex::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -350,7 +329,7 @@ onBeforeUnmount(() => {
   border-radius: 1rem;
 }
 
-.header-title {
+.dropdown-header .text-sm {
   font-size: 1.125rem;
   font-weight: 700;
   background: linear-gradient(135deg, #111827 0%, #374151 100%);
@@ -362,14 +341,14 @@ onBeforeUnmount(() => {
   letter-spacing: -0.01em;
 }
 
-.header-subtitle {
+.dropdown-header .text-xs {
   font-size: 0.8125rem;
   color: #6b7280;
   margin-top: 0.375rem;
   line-height: 1.5;
 }
 
-.close-button {
+.dropdown-header .rounded-lg {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -384,31 +363,34 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 
-.close-button:hover {
+.dropdown-header .rounded-lg:hover {
   background: #f3f4f6;
   color: #111827;
 }
 
-.divider {
-  height: 1px;
-  background: linear-gradient(to right, transparent, #e5e7eb, transparent);
-}
-
-.dropdown-panel__body {
+.dropdown-body {
   padding: 1.25rem;
-  max-height: 70vh;
   overflow-y: auto;
+  max-height: calc(100vh - 12rem);
 }
 
-/* Form Sections */
+/* Dropdown Transitions */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Form Sections (matching BusinessPreviewSwitcher) */
 .form-section {
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
-}
-
-.form-section + .divider {
-  margin: 1.25rem 0;
 }
 
 .form-label {
@@ -426,7 +408,6 @@ onBeforeUnmount(() => {
   color: var(--primary-rgb);
 }
 
-/* Select Wrapper */
 .select-wrapper {
   position: relative;
 }
@@ -488,7 +469,12 @@ onBeforeUnmount(() => {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-/* Color Section */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+  margin: 1.25rem 0;
+}
+
 .section-header {
   display: flex;
   align-items: center;
@@ -590,7 +576,6 @@ onBeforeUnmount(() => {
   background-clip: text;
 }
 
-/* Reset Button */
 .reset-button {
   display: inline-flex;
   align-items: center;
@@ -627,30 +612,49 @@ onBeforeUnmount(() => {
     inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Animations */
-.dropdown-fade-enter-active,
-.dropdown-fade-leave-active {
-  transition: all 0.2s ease;
-}
-
-.dropdown-fade-enter-from,
-.dropdown-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-/* Responsive */
+/* Mobile responsive */
 @media (max-width: 640px) {
-  .preview-trigger__content {
+  .floating-button-wrapper {
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .floating-action-button {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.875rem;
+  }
+  
+  .floating-action-button__icon {
+    font-size: 1.25rem;
+  }
+  
+  .floating-action-button__text {
     display: none;
   }
 
-  .dropdown-panel {
+  .floating-dropdown {
+    bottom: 4.5rem;
+    right: 1rem;
     width: calc(100vw - 2rem);
+    max-height: calc(100vh - 6rem);
   }
 
   .color-grid {
     grid-template-columns: 1fr;
   }
 }
+
+/* Tablet */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .floating-button-wrapper {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .floating-dropdown {
+    bottom: 5.5rem;
+    right: 1.5rem;
+  }
+}
+
 </style>

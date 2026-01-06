@@ -31,6 +31,9 @@
     
     <Footer v-if="!route.path.includes('admin')"></Footer>
 
+    <!-- Floating Action Button - appears on all pages -->
+    <FloatingActionButton v-if="!route.path.includes('admin')" />
+
     <ErrorModal
       :is-visible="isErrorModalVisible"
       :error-message="errorMessage"

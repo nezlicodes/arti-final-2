@@ -1,7 +1,12 @@
 {
   "previewBanner": {
-    "lead": "Testez l’aperçu",
-    "text": "Découvrez à quoi votre boutique pourrait ressembler en quelques secondes"
+    "lead": "Testez l'aperçu",
+    "text": "Découvrez à quoi votre boutique pourrait ressembler en quelques secondes",
+    "tryIt": "✨ Essayer la Démo"
+  },
+  "floatingButton": {
+    "text": "Essayer la Démo",
+    "modalTitle": "Essayer Différents Modèles d'Entreprise"
   },
   "nav": {
     "home": "Accueil",

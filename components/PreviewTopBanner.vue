@@ -1,6 +1,7 @@
 <template>
   <div class="preview-top-banner" :dir="isRtl ? 'rtl' : 'ltr'">
     <div class="preview-top-banner__shine" aria-hidden="true" />
+    <div class="preview-top-banner__flash" aria-hidden="true" />
 
     <div class="x-container">
       <div class="flex flex-col gap-2 py-2 sm:flex-row sm:items-center sm:justify-between">
@@ -45,6 +46,35 @@ const { isRtl } = useTranslation()
 
 .preview-top-banner:hover .preview-top-banner__shine {
   transform: translateX(60%);
+}
+
+.preview-top-banner__flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: pulse-attention 2.5s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes pulse-attention {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
 }
 
 /* Ensure the switcher looks good on dark background without editing its internals */

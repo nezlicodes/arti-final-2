@@ -1,7 +1,12 @@
 {
   "previewBanner": {
     "lead": "Try the preview",
-    "text": "See what your store could look like in seconds"
+    "text": "See what your store could look like in seconds",
+    "tryIt": "✨ Try Demo"
+  },
+  "floatingButton": {
+    "text": "Try Demo",
+    "modalTitle": "Try Different Business Templates"
   },
   "nav": {
     "home": "Home",
