@@ -206,6 +206,14 @@
       "pageTitle": "Gestion des témoignages",
       "pageDescription": "Gérez les témoignages de vos clients"
     },
+    "editor": {
+      "title": "Éditeur de site web",
+      "subtitle": "Modifiez le contenu de votre site en temps réel",
+      "editingLanguage": "Vous modifiez actuellement",
+      "languageHint": "Tous les changements seront enregistrés pour cette langue uniquement",
+      "pageTitle": "Éditeur de site",
+      "pageDescription": "Gérez les paramètres de votre site, y compris les images, les textes et les configurations"
+    },
     "products": {
       "title": "Produits",
       "subtitle": "Gérez votre catalogue de produits",

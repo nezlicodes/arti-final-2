@@ -1,114 +1,97 @@
 <template>
-  <div class="grid grid-cols-1 relative bg-gray-50 min-h-screen">
-    <!-- Page content with better spacing -->
-    <div class="pb-20">
-      <div class="max-w-7xl mx-auto">
-        <!-- Header with Language Selector -->
-        <div
-          class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-200 px-3 sm:px-6 py-4 mb-8"
-        >
-          <div
-            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-          >
+  <div class="min-h-screen bg-[#f1f1f1]">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3">
+            <NuxtLink to="/admin/website" class="text-gray-400 hover:text-gray-600">
+              <Icon name="ph:arrow-left-bold" class="w-5 h-5" />
+            </NuxtLink>
             <div>
-              <h1 class="text-2xl font-medium text-gray-800">
-                Éditeur de site web
-              </h1>
-              <p class="text-sm text-gray-500 mt-1">
-                Modifiez le contenu de votre site en temps réel
-              </p>
-            </div>
-
-            <!-- Global Language Selector -->
-            <div class="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
-              <div class="flex items-center gap-2">
-                <Icon
-                  name="heroicons-outline:translate"
-                  class="w-5 h-5 text-blue-600"
-                />
-                <span class="text-sm font-medium text-gray-700">Langue:</span>
-              </div>
-              <div class="flex gap-2">
-                <button
-                  v-for="lang in languages"
-                  :key="lang.code"
-                  @click="setLanguage(lang.code)"
-                  type="button"
-                  :class="[
-                    'px-4 py-2 rounded-md text-sm font-medium transition-all',
-                    editorLanguage === lang.code
-                      ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-500 ring-offset-2'
-                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
-                  ]"
-                >
-                  {{ lang.flag }} {{ lang.name }}
-                </button>
-              </div>
+              <h1 class="text-lg font-semibold text-gray-900">{{ $t('admin.editor.title') }}</h1>
+              <p class="text-xs text-gray-500">{{ $t('admin.editor.subtitle') }}</p>
             </div>
           </div>
-
-          <!-- Language Info Banner -->
-          <div
-            class="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2"
-          >
-            <Icon
-              name="heroicons-outline:information-circle"
-              class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
-            />
-            <div class="text-sm text-blue-800">
-              <p class="font-medium">
-                Vous modifiez actuellement la version
-                <strong>{{
-                  languages.find((l) => l.code === editorLanguage)?.name
-                }}</strong>
-              </p>
-              <p class="text-blue-600 mt-1">
-                Tous les changements seront enregistrés pour cette langue
-                uniquement.
-              </p>
+          
+          <!-- Language Selector -->
+          <div class="flex items-center gap-2">
+            <Icon name="ph:translate-bold" class="w-4 h-4 text-gray-500" />
+            <div class="flex gap-2">
+              <button
+                v-for="lang in languages"
+                :key="lang.code"
+                @click="setLanguage(lang.code)"
+                type="button"
+                :class="[
+                  'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
+                  editorLanguage === lang.code
+                    ? 'bg-gray-900 text-white shadow-sm'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+                ]"
+              >
+                {{ lang.flag }} {{ lang.name }}
+              </button>
             </div>
           </div>
         </div>
-
-        <!-- Editor Components -->
-        <div class="space-y-6 px-3 sm:px-6">
-          <!-- Navigation Settings -->
-          <AppbarEditor />
-          <BannerEditor class="bg-white" />
-
-          <!-- Hero Section -->
-          <HeaderEditor class="bg-white" />
-
-          <!-- Featured Product Section (Single Product) -->
-          <FeaturedProductEditor class="bg-white" />
-
-          <!-- Featured Categories Section -->
-          <FeaturedCategoriesEditor class="bg-white" />
-
-          <!-- About Us Section -->
-          <AboutUsEditor class="bg-white" />
-
-          <!-- FAQ Section -->
-          <FAQEditor />
-
-          <!-- Testimonials Section -->
-          <TestimonialsEditor class="bg-white" />
-
-          <!-- Other sections will be updated progressively -->
-          <!-- 
-          <ContactEditor class="bg-white" />
-          <FeaturesEditor />
-          -->
-
-          <!-- Footer Section -->
-          <FooterEditor class="bg-white" />
+        
+        <!-- Language Info Banner -->
+        <div class="pb-3">
+          <div class="bg-blue-50 border border-blue-100 rounded-lg px-4 py-2.5 flex items-center gap-2">
+            <Icon name="ph:info-bold" class="w-4 h-4 text-blue-600 flex-shrink-0" />
+            <p class="text-xs text-blue-800">
+              {{ $t('admin.editor.editingLanguage') }}: <strong>{{ languages.find((l) => l.code === editorLanguage)?.name }}</strong>
+              <span class="text-blue-600 ml-1">{{ $t('admin.editor.languageHint') }}</span>
+            </p>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="space-y-6">
+        <!-- Navigation Settings -->
+        <AppbarEditor />
+        
+        <!-- Top Banner -->
+        <BannerEditor />
+
+        <!-- Hero Section -->
+        <HeaderEditor />
+
+        <!-- Featured Product Section -->
+        <FeaturedProductEditor />
+
+        <!-- Featured Categories Section -->
+        <FeaturedCategoriesEditor />
+
+        <!-- About Us Section -->
+        <AboutUsEditor />
+
+        <!-- FAQ Section -->
+        <FAQEditor />
+
+        <!-- Testimonials Section -->
+        <TestimonialsEditor />
+
+        <!-- Other sections will be updated progressively -->
+        <!-- 
+        <ContactEditor />
+        <FeaturesEditor />
+        -->
+
+        <!-- Footer Section -->
+        <FooterEditor />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const { t: $t } = useI18n()
+
 // Import the editor components
 import AppbarEditor from "~/components/settings/AppbarEditor.vue";
 import BannerEditor from "~/components/settings/BannerEditor.vue";
@@ -129,16 +112,15 @@ const languages = [
   { code: "ar", name: "العربية", flag: "🇩🇿" },
 ];
 
-useHead({
-  title: "Editeur de site",
+useHead(() => ({
+  title: $t('admin.editor.pageTitle'),
   meta: [
     {
       name: "description",
-      content:
-        "Gérez les paramètres de votre site, y compris les images, les textes et les configurations.",
+      content: $t('admin.editor.pageDescription'),
     },
   ],
-});
+}));
 </script>
 
 <style scoped></style>

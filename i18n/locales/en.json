@@ -206,6 +206,14 @@
       "pageTitle": "Testimonial Management",
       "pageDescription": "Manage customer testimonials"
     },
+    "editor": {
+      "title": "Website Editor",
+      "subtitle": "Edit your site content in real-time",
+      "editingLanguage": "Currently editing",
+      "languageHint": "All changes will be saved for this language only",
+      "pageTitle": "Site Editor",
+      "pageDescription": "Manage your site settings, including images, texts and configurations"
+    },
     "products": {
       "title": "Products",
       "subtitle": "Manage your product catalog",
