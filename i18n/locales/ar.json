@@ -95,7 +95,10 @@
     "continueShopping": "متابعة التسوق",
     "proceedToCheckout": "إتمام الطلب",
     "remove": "إزالة",
-    "quantity": "الكمية"
+    "quantity": "الكمية",
+    "addedToCart": "تمت الإضافة إلى السلة",
+    "productAdded": "تمت إضافة المنتج بنجاح",
+    "viewCart": "عرض السلة"
   },
   "footer": {
     "about": "من نحن",

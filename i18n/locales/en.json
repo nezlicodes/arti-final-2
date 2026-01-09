@@ -95,7 +95,10 @@
     "continueShopping": "Continue Shopping",
     "proceedToCheckout": "Proceed to Checkout",
     "remove": "Remove",
-    "quantity": "Quantity"
+    "quantity": "Quantity",
+    "addedToCart": "Added to cart",
+    "productAdded": "Product added successfully",
+    "viewCart": "View cart"
   },
   "footer": {
     "about": "About Us",

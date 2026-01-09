@@ -160,6 +160,7 @@
 
 <script setup>
 const { fetchSection } = useContentSections()
+const { cartItemCount: cartCount } = useCart()
 const supabase = useSupabaseClient()
 const route = useRoute()
 const { siteSettings } = useSiteSettings()
@@ -209,11 +210,7 @@ const allCategories = computed(() => {
   return categories.value.filter(cat => cat.is_active)
 })
 
-const cartItemCount = computed(() => {
-  if (!process.client) return 0
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]")
-  return cart.reduce((total, item) => total + item.quantity, 0)
-})
+const cartItemCount = computed(() => cartCount.value)
 
 const getCategoryName = (category) => {
   if (!category?.name_translations) return category?.name || ""
@@ -273,23 +270,8 @@ const fetchData = async () => {
   }
 }
 
-const handleStorageChange = (e) => {
-  if (e.key === "cart") {
-    const _ = cartItemCount.value
-  }
-}
-
 onMounted(async () => {
   await fetchData()
-  if (process.client) {
-    window.addEventListener("storage", handleStorageChange)
-  }
-})
-
-onUnmounted(() => {
-  if (process.client) {
-    window.removeEventListener("storage", handleStorageChange)
-  }
 })
 </script>
 

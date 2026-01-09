@@ -266,18 +266,38 @@
     >
       <div
         v-if="showNotification"
-        class="fixed bottom-4 right-4 x-surface-strong p-4 max-w-sm z-50"
+        class="fixed bottom-4 right-4 bg-white rounded-2xl shadow-2xl border border-gray-200 p-5 max-w-md z-50"
       >
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-green-500/10 rounded-full flex items-center justify-center">
-            <span class="text-green-600 text-xl">✓</span>
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
           </div>
-          <div>
-            <p class="font-semibold text-mgray-950">Ajouté au panier</p>
-            <p class="text-sm text-mgray-600">Produit ajouté avec succès</p>
+          <div class="flex-1">
+            <p class="font-bold text-mgray-950 text-lg mb-1">{{ $t('cart.addedToCart') }}</p>
+            <p class="text-sm text-mgray-600 mb-4">{{ $t('cart.productAdded') }}</p>
+            
+            <!-- Action buttons -->
+            <div class="flex gap-2">
+              <button 
+                @click="showNotification = false" 
+                class="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+              >
+                {{ $t('cart.continueShopping') }}
+              </button>
+              <NuxtLink 
+                to="/cart" 
+                class="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-primary hover:brightness-95 rounded-xl transition-all text-center"
+              >
+                {{ $t('cart.viewCart') }}
+              </NuxtLink>
+            </div>
           </div>
-          <button @click="showNotification = false" class="ml-auto text-mgray-400 hover:text-mgray-700">
-            <span class="text-xl">×</span>
+          <button @click="showNotification = false" class="text-mgray-400 hover:text-mgray-700 transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
           </button>
         </div>
       </div>
@@ -287,9 +307,10 @@
 
 <script setup>
 const { fetchProduct: fetchProductData } = useProducts();
+const { addToCart: addToCartComposable } = useCart();
 const supabase = useSupabaseClient(); // kept for variants/videos if needed
 const route = useRoute();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const currentLocale = computed(() => locale.value);
 
@@ -447,6 +468,8 @@ const fetchProductDetails = async () => {
     const productResult = await fetchProductData(String(route.params.slug));
 
     if (!productResult) {
+      console.warn(`Product not found: ${route.params.slug}`);
+      product.value = null;
       return;
     }
 
@@ -628,8 +651,6 @@ const isOptionValueAvailable = (optionTypeId, optionValueId) => {
 };
 
 const addToCart = () => {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  
   // Use first image for cart thumbnail
   const cartImage = product.value.images?.[0]?.url || mainMedia.value.url;
   
@@ -659,30 +680,14 @@ const addToCart = () => {
     };
   }
 
-  // Check if item already exists in cart
-  const existingItemIndex = cart.findIndex((item) => {
-    if (product.value.has_variants && currentVariant.value) {
-      return item.id === currentVariant.value.id && item.is_variant;
-    } else {
-      return item.id === product.value.id && !item.is_variant;
-    }
-  });
-
-  if (existingItemIndex !== -1) {
-    // Update quantity of existing item
-    cart[existingItemIndex].quantity += quantity.value;
-  } else {
-    // Add new item
-    cart.push(itemToAdd);
-  }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
+  // Use the cart composable to add item (handles real-time updates)
+  addToCartComposable(itemToAdd);
   
   // Show notification
   showNotification.value = true;
   setTimeout(() => { 
     showNotification.value = false; 
-  }, 3000);
+  }, 5000); // Increased to 5 seconds for better UX
   
   // Reset quantity
   quantity.value = 1;

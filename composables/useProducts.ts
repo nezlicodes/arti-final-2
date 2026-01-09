@@ -144,7 +144,10 @@ export const useProducts = () => {
       const catalog = getCatalogForBusiness(businessId.value as any)
 
       const product = catalog.products.find(p => p.id === idOrSlug || p.slug === idOrSlug)
-      if (!product) throw new Error('Product not found')
+      if (!product) {
+        console.error(`Product not found in preview catalog: ${idOrSlug}`)
+        return null // Return null instead of throwing
+      }
 
       const cat = catalog.categories.find(c => c.id === product.category_id)
 
@@ -195,11 +198,15 @@ export const useProducts = () => {
       console.error('Error fetching product:', e)
     }
 
+    // Final fallback to preview catalog
     const { getCatalogForBusiness } = await import('~/utils/business-catalogs')
     const catalog = getCatalogForBusiness(businessId.value)
 
     const product = catalog.products.find(p => p.id === idOrSlug || p.slug === idOrSlug)
-    if (!product) throw new Error('Product not found')
+    if (!product) {
+      console.error(`Product not found in database or preview catalog: ${idOrSlug}`)
+      return null // Return null instead of throwing error
+    }
 
     const cat = catalog.categories.find(c => c.id === product.category_id)
 

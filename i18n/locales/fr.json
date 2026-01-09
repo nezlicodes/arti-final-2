@@ -95,7 +95,10 @@
     "continueShopping": "Continuer vos achats",
     "proceedToCheckout": "Procéder au paiement",
     "remove": "Retirer",
-    "quantity": "Quantité"
+    "quantity": "Quantité",
+    "addedToCart": "Ajouté au panier",
+    "productAdded": "Produit ajouté avec succès",
+    "viewCart": "Voir le panier"
   },
   "footer": {
     "about": "À propos",
