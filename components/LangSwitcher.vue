@@ -5,26 +5,9 @@
       class="flex items-center relative gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
       :aria-label="$t('common.changeLanguage')"
     >
-      <!-- Current Language Flag/Icon -->
-      <svg
-        v-if="currentLocale === 'fr'"
-        class="w-5 h-5"
-        viewBox="0 0 24 24"
-        fill="none"
-      >
-        <rect width="24" height="24" fill="#002395" />
-        <rect x="8" width="8" height="24" fill="#FFFFFF" />
-        <rect x="16" width="8" height="24" fill="#ED2939" />
-      </svg>
-
-      <span v-else-if="currentLocale === 'ar'" class="text-xl leading-none">🇩🇿</span>
-
-      <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-        <rect width="24" height="24" fill="#012169" />
-        <path d="M0 0 L24 16 M24 0 L0 16" stroke="#FFFFFF" stroke-width="3" />
-        <path d="M0 0 L24 16 M24 0 L0 16" stroke="#C8102E" stroke-width="1.5" />
-        <path d="M12 0 V24 M0 12 H24" stroke="#FFFFFF" stroke-width="5" />
-        <path d="M12 0 V24 M0 12 H24" stroke="#C8102E" stroke-width="3" />
+      <!-- Language Icon -->
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
       </svg>
 
       <span class="text-sm font-medium uppercase">{{ currentLocale }}</span>
@@ -66,7 +49,6 @@
           class="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
           :class="{ 'bg-gray-100 font-semibold': currentLocale === lang.code }"
         >
-          <span class="text-2xl">{{ lang.flag }}</span>
           <span>{{ lang.name }}</span>
           <svg
             v-if="currentLocale === lang.code"
@@ -94,9 +76,9 @@ const dropdownRef = ref(null);
 const currentLocale = computed(() => locale.value);
 
 const availableLocales = computed(() => [
-  { code: "fr", name: "Français", flag: "🇫🇷" },
-  { code: "ar", name: "العربية", flag: "🇩🇿" },
-  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "fr", name: "Français" },
+  { code: "ar", name: "العربية" },
+  { code: "en", name: "English" },
 ]);
 
 const toggleDropdown = () => {
