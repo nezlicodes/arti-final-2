@@ -13,6 +13,25 @@
     "categories": "الفئات",
     "allCategories": "جميع الفئات"
   },
+  "sidebar": {
+    "home": "الرئيسية",
+    "sales": "المبيعات",
+    "orders": "الطلبات",
+    "allOrders": "جميع الطلبات",
+    "settings": "الإعدادات",
+    "products": "المنتجات",
+    "collections": "المجموعات",
+    "content": "المحتوى",
+    "media": "الوسائط",
+    "pages": "الصفحات",
+    "reviews": "التقييمات",
+    "storeDetails": "تفاصيل المتجر",
+    "theme": "المظهر",
+    "policies": "السياسات",
+    "aboutUs": "عنا",
+    "onlineStore": "المتجر الإلكتروني",
+    "signOut": "تسجيل الخروج"
+  },
   "common": {
     "home": "الرئيسية",
     "about": "من نحن",

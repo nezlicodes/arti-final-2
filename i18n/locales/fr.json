@@ -13,6 +13,25 @@
     "categories": "Catégories",
     "allCategories": "Toutes les catégories"
   },
+  "sidebar": {
+    "home": "Accueil",
+    "sales": "Ventes",
+    "orders": "Commandes",
+    "allOrders": "Toutes les commandes",
+    "settings": "Paramètres",
+    "products": "Produits",
+    "collections": "Collections",
+    "content": "Contenu",
+    "media": "Média",
+    "pages": "Pages",
+    "reviews": "Avis",
+    "storeDetails": "Détails de la boutique",
+    "theme": "Thème",
+    "policies": "Politiques",
+    "aboutUs": "À propos",
+    "onlineStore": "Boutique en ligne",
+    "signOut": "Déconnexion"
+  },
   "common": {
     "home": "Accueil",
     "about": "À propos",

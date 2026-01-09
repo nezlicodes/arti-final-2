@@ -13,6 +13,25 @@
     "categories": "Categories",
     "allCategories": "All categories"
   },
+  "sidebar": {
+    "home": "Home",
+    "sales": "Sales",
+    "orders": "Orders",
+    "allOrders": "All orders",
+    "settings": "Settings",
+    "products": "Products",
+    "collections": "Collections",
+    "content": "Content",
+    "media": "Media",
+    "pages": "Pages",
+    "reviews": "Reviews",
+    "storeDetails": "Store details",
+    "theme": "Theme",
+    "policies": "Policies",
+    "aboutUs": "About us",
+    "onlineStore": "Online Store",
+    "signOut": "Sign out"
+  },
   "common": {
     "home": "Home",
     "about": "About",
