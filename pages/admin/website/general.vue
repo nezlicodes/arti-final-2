@@ -1,216 +1,201 @@
 <template>
-  <div class="max-w-7xl pt-6 mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-[#f1f1f1]">
     <!-- Header -->
-    <div class="mb-8">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <div class="mr-3">
-            <div class="p-2 bg-blue-50 rounded-lg">
-              <Icon name="heroicons-outline:cog" class="h-6 w-6 text-blue-600" />
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3">
+            <NuxtLink to="/admin/website" class="text-gray-400 hover:text-gray-600">
+              <Icon name="ph:arrow-left-bold" class="w-5 h-5" />
+            </NuxtLink>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-900">{{ $t('admin.general.title') }}</h1>
+              <p class="text-xs text-gray-500">{{ $t('admin.general.subtitle') }}</p>
             </div>
           </div>
-          <div>
-            <h1 class="text-2xl font-semibold text-gray-900 leading-tight">
-              Paramètres généraux du site
-            </h1>
-            <p class="mt-1 text-sm text-gray-600">
-              Gérez les informations de base et l'apparence de votre site
-            </p>
+          <div class="flex items-center gap-3">
+            <button
+              @click="saveSettings"
+              :disabled="saving || !hasChanges"
+              class="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+            >
+              <Icon v-if="!saving" name="ph:check-bold" class="w-4 h-4" />
+              <Icon v-else name="ph:spinner-bold" class="w-4 h-4 animate-spin" />
+              {{ saving ? $t('admin.general.saving') : $t('admin.general.save') }}
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center py-16">
-      <div class="flex flex-col items-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-100 border-t-blue-600"></div>
-        <p class="mt-4 text-sm text-gray-600">Chargement des paramètres...</p>
+    <div v-if="loading" class="flex justify-center items-center py-32">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-3 border-gray-300 border-t-gray-900 mx-auto"></div>
+        <p class="mt-4 text-sm text-gray-600">{{ $t('admin.general.loading') }}</p>
       </div>
     </div>
 
-    <div v-else class="space-y-6">
-      <!-- Language Tabs -->
-      <div class="bg-white rounded-lg shadow-sm p-4">
-        <div class="flex items-center gap-2 mb-2">
-          <Icon name="heroicons-outline:translate" class="w-5 h-5 text-blue-600" />
-          <label class="text-sm font-medium text-gray-700">
-            Langue d'édition
-          </label>
-        </div>
-        <div class="flex gap-2">
-          <button
-            v-for="lang in languages"
-            :key="lang.code"
-            @click="currentLanguage = lang.code"
-            :class="[
-              'px-4 py-2 rounded-md text-sm font-medium transition-all',
-              currentLanguage === lang.code
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            ]"
-          >
-            {{ lang.flag }} {{ lang.name }}
-          </button>
-        </div>
-        <p class="text-xs text-gray-500 mt-2">
-          Les modifications seront enregistrées pour la langue {{ languages.find(l => l.code === currentLanguage)?.name }}
-        </p>
-      </div>
-
-      <!-- Site Information Section -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">
-          Informations du site
-        </h2>
-        <div class="space-y-4">
-          <!-- Site Name -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Nom du site
-            </label>
-            <input
-              v-model="siteConfig.site_name_translations[currentLanguage]"
-              type="text"
-              class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Nom de votre site"
-            />
-          </div>
-
-          <!-- Site Description -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Description du site
-            </label>
-            <textarea
-              v-model="siteConfig.site_description_translations[currentLanguage]"
-              rows="3"
-              class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Description de votre site"
-            ></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- Logos & Icons Section -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">
-          Logo et favicon
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Site Logo -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Logo du site
-            </label>
-            <div class="space-y-3">
-              <div v-if="uploadingLogo" class="flex items-center justify-center h-32 bg-gray-50 rounded-lg">
-                <div class="animate-spin rounded-full h-8 w-8 border-4 border-blue-200 border-t-blue-600"></div>
-              </div>
-              <div v-else-if="siteConfig.site_logo" class="relative inline-block">
-                <NuxtImg
-                  :src="siteConfig.site_logo"
-                  alt="Logo"
-                  class="h-32 w-auto object-contain bg-gray-50 rounded-lg p-2"
-                />
-                <button
-                  @click="removeLogo"
-                  type="button"
-                  class="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200"
-                >
-                  <Icon name="heroicons-outline:x" class="w-4 h-4" />
-                </button>
-              </div>
-              <div v-else class="flex items-center justify-center h-32 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                <Icon name="heroicons-outline:photograph" class="w-12 h-12 text-gray-400" />
-              </div>
-              <label
-                class="inline-flex items-center px-4 py-2 border border-blue-500 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 cursor-pointer"
-              >
-                <Icon name="heroicons-outline:upload" class="w-4 h-4 mr-2" />
-                Choisir un logo
-                <input
-                  type="file"
-                  class="hidden"
-                  accept="image/*"
-                  @change="handleLogoUpload"
-                  :disabled="uploadingLogo"
-                />
-              </label>
-              <p class="text-xs text-gray-500">PNG, JPG recommandé. Max 2MB</p>
+    <!-- Content -->
+    <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="space-y-6">
+        <!-- Language Tabs -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center gap-2">
+              <Icon name="ph:translate-bold" class="w-5 h-5 text-gray-700" />
+              <h2 class="text-base font-semibold text-gray-900">{{ $t('admin.general.editingLanguage') }}</h2>
             </div>
+            <p class="mt-1 text-sm text-gray-500">{{ $t('admin.general.languageHint') }}</p>
           </div>
-
-          <!-- Site Favicon -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Favicon
-            </label>
-            <div class="space-y-3">
-              <div v-if="uploadingFavicon" class="flex items-center justify-center h-32 bg-gray-50 rounded-lg">
-                <div class="animate-spin rounded-full h-8 w-8 border-4 border-blue-200 border-t-blue-600"></div>
-              </div>
-              <div v-else-if="siteConfig.site_favicon" class="relative inline-block">
-                <NuxtImg
-                  :src="siteConfig.site_favicon"
-                  alt="Favicon"
-                  class="h-16 w-16 object-contain bg-gray-50 rounded-lg p-2"
-                />
-                <button
-                  @click="removeFavicon"
-                  type="button"
-                  class="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200"
-                >
-                  <Icon name="heroicons-outline:x" class="w-4 h-4" />
-                </button>
-              </div>
-              <div v-else class="flex items-center justify-center h-16 w-16 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                <Icon name="heroicons-outline:photograph" class="w-6 h-6 text-gray-400" />
-              </div>
-              <label
-                class="inline-flex items-center px-4 py-2 border border-blue-500 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 cursor-pointer"
+          <div class="p-6">
+            <div class="flex gap-2">
+              <button
+                v-for="lang in languages"
+                :key="lang.code"
+                @click="currentLanguage = lang.code"
+                :class="[
+                  'px-4 py-2.5 rounded-lg text-sm font-medium transition-all',
+                  currentLanguage === lang.code
+                    ? 'bg-gray-900 text-white shadow-sm'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ]"
               >
-                <Icon name="heroicons-outline:upload" class="w-4 h-4 mr-2" />
-                Choisir un favicon
-                <input
-                  type="file"
-                  class="hidden"
-                  accept="image/*"
-                  @change="handleFaviconUpload"
-                  :disabled="uploadingFavicon"
-                />
-              </label>
-              <p class="text-xs text-gray-500">ICO, PNG 32x32px recommandé</p>
+                {{ lang.flag }} {{ lang.name }}
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Save Button -->
-      <div class="bg-white rounded-lg shadow-sm p-4">
-        <div class="flex items-center justify-between">
-          <div v-if="hasChanges" class="flex items-center text-sm text-amber-600">
-            <Icon name="heroicons-outline:exclamation-circle" class="w-4 h-4 mr-1" />
-            Modifications non enregistrées
+        <!-- Site Information Section -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div class="p-6 border-b border-gray-200">
+            <h2 class="text-base font-semibold text-gray-900">{{ $t('admin.general.siteInformation') }}</h2>
+            <p class="mt-1 text-sm text-gray-500">{{ $t('admin.general.siteInformationDesc') }}</p>
           </div>
-          <div class="flex-1 flex justify-end">
-            <button
-              @click="saveSettings"
-              :disabled="saving || !hasChanges"
-              :class="[
-                'inline-flex items-center px-6 py-2 rounded-lg text-sm font-medium transition-colors',
-                saving || !hasChanges
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              ]"
-            >
-              <Icon
-                :name="saving ? 'heroicons-outline:refresh' : 'heroicons-outline:check'"
-                class="w-4 h-4 mr-2"
-                :class="{ 'animate-spin': saving }"
+          <div class="p-6 space-y-6">
+            <!-- Site Name -->
+            <div>
+              <label class="block text-sm font-medium text-gray-900 mb-2">
+                {{ $t('admin.general.siteName') }}
+              </label>
+              <input
+                v-model="siteConfig.site_name_translations[currentLanguage]"
+                type="text"
+                class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                :placeholder="$t('admin.general.siteNamePlaceholder')"
               />
-              {{ saving ? 'Enregistrement...' : 'Enregistrer les modifications' }}
-            </button>
+            </div>
+
+            <!-- Site Description -->
+            <div>
+              <label class="block text-sm font-medium text-gray-900 mb-2">
+                {{ $t('admin.general.siteDescription') }}
+              </label>
+              <textarea
+                v-model="siteConfig.site_description_translations[currentLanguage]"
+                rows="4"
+                class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all resize-none"
+                :placeholder="$t('admin.general.siteDescriptionPlaceholder')"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logos & Icons Section -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div class="p-6 border-b border-gray-200">
+            <h2 class="text-base font-semibold text-gray-900">{{ $t('admin.general.logosFavicon') }}</h2>
+            <p class="mt-1 text-sm text-gray-500">{{ $t('admin.general.logosFaviconDesc') }}</p>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Site Logo -->
+              <div>
+                <label class="block text-sm font-medium text-gray-900 mb-3">
+                  {{ $t('admin.general.siteLogo') }}
+                </label>
+                <div class="space-y-3">
+                  <div v-if="uploadingLogo" class="flex items-center justify-center h-32 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <div class="animate-spin rounded-full h-8 w-8 border-3 border-gray-300 border-t-gray-900"></div>
+                  </div>
+                  <div v-else-if="siteConfig.site_logo" class="relative inline-block">
+                    <NuxtImg
+                      :src="siteConfig.site_logo"
+                      alt="Logo"
+                      class="h-32 w-auto object-contain bg-gray-50 rounded-lg p-3 border border-gray-200"
+                    />
+                    <button
+                      @click="removeLogo"
+                      type="button"
+                      class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-sm"
+                    >
+                      <Icon name="ph:x-bold" class="w-3 h-3" />
+                    </button>
+                  </div>
+                  <div v-else class="flex items-center justify-center h-32 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <Icon name="ph:image-bold" class="w-12 h-12 text-gray-400" />
+                  </div>
+                  <label
+                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
+                  >
+                    <Icon name="ph:upload-bold" class="w-4 h-4 mr-2" />
+                    {{ $t('admin.general.chooseLogo') }}
+                    <input
+                      type="file"
+                      class="hidden"
+                      accept="image/*"
+                      @change="handleLogoUpload"
+                      :disabled="uploadingLogo"
+                    />
+                  </label>
+                  <p class="text-xs text-gray-500">{{ $t('admin.general.logoHint') }}</p>
+                </div>
+              </div>
+
+              <!-- Site Favicon -->
+              <div>
+                <label class="block text-sm font-medium text-gray-900 mb-3">
+                  {{ $t('admin.general.siteFavicon') }}
+                </label>
+                <div class="space-y-3">
+                  <div v-if="uploadingFavicon" class="flex items-center justify-center h-32 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <div class="animate-spin rounded-full h-8 w-8 border-3 border-gray-300 border-t-gray-900"></div>
+                  </div>
+                  <div v-else-if="siteConfig.site_favicon" class="relative inline-block">
+                    <NuxtImg
+                      :src="siteConfig.site_favicon"
+                      alt="Favicon"
+                      class="h-16 w-16 object-contain bg-gray-50 rounded-lg p-2 border border-gray-200"
+                    />
+                    <button
+                      @click="removeFavicon"
+                      type="button"
+                      class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-sm"
+                    >
+                      <Icon name="ph:x-bold" class="w-3 h-3" />
+                    </button>
+                  </div>
+                  <div v-else class="flex items-center justify-center h-16 w-16 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <Icon name="ph:image-bold" class="w-6 h-6 text-gray-400" />
+                  </div>
+                  <label
+                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
+                  >
+                    <Icon name="ph:upload-bold" class="w-4 h-4 mr-2" />
+                    {{ $t('admin.general.chooseFavicon') }}
+                    <input
+                      type="file"
+                      class="hidden"
+                      accept="image/*"
+                      @change="handleFaviconUpload"
+                      :disabled="uploadingFavicon"
+                    />
+                  </label>
+                  <p class="text-xs text-gray-500">{{ $t('admin.general.faviconHint') }}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -218,7 +203,9 @@
   </div>
 </template>
 
+
 <script setup>
+const { t: $t } = useI18n()
 const supabase = useSupabaseClient()
 const { showError } = useErrorModal()
 const { showSuccess } = useSuccessSnackbar()
@@ -279,7 +266,7 @@ const loadSettings = async () => {
     }
   } catch (error) {
     console.error('Error loading settings:', error)
-    showError('Impossible de charger les paramètres')
+    showError($t('admin.general.errorLoading'))
   } finally {
     loading.value = false
   }
@@ -305,7 +292,7 @@ const createDefaultConfig = async () => {
     originalConfig.value = JSON.parse(JSON.stringify(data))
   } catch (error) {
     console.error('Error creating default config:', error)
-    showError('Erreur lors de la création de la configuration')
+    showError($t('admin.general.errorCreating'))
   }
 }
 
@@ -327,10 +314,10 @@ const saveSettings = async () => {
     if (error) throw error
 
     originalConfig.value = JSON.parse(JSON.stringify(siteConfig.value))
-    showSuccess('Paramètres enregistrés avec succès')
+    showSuccess($t('admin.general.savedSuccess'))
   } catch (error) {
     console.error('Error saving settings:', error)
-    showError('Erreur lors de l\'enregistrement')
+    showError($t('admin.general.errorSaving'))
   } finally {
     saving.value = false
   }
@@ -345,7 +332,7 @@ const handleLogoUpload = async (event) => {
   try {
     // Validate file size (2MB max)
     if (file.size > 2 * 1024 * 1024) {
-      throw new Error('L\'image doit faire moins de 2 Mo')
+      throw new Error($t('admin.general.errorFileSize2MB'))
     }
 
     const fileExt = file.name.split('.').pop()
@@ -372,7 +359,7 @@ const handleLogoUpload = async (event) => {
     siteConfig.value.site_logo = publicUrl
   } catch (error) {
     console.error('Upload error:', error)
-    showError(error.message || 'Erreur lors du téléchargement')
+    showError(error.message || $t('admin.general.errorUpload'))
   } finally {
     uploadingLogo.value = false
     event.target.value = ''
@@ -388,7 +375,7 @@ const handleFaviconUpload = async (event) => {
   try {
     // Validate file size (1MB max)
     if (file.size > 1 * 1024 * 1024) {
-      throw new Error('L\'image doit faire moins de 1 Mo')
+      throw new Error($t('admin.general.errorFileSize1MB'))
     }
 
     const fileExt = file.name.split('.').pop()
@@ -415,7 +402,7 @@ const handleFaviconUpload = async (event) => {
     siteConfig.value.site_favicon = publicUrl
   } catch (error) {
     console.error('Upload error:', error)
-    showError(error.message || 'Erreur lors du téléchargement')
+    showError(error.message || $t('admin.general.errorUpload'))
   } finally {
     uploadingFavicon.value = false
     event.target.value = ''
@@ -434,7 +421,7 @@ const removeLogo = async () => {
     siteConfig.value.site_logo = ''
   } catch (error) {
     console.error('Delete error:', error)
-    showError('Erreur lors de la suppression')
+    showError($t('admin.general.errorDelete'))
   }
 }
 
@@ -450,7 +437,7 @@ const removeFavicon = async () => {
     siteConfig.value.site_favicon = ''
   } catch (error) {
     console.error('Delete error:', error)
-    showError('Erreur lors de la suppression')
+    showError($t('admin.general.errorDelete'))
   }
 }
 
@@ -458,13 +445,13 @@ onMounted(async () => {
   await loadSettings()
 })
 
-useHead({
-  title: 'Paramètres généraux',
+useHead(() => ({
+  title: $t('admin.general.pageTitle'),
   meta: [
     {
       name: 'description',
-      content: 'Gérez les paramètres généraux de votre site'
+      content: $t('admin.general.pageDescription')
     }
   ]
-})
+}))
 </script>
