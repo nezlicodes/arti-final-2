@@ -13,10 +13,11 @@
         >
           <NuxtLink to="/admin" class="flex items-center home">
             <div
+            v-if="!isExpanded"
               class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-primary font-bold"
             >
-              <span v-if="isExpanded">C5</span>
-              <span v-else>A</span>
+              <span>LD</span>
+              
             </div>
             <span v-if="isExpanded" class="ml-3 font-bold text-white text-lg"
               >Livraison Disponible</span
