@@ -162,7 +162,12 @@ export const useProducts = () => {
     try {
       let query = supabase
         .from('products')
-        .select('*, categories(id, name_translations, slug)')
+        .select(`
+          *, 
+          categories(id, name_translations, slug),
+          images:product_images(id, url, is_primary, position),
+          videos:product_videos(id, url, duration, position)
+        `)
         .eq('is_active', true)
 
       // Check if it's a UUID or slug
@@ -187,6 +192,7 @@ export const useProducts = () => {
       }
     } catch (e) {
       // ignore and fall back to preview
+      console.error('Error fetching product:', e)
     }
 
     const { getCatalogForBusiness } = await import('~/utils/business-catalogs')

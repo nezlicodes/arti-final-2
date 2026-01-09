@@ -697,11 +697,6 @@ const formatPrice = (price) => {
   }).format(value);
 };
 
-onMounted(async () => {
-  await fetchFeaturesConfig();
-  await fetchProduct();
-});
-
 useHead({
   title: getMetaTitle(),
   meta: [{ name: "description", content: getMetaDescription() }],
