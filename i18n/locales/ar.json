@@ -98,7 +98,16 @@
     "quantity": "الكمية",
     "addedToCart": "تمت الإضافة إلى السلة",
     "productAdded": "تمت إضافة المنتج بنجاح",
-    "viewCart": "عرض السلة"
+    "viewCart": "عرض السلة",
+    "startAdding": "ابدأ بإضافة المنتجات إلى سلتك",
+    "itemsInCart": "العناصر في السلة",
+    "unitPrice": "سعر الوحدة",
+    "orderSummary": "ملخص الطلب",
+    "or": "أو",
+    "clearCart": "إفراغ السلة",
+    "clearCartMessage": "هل أنت متأكد من رغبتك في إفراغ سلة التسوق؟ لا يمكن التراجع عن هذا الإجراء.",
+    "clearCartConfirm": "نعم، إفراغ السلة",
+    "metaDescription": "راجع سلتك وأكمل طلبك"
   },
   "footer": {
     "about": "من نحن",

@@ -203,7 +203,7 @@
             class="text-sm font-semibold text-red-600 hover:text-red-500"
             @click="clearCart"
           >
-            Vider le panier
+            {{ $t('cart.clearCart') }}
           </button>
         </div>
       </div>

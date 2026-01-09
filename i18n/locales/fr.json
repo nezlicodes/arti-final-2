@@ -98,7 +98,16 @@
     "quantity": "Quantité",
     "addedToCart": "Ajouté au panier",
     "productAdded": "Produit ajouté avec succès",
-    "viewCart": "Voir le panier"
+    "viewCart": "Voir le panier",
+    "startAdding": "Commencez à ajouter des produits à votre panier",
+    "itemsInCart": "Articles dans le panier",
+    "unitPrice": "prix unitaire",
+    "orderSummary": "Récapitulatif de la commande",
+    "or": "ou",
+    "clearCart": "Vider le panier",
+    "clearCartMessage": "Êtes-vous sûr de vouloir vider votre panier ? Cette action est irréversible.",
+    "clearCartConfirm": "Oui, vider le panier",
+    "metaDescription": "Consultez votre panier et finalisez votre commande"
   },
   "footer": {
     "about": "À propos",

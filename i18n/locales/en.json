@@ -98,7 +98,16 @@
     "quantity": "Quantity",
     "addedToCart": "Added to cart",
     "productAdded": "Product added successfully",
-    "viewCart": "View cart"
+    "viewCart": "View cart",
+    "startAdding": "Start adding products to your cart",
+    "itemsInCart": "Items in cart",
+    "unitPrice": "unit price",
+    "orderSummary": "Order Summary",
+    "or": "or",
+    "clearCart": "Clear cart",
+    "clearCartMessage": "Are you sure you want to clear your cart? This action cannot be undone.",
+    "clearCartConfirm": "Yes, clear cart",
+    "metaDescription": "Review your cart and complete your order"
   },
   "footer": {
     "about": "About Us",

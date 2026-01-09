@@ -138,30 +138,7 @@ export const useProducts = () => {
   const fetchProduct = async (idOrSlug: string) => {
     const locale = getCurrentLocale()
 
-    // If visitor selected a non-default business, force preview catalog
-    if (businessId.value !== 'ecommerce') {
-      const { getCatalogForBusiness } = await import('~/utils/business-catalogs')
-      const catalog = getCatalogForBusiness(businessId.value as any)
-
-      const product = catalog.products.find(p => p.id === idOrSlug || p.slug === idOrSlug)
-      if (!product) {
-        console.error(`Product not found in preview catalog: ${idOrSlug}`)
-        return null // Return null instead of throwing
-      }
-
-      const cat = catalog.categories.find(c => c.id === product.category_id)
-
-      return {
-        ...product,
-        name: product.name,
-        description: product.description || '',
-        name_translations: { fr: product.name, en: product.name, ar: product.name },
-        description_translations: { fr: product.description || '', en: product.description || '', ar: product.description || '' },
-        categories: cat ? { id: cat.id, slug: cat.slug, name_translations: { fr: cat.name, en: cat.name, ar: cat.name } } : null,
-        category: cat ? { id: cat.id, slug: cat.slug, name: cat.name } : null
-      } as any
-    }
-
+    // Always try database first
     try {
       let query = supabase
         .from('products')
@@ -194,11 +171,10 @@ export const useProducts = () => {
         }
       }
     } catch (e) {
-      // ignore and fall back to preview
-      console.error('Error fetching product:', e)
+      console.error('Error fetching product from database:', e)
     }
 
-    // Final fallback to preview catalog
+    // Fallback to preview catalog only if database didn't return anything
     const { getCatalogForBusiness } = await import('~/utils/business-catalogs')
     const catalog = getCatalogForBusiness(businessId.value)
 
