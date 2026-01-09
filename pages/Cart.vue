@@ -110,7 +110,7 @@
                     <div class="flex items-center space-x-2">
                       <label :for="'quantity-' + item.id" class="sr-only">{{ $t('cart.quantity') }}</label>
                       <button
-                        @click="updateQuantity(item.id, item.quantity - 1)"
+                        @click="updateQuantity(item.id, item.quantity - 1, item.is_variant)"
                         class="w-10 h-10 rounded-xl border border-mgray-200 bg-white text-mgray-800 hover:bg-mgray-50 disabled:opacity-40 disabled:cursor-not-allowed"
                         :disabled="item.quantity <= 1"
                       >
@@ -122,10 +122,10 @@
                         type="number"
                         min="1"
                         class="w-16 rounded-xl border-mgray-300 text-center text-sm bg-white"
-                        @change="updateQuantity(item.id, item.quantity)"
+                        @change="updateQuantity(item.id, item.quantity, item.is_variant)"
                       />
                       <button
-                        @click="updateQuantity(item.id, item.quantity + 1)"
+                        @click="updateQuantity(item.id, item.quantity + 1, item.is_variant)"
                         class="w-10 h-10 rounded-xl border border-mgray-200 bg-white text-mgray-800 hover:bg-mgray-50"
                       >
                         +
@@ -252,27 +252,41 @@ const updateLocalStorage = () => {
 };
 
 // Mettre à jour la quantité
-const updateQuantity = (itemId, newQuantity) => {
+const updateQuantity = (itemId, newQuantity, isVariant = false) => {
   if (newQuantity < 1) return;
 
-  const item = cartItems.value.find((item) => item.id === itemId);
+  const item = cartItems.value.find((item) => {
+    if (isVariant) {
+      return item.id === itemId && item.is_variant;
+    }
+    return item.id === itemId && !item.is_variant;
+  });
+  
   if (item) {
     item.quantity = newQuantity;
     updateLocalStorage();
+    // Trigger cart update event for real-time sync
+    if (process.client) {
+      window.dispatchEvent(new Event('cart-updated'));
+    }
   }
 };
 
 // Supprimer un article
-const removeItem = (itemId, isVariant) => {
+const removeItem = (itemId, isVariant = false) => {
   cartItems.value = cartItems.value.filter((item) => {
     // Pour les variantes, vérifier id et is_variant
     if (isVariant) {
       return !(item.id === itemId && item.is_variant);
     }
     // Pour les produits simples, vérifier seulement id
-    return item.id !== itemId;
+    return !(item.id === itemId && !item.is_variant);
   });
   updateLocalStorage();
+  // Trigger cart update event for real-time sync
+  if (process.client) {
+    window.dispatchEvent(new Event('cart-updated'));
+  }
 };
 
 // Vider le panier

@@ -275,6 +275,27 @@
                       </select>
                     </div>
                   </div>
+                  
+                  <!-- Address Field (for home delivery) -->
+                  <div v-if="form.deliveryType === 'home'" class="mt-4">
+                    <label
+                      for="address"
+                      class="block text-sm font-medium text-mgray-700 mb-1"
+                    >
+                      Adresse complète*
+                    </label>
+                    <textarea
+                      id="address"
+                      v-model="form.address"
+                      rows="3"
+                      required
+                      class="block w-full rounded-2xl border-mgray-300 bg-white/80 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      placeholder="Entrez votre adresse complète (rue, bâtiment, étage, etc.)"
+                    ></textarea>
+                    <p class="mt-1 text-xs text-mgray-500">
+                      Veuillez fournir une adresse détaillée pour la livraison à domicile
+                    </p>
+                  </div>
                 </div>
               </section>
 
@@ -482,6 +503,7 @@ const form = reactive({
   deliveryType: null,
   wilayaId: null,
   communeId: null,
+  address: "",
   message: "",
 });
 
@@ -505,15 +527,21 @@ const totalPrice = computed(() => {
 });
 
 const canSubmit = computed(() => {
-  return (
+  const baseConditions = 
     form.firstName &&
     form.lastName &&
     form.phoneNumber &&
     form.deliveryType &&
     form.wilayaId &&
     form.communeId &&
-    cartItems.value.length > 0
-  );
+    cartItems.value.length > 0;
+  
+  // If home delivery, address is required
+  if (form.deliveryType === 'home') {
+    return baseConditions && form.address.trim().length > 0;
+  }
+  
+  return baseConditions;
 });
 
 // Load cart from localStorage
@@ -593,20 +621,34 @@ const handleSubmit = async () => {
   try {
     // Create order for each cart item
     const orderPromises = cartItems.value.map((item) => {
+      // Prepare variant options if product has variants
+      let variantOptions = null;
+      if (item.is_variant && item.options) {
+        variantOptions = item.options;
+      }
+      
       const orderData = {
         first_name: form.firstName,
         last_name: form.lastName,
         phone_number: form.phoneNumber,
-        product_name: item.name,
+        product_name: item.is_variant && item.variant_name ? `${item.name} - ${item.variant_name}` : item.name,
         quantity: item.quantity,
         wilaya_id: form.wilayaId,
         commune_id: form.communeId,
+        address: form.deliveryType === 'home' ? form.address : null,
         message: form.message || null,
         unit_price: item.price,
         total_price: item.price * item.quantity,
         delivery_type: form.deliveryType,
         delivery_fee: deliveryFee.value,
+        product_id: item.product_id || item.id,
+        product_image_url: item.image,
+        variant_options: variantOptions,
       };
+      
+      console.log('Order data being sent:', orderData);
+      console.log('Variant options:', variantOptions);
+      
       return createOrder(orderData);
     });
 

@@ -356,11 +356,37 @@
             <!-- Product Info -->
             <div>
               <h3 class="text-sm font-medium text-gray-900 mb-3">Produit</h3>
-              <dl class="space-y-2">
-                <div>
-                  <dt class="text-xs text-gray-500">Nom du produit</dt>
-                  <dd class="text-sm text-gray-900 mt-1">{{ selectedOrder.product_name }}</dd>
+              <dl class="space-y-3">
+                <div class="flex gap-4" v-if="selectedOrder.product_image_url">
+                  <img 
+                    :src="selectedOrder.product_image_url" 
+                    :alt="selectedOrder.product_name"
+                    class="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                  />
+                  <div class="flex-1">
+                    <dt class="text-xs text-gray-500">Nom du produit</dt>
+                    <dd class="text-sm font-medium text-gray-900 mt-1">{{ selectedOrder.product_name }}</dd>
+                  </div>
                 </div>
+                <div v-else>
+                  <dt class="text-xs text-gray-500">Nom du produit</dt>
+                  <dd class="text-sm font-medium text-gray-900 mt-1">{{ selectedOrder.product_name }}</dd>
+                </div>
+                
+                <!-- Variant Options -->
+                <div v-if="selectedOrder.variant_options && Object.keys(selectedOrder.variant_options).length > 0">
+                  <dt class="text-xs text-gray-500 mb-2">Options de variante</dt>
+                  <dd class="flex flex-wrap gap-2">
+                    <span
+                      v-for="(value, key) in selectedOrder.variant_options"
+                      :key="key"
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200"
+                    >
+                      {{ key }}: {{ value }}
+                    </span>
+                  </dd>
+                </div>
+                
                 <div class="grid grid-cols-3 gap-4">
                   <div>
                     <dt class="text-xs text-gray-500">Quantité</dt>
@@ -382,8 +408,17 @@
 
             <!-- Shipping Info -->
             <div>
-              <h3 class="text-sm font-medium text-gray-900 mb-3">Adresse de livraison</h3>
+              <h3 class="text-sm font-medium text-gray-900 mb-3">Informations de livraison</h3>
               <dl class="space-y-2">
+                <div>
+                  <dt class="text-xs text-gray-500">Type de livraison</dt>
+                  <dd class="text-sm text-gray-900 mt-1">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="selectedOrder.delivery_type === 'home' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'">
+                      {{ selectedOrder.delivery_type === 'home' ? 'Livraison à domicile' : 'Stop Desk' }}
+                    </span>
+                  </dd>
+                </div>
                 <div>
                   <dt class="text-xs text-gray-500">Wilaya</dt>
                   <dd class="text-sm text-gray-900 mt-1">{{ selectedOrder.wilaya_name }} ({{ selectedOrder.wilaya_name_ar }})</dd>
@@ -391,6 +426,14 @@
                 <div>
                   <dt class="text-xs text-gray-500">Commune</dt>
                   <dd class="text-sm text-gray-900 mt-1">{{ selectedOrder.commune_name }} ({{ selectedOrder.commune_name_ar }})</dd>
+                </div>
+                <div v-if="selectedOrder.delivery_type === 'home' && selectedOrder.address">
+                  <dt class="text-xs text-gray-500">Adresse complète</dt>
+                  <dd class="text-sm text-gray-900 mt-1 bg-gray-50 rounded-lg p-3">{{ selectedOrder.address }}</dd>
+                </div>
+                <div v-if="selectedOrder.delivery_fee">
+                  <dt class="text-xs text-gray-500">Frais de livraison</dt>
+                  <dd class="text-sm font-medium text-gray-900 mt-1">{{ selectedOrder.delivery_fee.toFixed(2) }} DZD</dd>
                 </div>
               </dl>
             </div>
@@ -515,7 +558,18 @@ const loadOrders = async () => {
   loading.value = true
   const result = await getAllOrders()
   if (result) {
-    orders.value = result
+    // Parse variant_options if it's stored as JSON string
+    orders.value = result.map(order => {
+      if (order.variant_options && typeof order.variant_options === 'string') {
+        try {
+          order.variant_options = JSON.parse(order.variant_options)
+        } catch (e) {
+          console.error('Error parsing variant_options for order', order.id, e)
+          order.variant_options = null
+        }
+      }
+      return order
+    })
   }
   loading.value = false
 }
