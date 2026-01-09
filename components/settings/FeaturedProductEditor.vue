@@ -10,68 +10,145 @@
       <div v-if="!sectionData.is_active" class="flex items-center justify-center py-12 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg">
         <div class="text-center">
           <Icon name="heroicons-outline:information-circle" class="mx-auto h-12 w-12 text-gray-400" />
-          <h3 class="mt-2 text-sm font-medium text-gray-900">Featured Products section hidden</h3>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">Featured Product section hidden</h3>
           <p class="mt-1 text-sm text-gray-500">Click the eye icon to show the section</p>
         </div>
       </div>
 
-      <section v-else class="py-10">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-8">
+      <section v-else class="x-section relative overflow-hidden">
+        <div class="x-container relative px-4 sm:px-6 lg:px-8">
+          
+          <!-- Section Header -->
+          <div class="text-center mb-14">
             <div class="relative inline-block group">
-              <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              <h2 class="x-title">
                 {{ currentTitle || 'Click to add title' }}
               </h2>
-              <button @click="openFieldEditor('title')" class="absolute -top-2 -right-10 bg-primary p-2 rounded-full text-white shadow-lg opacity-0 group-hover:opacity-100" title="Edit title">
+              <button @click="openFieldEditor('title')" class="absolute -top-2 -right-10 bg-primary p-2 rounded-full text-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity" title="Edit title">
                 <Icon class="w-4 h-4" name="heroicons-outline:pencil" />
               </button>
             </div>
-            <div class="w-16 h-0.5 bg-primary mx-auto mb-4"></div>
-            <div class="relative inline-block group">
-              <p class="text-base text-gray-600 max-w-2xl mx-auto">
+            <div class="relative inline-block group mt-2">
+              <p class="x-subtitle max-w-2xl mx-auto">
                 {{ currentSubtitle || 'Click to add subtitle' }}
               </p>
-              <button @click="openFieldEditor('subtitle')" class="absolute -top-2 -right-10 bg-primary p-2 rounded-full text-white shadow-lg opacity-0 group-hover:opacity-100" title="Edit subtitle">
+              <button @click="openFieldEditor('subtitle')" class="absolute -top-2 -right-10 bg-primary p-2 rounded-full text-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity" title="Edit subtitle">
                 <Icon class="w-4 h-4" name="heroicons-outline:pencil" />
               </button>
             </div>
+            <div class="x-divider mx-auto"></div>
           </div>
 
-          <div class="mt-8 max-w-3xl mx-auto text-left">
-            <template v-if="!selectedProductId">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Select product</label>
-              <div class="flex gap-2 mb-3">
-                <input v-model="productSearch" type="text" class="flex-1 border rounded-lg px-3 py-2" placeholder="Search products..." />
-                <button @click="loadProducts" type="button" class="px-3 py-2 border rounded-lg hover:bg-gray-50">Refresh</button>
-              </div>
-              <select v-model="selectedProductId" @change="handleProductChange" class="w-full border rounded-lg px-3 py-2">
-                <option :value="null">-- None --</option>
-                <option v-for="p in filteredProducts" :key="p.id" :value="p.id">
-                  {{ p.name_translations?.[editorLanguage] || p.name_translations?.fr || p.name || `#${p.id}` }}
-                </option>
-              </select>
-            </template>
-
-            <template v-else>
-              <div class="p-4 border rounded-lg bg-gray-50">
-                <div class="flex items-start gap-4">
-                  <NuxtImg v-if="selectedProductImage" :src="selectedProductImage.url" :alt="selectedProductName" class="w-28 h-28 object-cover rounded"/>
-                  <div class="flex-1">
-                    <div class="font-semibold">{{ selectedProductName }}</div>
-                    <div class="text-sm text-gray-600" v-if="selectedProduct?.price != null">{{ formatPrice(selectedProduct.price) }}</div>
-                    <div class="text-sm text-gray-500" v-if="selectedProduct?.slug">Slug: {{ selectedProduct.slug }}</div>
+          <!-- Product Selection (when no product selected) -->
+          <div v-if="!selectedProductId" class="max-w-3xl mx-auto mb-8">
+            <div class="bg-blue-50 border-2 border-dashed border-blue-300 rounded-3xl p-8 text-center">
+              <Icon name="ph:package" class="w-16 h-16 text-blue-400 mx-auto mb-4" />
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Select a Featured Product</h3>
+              <p class="text-sm text-gray-600 mb-4">Choose a product to feature in this section</p>
+              
+              <div class="max-w-md mx-auto space-y-3">
+                <div class="flex gap-2">
+                  <input v-model="productSearch" type="text" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Search products..." />
+                  <button @click="loadProducts" type="button" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-white text-sm">
+                    <Icon name="heroicons-outline:refresh" class="w-4 h-4" />
+                  </button>
+                </div>
+                <div v-if="products.length === 0" class="text-sm text-gray-500 py-4">
+                  No products available. Please create products first.
+                </div>
+                <div v-else>
+                  <select v-model="localSelectedProductId" @change="handleProductSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    <option :value="null">-- Select a product --</option>
+                    <option v-for="p in filteredProducts" :key="p.id" :value="p.id">
+                      {{ p.name_translations?.[editorLanguage] || p.name_translations?.fr || p.name || `#${p.id}` }}
+                    </option>
+                  </select>
+                  <div class="mt-2 text-xs text-gray-500">
+                    Debug: localSelectedProductId = {{ localSelectedProductId }}, selectedProductId = {{ selectedProductId }}
                   </div>
                 </div>
-                <div class="mt-4">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Product description ({{ getCurrentLanguageName() }})</label>
-                  <textarea v-model="sectionData.content_translations[editorLanguage].product_description" rows="5" class="w-full border rounded-lg px-3 py-2" placeholder="Add a description for the featured product..."></textarea>
-                </div>
-                <div class="mt-4 flex gap-2">
-                  <button type="button" class="px-3 py-2 border rounded-lg hover:bg-white" @click="selectedProductId = null; handleProductChange()">Change product</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Featured Product Card (matching FeaturedProductSection UI) -->
+          <div v-else class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 relative">
+            <!-- Change Product Button -->
+            <button 
+              @click="clearProductSelection" 
+              type="button"
+              class="absolute top-4 left-4 z-10 px-4 py-2 bg-white/90 backdrop-blur-sm hover:bg-white rounded-lg shadow-lg text-sm font-medium text-gray-700 flex items-center gap-2 transition-all"
+            >
+              <Icon name="heroicons-outline:refresh" class="w-4 h-4" />
+              Change Product
+            </button>
+
+            <div class="grid lg:grid-cols-2 gap-0">
+              
+              <!-- Product Image -->
+              <div class="relative aspect-square lg:aspect-auto bg-gray-50">
+                <NuxtImg
+                  v-if="selectedProductImage"
+                  :src="selectedProductImage.url"
+                  :alt="selectedProductName"
+                  class="w-full h-full object-cover"
+                />
+                <div v-else class="w-full h-full flex items-center justify-center">
+                  <div class="text-center space-y-4">
+                    <Icon name="ph:package" class="w-20 h-20 text-gray-300 mx-auto" />
+                    <p class="text-gray-400 font-medium">Product Image</p>
+                  </div>
                 </div>
               </div>
-            </template>
+
+              <!-- Product Details -->
+              <div class="p-8 lg:p-12 flex flex-col justify-center">
+                
+                <!-- Product Name -->
+                <h3 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                  {{ selectedProductName }}
+                </h3>
+
+                <!-- Price -->
+                <div class="flex items-baseline space-x-4 mb-8">
+                  <span v-if="selectedProduct?.price != null" class="text-4xl lg:text-5xl font-bold text-gray-900">
+                    {{ formatPrice(selectedProduct.price) }}
+                  </span>
+                </div>
+
+                <!-- Description Editor -->
+                <div class="mb-8">
+                  <div class="flex items-center justify-between mb-2">
+                    <label class="text-sm font-medium text-gray-700">
+                      Product Description ({{ getCurrentLanguageName() }})
+                    </label>
+                    <button @click="saveDescription" type="button" :disabled="saving" class="px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center gap-1">
+                      <Icon :name="saving ? 'heroicons-outline:refresh' : 'heroicons-outline:check'" class="w-3 h-3" :class="{ 'animate-spin': saving }" />
+                      {{ saving ? 'Saving...' : 'Save' }}
+                    </button>
+                  </div>
+                  <textarea 
+                    v-model="localDescription" 
+                    @blur="saveDescription"
+                    rows="4" 
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg text-gray-600 leading-relaxed focus:ring-2 focus:ring-primary focus:border-transparent" 
+                    placeholder="Add a description for the featured product..."
+                  ></textarea>
+                  <p class="text-xs text-gray-500 mt-1">This description will be displayed below the price</p>
+                </div>
+
+                <!-- CTA Button Preview -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                  <div class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-primary text-contrast1 text-lg font-semibold rounded-2xl pointer-events-none opacity-75">
+                    View Product
+                    <Icon name="ph:arrow-right-bold" class="w-5 h-5 ml-2" />
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
+
         </div>
       </section>
     </div>
@@ -110,6 +187,7 @@ const languages = [
 
 const editingField = ref(null)
 const editData = ref({})
+const saving = ref(false)
 
 const sectionData = ref({
   section_key: SECTION_KEY,
@@ -122,6 +200,10 @@ const sectionData = ref({
   }
 })
 
+// Local state for better UX
+const localDescription = ref('')
+const localSelectedProductId = ref(null)
+
 const currentTitle = computed(() => sectionData.value.content_translations?.[editorLanguage.value]?.title || '')
 const currentSubtitle = computed(() => sectionData.value.content_translations?.[editorLanguage.value]?.subtitle || '')
 const currentProductDescription = computed(() => sectionData.value.content_translations?.[editorLanguage.value]?.product_description || '')
@@ -133,6 +215,23 @@ const selectedProductId = computed({
     sectionData.value.content_translations.meta.selected_product_id = num
   }
 })
+
+// Watch for language changes and sync local description
+watch([editorLanguage, () => sectionData.value.content_translations], () => {
+  if (!sectionData.value.content_translations[editorLanguage.value]) {
+    sectionData.value.content_translations[editorLanguage.value] = { 
+      title: '', 
+      subtitle: '', 
+      product_description: '' 
+    }
+  }
+  localDescription.value = sectionData.value.content_translations[editorLanguage.value]?.product_description || ''
+}, { immediate: true, deep: true })
+
+// Sync local product ID with the computed one
+watch(selectedProductId, (newVal) => {
+  localSelectedProductId.value = newVal
+}, { immediate: true })
 
 const getCurrentLanguageName = () => languages.find(l => l.code === editorLanguage.value)?.name || ''
 
@@ -187,6 +286,8 @@ const loadProducts = async () => {
       .limit(100)
     if (error) throw error
     products.value = data || []
+    console.log('Loaded products:', products.value.length)
+    console.log('First product:', products.value[0])
   } catch (e) {
     console.error('Error loading products', e)
   }
@@ -213,6 +314,20 @@ const loadData = async () => {
       if (!sectionData.value.content_translations.meta) {
         sectionData.value.content_translations.meta = { selected_product_id: null }
       }
+      
+      // Initialize missing language objects
+      ['fr', 'ar', 'en'].forEach(lang => {
+        if (!sectionData.value.content_translations[lang]) {
+          sectionData.value.content_translations[lang] = { 
+            title: '', 
+            subtitle: '', 
+            product_description: '' 
+          }
+        }
+      })
+      
+      // Sync local description
+      localDescription.value = sectionData.value.content_translations[editorLanguage.value]?.product_description || ''
     }
   } catch (error) {
     console.error('Error loading section:', error)
@@ -242,6 +357,8 @@ const saveField = async () => {
 
 const saveSection = async () => {
   try {
+    saving.value = true
+    
     const dataToSave = {
       section_key: SECTION_KEY,
       is_active: sectionData.value.is_active,
@@ -268,7 +385,54 @@ const saveSection = async () => {
   } catch (error) {
     console.error('Save error:', error)
     showError(`Failed to save: ${error.message}`)
+  } finally {
+    saving.value = false
   }
+}
+
+// Save description function
+const saveDescription = async () => {
+  // Ensure the language object exists
+  if (!sectionData.value.content_translations[editorLanguage.value]) {
+    sectionData.value.content_translations[editorLanguage.value] = { 
+      title: '', 
+      subtitle: '', 
+      product_description: '' 
+    }
+  }
+  
+  // Update the description in sectionData
+  sectionData.value.content_translations[editorLanguage.value].product_description = localDescription.value
+  
+  // Save to database
+  await saveSection()
+}
+
+const handleProductSelect = async () => {
+  console.log('handleProductSelect called')
+  console.log('localSelectedProductId:', localSelectedProductId.value)
+  console.log('Type:', typeof localSelectedProductId.value)
+  
+  // Update the actual selectedProductId from local value
+  selectedProductId.value = localSelectedProductId.value
+  
+  console.log('After assignment - selectedProductId:', selectedProductId.value)
+  console.log('sectionData.content_translations.meta:', sectionData.value.content_translations.meta)
+  
+  try {
+    await saveSection()
+    showSuccess('Product selected successfully')
+  } catch (e) {
+    console.error('Failed to save selection', e)
+    showError('Failed to save product selection')
+  }
+}
+
+const clearProductSelection = () => {
+  // Clear both local and actual selected product
+  localSelectedProductId.value = null
+  selectedProductId.value = null
+  // Don't need to save when clearing, just reset the UI
 }
 
 const handleProductChange = async () => {
@@ -280,5 +444,9 @@ const handleProductChange = async () => {
   }
 }
 
-onMounted(async () => { await Promise.all([loadProducts(), loadData()]) })
+onMounted(async () => { 
+  await Promise.all([loadProducts(), loadData()])
+  // Sync local product ID after data is loaded
+  localSelectedProductId.value = selectedProductId.value
+})
 </script>

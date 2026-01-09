@@ -79,23 +79,25 @@
           <!-- Hero Section -->
           <HeaderEditor class="bg-white" />
 
-          <!-- FeaturedEditor -->
-          <FeaturesEditor />
-
-          <AboutUsEditor class="bg-white" />
+          <!-- Featured Product Section (Single Product) -->
+          <FeaturedProductEditor class="bg-white" />
 
           <!-- Featured Categories Section -->
           <FeaturedCategoriesEditor class="bg-white" />
 
-          <FAQEditor />
-          <TestimonialsEditor class="bg-white" />
+          <!-- About Us Section -->
+          <AboutUsEditor class="bg-white" />
 
-          <!-- Featured Products (Content Section) -->
-          <FeaturedProductEditor class="bg-white" />
+          <!-- FAQ Section -->
+          <FAQEditor />
+
+          <!-- Testimonials Section -->
+          <TestimonialsEditor class="bg-white" />
 
           <!-- Other sections will be updated progressively -->
           <!-- 
           <ContactEditor class="bg-white" />
+          <FeaturesEditor />
           -->
 
           <!-- Footer Section -->
