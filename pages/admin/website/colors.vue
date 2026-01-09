@@ -1,565 +1,204 @@
 <template>
-  <div class="max-w-7xl pt-6 mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-[#f1f1f1]">
     <!-- Header -->
-    <div class="mb-8">
-      <div class="flex items-center gap-4">
-        <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
-          <Icon name="ph:palette-bold" class="h-7 w-7 text-white" />
-        </div>
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Couleurs du site</h1>
-          <p class="mt-1 text-sm text-gray-600">Personnalisez la palette de couleurs de votre site</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center py-20">
-      <div class="text-center">
-        <div class="inline-block relative">
-          <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600"></div>
-          <div class="absolute inset-0 rounded-full border-4 border-blue-100 animate-pulse"></div>
-        </div>
-        <p class="mt-4 text-sm text-gray-600 font-medium">Chargement des couleurs...</p>
-      </div>
-    </div>
-
-    <div v-else class="space-y-6">
-      <!-- Color Settings -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Icon name="ph:swatches-bold" class="w-5 h-5 text-blue-600" />
-          Palette de couleurs
-        </h2>
-        
-        <div class="space-y-6">
-          <!-- Primary Color -->
-          <div class="p-5 bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 transition-colors">
-            <label class="block text-sm font-bold text-gray-900 mb-2">Couleur principale</label>
-            <p class="text-xs text-gray-600 mb-4">Utilisée pour les boutons, liens et éléments importants</p>
-            <div class="flex gap-4 items-start">
-              <div class="relative group">
-                <input
-                  :value="primaryColorHex"
-                  @input="updatePrimaryFromHex"
-                  type="color"
-                  class="h-16 w-16 rounded-xl border-2 border-gray-300 cursor-pointer transition-all group-hover:scale-110 group-hover:shadow-lg"
-                  style="padding: 4px;"
-                />
-                <div class="mt-2 text-xs font-mono text-gray-700 text-center font-bold">{{ primaryColorHex }}</div>
-              </div>
-              <div class="flex-1">
-                <div class="grid grid-cols-3 gap-3">
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">R</label>
-                    <input
-                      v-model.number="primaryRgb.r"
-                      @input="updatePrimaryFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">G</label>
-                    <input
-                      v-model.number="primaryRgb.g"
-                      @input="updatePrimaryFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">B</label>
-                    <input
-                      v-model.number="primaryRgb.b"
-                      @input="updatePrimaryFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-3 font-mono">RGB: {{ colors.primary_color }}</p>
-              </div>
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3">
+            <NuxtLink to="/admin/website" class="text-gray-400 hover:text-gray-600">
+              <Icon name="ph:arrow-left-bold" class="w-5 h-5" />
+            </NuxtLink>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-900">{{ $t('admin.colors.title') }}</h1>
+              <p class="text-xs text-gray-500">{{ $t('admin.colors.subtitle') }}</p>
             </div>
           </div>
-
-          <!-- Primary Contrast Color -->
-          <div class="p-5 bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 transition-colors">
-            <label class="block text-sm font-bold text-gray-900 mb-2">Couleur de contraste principale</label>
-            <p class="text-xs text-gray-600 mb-4">Utilisée pour le texte sur la couleur principale</p>
-            <div class="flex gap-4 items-start">
-              <div class="relative group">
-                <input
-                  :value="primaryContrastHex"
-                  @input="updatePrimaryContrastFromHex"
-                  type="color"
-                  class="h-16 w-16 rounded-xl border-2 border-gray-300 cursor-pointer transition-all group-hover:scale-110 group-hover:shadow-lg"
-                  style="padding: 4px;"
-                />
-                <div class="mt-2 text-xs font-mono text-gray-700 text-center font-bold">{{ primaryContrastHex }}</div>
-              </div>
-              <div class="flex-1">
-                <div class="grid grid-cols-3 gap-3">
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">R</label>
-                    <input
-                      v-model.number="primaryContrastRgb.r"
-                      @input="updatePrimaryContrastFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">G</label>
-                    <input
-                      v-model.number="primaryContrastRgb.g"
-                      @input="updatePrimaryContrastFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">B</label>
-                    <input
-                      v-model.number="primaryContrastRgb.b"
-                      @input="updatePrimaryContrastFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-3 font-mono">RGB: {{ colors.primary_contrast_color }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Secondary Color -->
-          <div class="p-5 bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 transition-colors">
-            <label class="block text-sm font-bold text-gray-900 mb-2">Couleur secondaire</label>
-            <p class="text-xs text-gray-600 mb-4">Utilisée pour les boutons secondaires et accents</p>
-            <div class="flex gap-4 items-start">
-              <div class="relative group">
-                <input
-                  :value="secondaryColorHex"
-                  @input="updateSecondaryFromHex"
-                  type="color"
-                  class="h-16 w-16 rounded-xl border-2 border-gray-300 cursor-pointer transition-all group-hover:scale-110 group-hover:shadow-lg"
-                  style="padding: 4px;"
-                />
-                <div class="mt-2 text-xs font-mono text-gray-700 text-center font-bold">{{ secondaryColorHex }}</div>
-              </div>
-              <div class="flex-1">
-                <div class="grid grid-cols-3 gap-3">
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">R</label>
-                    <input
-                      v-model.number="secondaryRgb.r"
-                      @input="updateSecondaryFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">G</label>
-                    <input
-                      v-model.number="secondaryRgb.g"
-                      @input="updateSecondaryFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">B</label>
-                    <input
-                      v-model.number="secondaryRgb.b"
-                      @input="updateSecondaryFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-3 font-mono">RGB: {{ colors.secondary_color }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Secondary Contrast Color -->
-          <div class="p-5 bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 transition-colors">
-            <label class="block text-sm font-bold text-gray-900 mb-2">Couleur de contraste secondaire</label>
-            <p class="text-xs text-gray-600 mb-4">Utilisée pour le texte sur la couleur secondaire</p>
-            <div class="flex gap-4 items-start">
-              <div class="relative group">
-                <input
-                  :value="secondaryContrastHex"
-                  @input="updateSecondaryContrastFromHex"
-                  type="color"
-                  class="h-16 w-16 rounded-xl border-2 border-gray-300 cursor-pointer transition-all group-hover:scale-110 group-hover:shadow-lg"
-                  style="padding: 4px;"
-                />
-                <div class="mt-2 text-xs font-mono text-gray-700 text-center font-bold">{{ secondaryContrastHex }}</div>
-              </div>
-              <div class="flex-1">
-                <div class="grid grid-cols-3 gap-3">
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">R</label>
-                    <input
-                      v-model.number="secondaryContrastRgb.r"
-                      @input="updateSecondaryContrastFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">G</label>
-                    <input
-                      v-model.number="secondaryContrastRgb.g"
-                      @input="updateSecondaryContrastFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">B</label>
-                    <input
-                      v-model.number="secondaryContrastRgb.b"
-                      @input="updateSecondaryContrastFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-3 font-mono">RGB: {{ colors.secondary_contrast_color }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Body Background -->
-          <div class="p-5 bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 transition-colors">
-            <label class="block text-sm font-bold text-gray-900 mb-2">Couleur de fond du site</label>
-            <p class="text-xs text-gray-600 mb-4">Couleur de fond principale de votre site</p>
-            <div class="flex gap-4 items-start">
-              <div class="relative group">
-                <input
-                  :value="bodyBgHex"
-                  @input="updateBodyBgFromHex"
-                  type="color"
-                  class="h-16 w-16 rounded-xl border-2 border-gray-300 cursor-pointer transition-all group-hover:scale-110 group-hover:shadow-lg"
-                  style="padding: 4px;"
-                />
-                <div class="mt-2 text-xs font-mono text-gray-700 text-center font-bold">{{ bodyBgHex }}</div>
-              </div>
-              <div class="flex-1">
-                <div class="grid grid-cols-3 gap-3">
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">R</label>
-                    <input
-                      v-model.number="bodyBgRgb.r"
-                      @input="updateBodyBgFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">G</label>
-                    <input
-                      v-model.number="bodyBgRgb.g"
-                      @input="updateBodyBgFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">B</label>
-                    <input
-                      v-model.number="bodyBgRgb.b"
-                      @input="updateBodyBgFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-3 font-mono">RGB: {{ colors.body_bg }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Text Color -->
-          <div class="p-5 bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 transition-colors">
-            <label class="block text-sm font-bold text-gray-900 mb-2">Couleur du texte</label>
-            <p class="text-xs text-gray-600 mb-4">Couleur principale du texte sur votre site</p>
-            <div class="flex gap-4 items-start">
-              <div class="relative group">
-                <input
-                  :value="textColorHex"
-                  @input="updateTextColorFromHex"
-                  type="color"
-                  class="h-16 w-16 rounded-xl border-2 border-gray-300 cursor-pointer transition-all group-hover:scale-110 group-hover:shadow-lg"
-                  style="padding: 4px;"
-                />
-                <div class="mt-2 text-xs font-mono text-gray-700 text-center font-bold">{{ textColorHex }}</div>
-              </div>
-              <div class="flex-1">
-                <div class="grid grid-cols-3 gap-3">
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">R</label>
-                    <input
-                      v-model.number="textColorRgb.r"
-                      @input="updateTextColorFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">G</label>
-                    <input
-                      v-model.number="textColorRgb.g"
-                      @input="updateTextColorFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs text-gray-600 block mb-2 font-semibold">B</label>
-                    <input
-                      v-model.number="textColorRgb.b"
-                      @input="updateTextColorFromRgb"
-                      type="number"
-                      min="0"
-                      max="255"
-                      class="w-full px-3 py-2.5 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm font-medium outline-none transition-all"
-                    />
-                  </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-3 font-mono">RGB: {{ colors.text_color }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Preview Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Icon name="ph:eye-bold" class="w-5 h-5 text-blue-600" />
-          Aperçu en direct
-        </h2>
-        
-        <!-- Button Previews -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          <div class="space-y-3">
-            <h3 class="text-sm font-semibold text-gray-700">Bouton principal</h3>
-            <button
-              type="button"
-              class="px-6 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg transform hover:scale-105"
-              :style="{
-                backgroundColor: primaryColorHex,
-                color: primaryContrastHex
-              }"
-            >
-              Action principale
-            </button>
-          </div>
-
-          <div class="space-y-3">
-            <h3 class="text-sm font-semibold text-gray-700">Bouton secondaire</h3>
-            <button
-              type="button"
-              class="px-6 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg transform hover:scale-105"
-              :style="{
-                backgroundColor: secondaryColorHex,
-                color: secondaryContrastHex
-              }"
-            >
-              Action secondaire
-            </button>
-          </div>
-        </div>
-
-        <!-- Page Preview -->
-        <div class="mb-6">
-          <h3 class="text-sm font-semibold text-gray-700 mb-3">Aperçu de page</h3>
-          <div
-            class="rounded-xl p-8 border-2 border-gray-200 shadow-inner"
-            :style="{
-              backgroundColor: bodyBgHex,
-              color: textColorHex
-            }"
-          >
-            <h4 class="text-2xl font-bold mb-3">Titre de la page</h4>
-            <p class="text-sm mb-6 leading-relaxed">
-              Voici un exemple de texte qui apparaîtra sur votre site avec les couleurs sélectionnées. 
-              Cela vous permet de visualiser le rendu final avant d'enregistrer vos modifications.
-            </p>
-            <div class="flex flex-wrap gap-3">
-              <button
-                class="px-5 py-2.5 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all"
-                :style="{
-                  backgroundColor: primaryColorHex,
-                  color: primaryContrastHex
-                }"
-              >
-                Bouton principal
-              </button>
-              <button
-                class="px-5 py-2.5 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all"
-                :style="{
-                  backgroundColor: secondaryColorHex,
-                  color: secondaryContrastHex
-                }"
-              >
-                Bouton secondaire
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Color Swatches -->
-        <div>
-          <h3 class="text-sm font-semibold text-gray-700 mb-4">Palette complète</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
-              <div
-                class="w-14 h-14 rounded-lg shadow-md border-2 border-gray-200 flex-shrink-0 group-hover:scale-110 transition-transform"
-                :style="{ backgroundColor: primaryColorHex }"
-              ></div>
-              <div class="min-w-0">
-                <p class="text-xs font-bold text-gray-900 truncate">Principale</p>
-                <p class="text-xs font-mono text-gray-600 truncate">{{ primaryColorHex }}</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
-              <div
-                class="w-14 h-14 rounded-lg shadow-md border-2 border-gray-200 flex-shrink-0 group-hover:scale-110 transition-transform"
-                :style="{ backgroundColor: primaryContrastHex }"
-              ></div>
-              <div class="min-w-0">
-                <p class="text-xs font-bold text-gray-900 truncate">Contraste 1</p>
-                <p class="text-xs font-mono text-gray-600 truncate">{{ primaryContrastHex }}</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
-              <div
-                class="w-14 h-14 rounded-lg shadow-md border-2 border-gray-200 flex-shrink-0 group-hover:scale-110 transition-transform"
-                :style="{ backgroundColor: secondaryColorHex }"
-              ></div>
-              <div class="min-w-0">
-                <p class="text-xs font-bold text-gray-900 truncate">Secondaire</p>
-                <p class="text-xs font-mono text-gray-600 truncate">{{ secondaryColorHex }}</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
-              <div
-                class="w-14 h-14 rounded-lg shadow-md border-2 border-gray-200 flex-shrink-0 group-hover:scale-110 transition-transform"
-                :style="{ backgroundColor: secondaryContrastHex }"
-              ></div>
-              <div class="min-w-0">
-                <p class="text-xs font-bold text-gray-900 truncate">Contraste 2</p>
-                <p class="text-xs font-mono text-gray-600 truncate">{{ secondaryContrastHex }}</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
-              <div
-                class="w-14 h-14 rounded-lg shadow-md border-2 border-gray-200 flex-shrink-0 group-hover:scale-110 transition-transform"
-                :style="{ backgroundColor: bodyBgHex }"
-              ></div>
-              <div class="min-w-0">
-                <p class="text-xs font-bold text-gray-900 truncate">Fond</p>
-                <p class="text-xs font-mono text-gray-600 truncate">{{ bodyBgHex }}</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
-              <div
-                class="w-14 h-14 rounded-lg shadow-md border-2 border-gray-200 flex items-center justify-center bg-white flex-shrink-0 group-hover:scale-110 transition-transform"
-              >
-                <span class="text-2xl font-bold" :style="{ color: textColorHex }">Aa</span>
-              </div>
-              <div class="min-w-0">
-                <p class="text-xs font-bold text-gray-900 truncate">Texte</p>
-                <p class="text-xs font-mono text-gray-600 truncate">{{ textColorHex }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Save Button -->
-      <div class="bg-white rounded-xl shadow-lg border-2 border-gray-200 p-4 sticky bottom-4">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div v-if="hasChanges" class="flex items-center text-sm text-amber-600">
-            <Icon name="ph:warning-bold" class="w-5 h-5 mr-2" />
-            <span class="font-semibold">Modifications non enregistrées</span>
-          </div>
-          <div v-else class="flex items-center text-sm text-green-600">
-            <Icon name="ph:check-circle-bold" class="w-5 h-5 mr-2" />
-            <span class="font-semibold">Tout est enregistré</span>
-          </div>
-          
-          <div class="flex gap-3">
-            <button
-              v-if="hasChanges"
-              @click="loadColors"
-              :disabled="saving"
-              class="inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-all border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Icon name="ph:x-bold" class="w-4 h-4 mr-2" />
-              Annuler
-            </button>
+          <div class="flex items-center gap-3">
             <button
               @click="saveColors"
               :disabled="saving || !hasChanges"
-              :class="[
-                'inline-flex items-center px-6 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg',
-                saving || !hasChanges
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-xl transform hover:scale-105'
-              ]"
+              class="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
             >
-              <Icon
-                :name="saving ? 'ph:spinner-bold' : 'ph:check-bold'"
-                class="w-4 h-4 mr-2"
-                :class="{ 'animate-spin': saving }"
-              />
-              {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+              <Icon v-if="!saving" name="ph:check-bold" class="w-4 h-4" />
+              <Icon v-else name="ph:spinner-bold" class="w-4 h-4 animate-spin" />
+              {{ saving ? $t('admin.colors.saving') : $t('admin.colors.save') }}
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div v-if="loading" class="flex justify-center items-center py-32">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-3 border-gray-300 border-t-gray-900 mx-auto"></div>
+        <p class="mt-4 text-sm text-gray-600">{{ $t('admin.colors.loadingColors') }}</p>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Color Settings -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-base font-semibold text-gray-900">{{ $t('admin.colors.colorsTitle') }}</h2>
+              <p class="mt-1 text-sm text-gray-500">{{ $t('admin.colors.colorsSubtitle') }}</p>
+            </div>
+            
+            <div class="p-6 space-y-0">
+              <!-- Primary -->
+              <div class="flex items-center justify-between py-4 border-b border-gray-100">
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('admin.colors.primary') }}</label>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ $t('admin.colors.primaryDesc') }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <input :value="primaryColorHex" @input="updatePrimaryFromHex" type="text" class="w-28 px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all" placeholder="#000000"/>
+                  <div class="relative group">
+                    <input :value="primaryColorHex" @input="updatePrimaryFromHex" type="color" class="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-gray-400 transition-all shadow-sm hover:shadow-md" style="padding: 3px;"/>
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full border-2 border-gray-300 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <Icon name="ph:palette-bold" class="w-3 h-3 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Primary Contrast -->
+              <div class="flex items-center justify-between py-4 border-b border-gray-100">
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('admin.colors.primaryContrast') }}</label>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ $t('admin.colors.primaryContrastDesc') }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <input :value="primaryContrastHex" @input="updatePrimaryContrastFromHex" type="text" class="w-28 px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all" placeholder="#FFFFFF"/>
+                  <div class="relative group">
+                    <input :value="primaryContrastHex" @input="updatePrimaryContrastFromHex" type="color" class="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-gray-400 transition-all shadow-sm hover:shadow-md" style="padding: 3px;"/>
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full border-2 border-gray-300 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <Icon name="ph:palette-bold" class="w-3 h-3 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Secondary -->
+              <div class="flex items-center justify-between py-4 border-b border-gray-100">
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('admin.colors.secondary') }}</label>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ $t('admin.colors.secondaryDesc') }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <input :value="secondaryColorHex" @input="updateSecondaryFromHex" type="text" class="w-28 px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all" placeholder="#000000"/>
+                  <div class="relative group">
+                    <input :value="secondaryColorHex" @input="updateSecondaryFromHex" type="color" class="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-gray-400 transition-all shadow-sm hover:shadow-md" style="padding: 3px;"/>
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full border-2 border-gray-300 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <Icon name="ph:palette-bold" class="w-3 h-3 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Secondary Contrast -->
+              <div class="flex items-center justify-between py-4 border-b border-gray-100">
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('admin.colors.secondaryContrast') }}</label>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ $t('admin.colors.secondaryContrastDesc') }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <input :value="secondaryContrastHex" @input="updateSecondaryContrastFromHex" type="text" class="w-28 px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all" placeholder="#FFFFFF"/>
+                  <div class="relative group">
+                    <input :value="secondaryContrastHex" @input="updateSecondaryContrastFromHex" type="color" class="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-gray-400 transition-all shadow-sm hover:shadow-md" style="padding: 3px;"/>
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full border-2 border-gray-300 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <Icon name="ph:palette-bold" class="w-3 h-3 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Background -->
+              <div class="flex items-center justify-between py-4 border-b border-gray-100">
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('admin.colors.background') }}</label>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ $t('admin.colors.backgroundDesc') }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <input :value="bodyBgHex" @input="updateBodyBgFromHex" type="text" class="w-28 px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all" placeholder="#FFFFFF"/>
+                  <div class="relative group">
+                    <input :value="bodyBgHex" @input="updateBodyBgFromHex" type="color" class="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-gray-400 transition-all shadow-sm hover:shadow-md" style="padding: 3px;"/>
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full border-2 border-gray-300 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <Icon name="ph:palette-bold" class="w-3 h-3 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Text -->
+              <div class="flex items-center justify-between py-4">
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('admin.colors.text') }}</label>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ $t('admin.colors.textDesc') }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <input :value="textColorHex" @input="updateTextColorFromHex" type="text" class="w-28 px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all" placeholder="#000000"/>
+                  <div class="relative group">
+                    <input :value="textColorHex" @input="updateTextColorFromHex" type="color" class="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-gray-400 transition-all shadow-sm hover:shadow-md" style="padding: 3px;"/>
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full border-2 border-gray-300 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <Icon name="ph:palette-bold" class="w-3 h-3 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Preview -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-24">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-base font-semibold text-gray-900">{{ $t('admin.colors.previewTitle') }}</h2>
+              <p class="mt-1 text-sm text-gray-500">{{ $t('admin.colors.previewSubtitle') }}</p>
+            </div>
+            
+            <div class="p-6 space-y-6">
+              <!-- Buttons -->
+              <div class="space-y-4">
+                <div>
+                  <p class="text-xs font-medium text-gray-700 mb-2">{{ $t('admin.colors.primaryButton') }}</p>
+                  <button type="button" class="w-full px-4 py-2.5 rounded-lg text-sm font-semibold" :style="{ backgroundColor: primaryColorHex, color: primaryContrastHex }">
+                    {{ $t('admin.colors.addToCart') }}
+                  </button>
+                </div>
+                
+                <div>
+                  <p class="text-xs font-medium text-gray-700 mb-2">{{ $t('admin.colors.secondaryButton') }}</p>
+                  <button type="button" class="w-full px-4 py-2.5 rounded-lg text-sm font-semibold" :style="{ backgroundColor: secondaryColorHex, color: secondaryContrastHex }">
+                    {{ $t('admin.colors.viewDetails') }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Swatches -->
+              <div class="pt-4 border-t border-gray-200">
+                <p class="text-xs font-medium text-gray-700 mb-3">{{ $t('admin.colors.colorPalette') }}</p>
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="text-center">
+                    <div class="w-full h-12 rounded-lg border border-gray-200" :style="{ backgroundColor: primaryColorHex }"></div>
+                    <p class="text-[10px] text-gray-600 mt-1 font-mono">{{ primaryColorHex }}</p>
+                  </div>
+                  <div class="text-center">
+                    <div class="w-full h-12 rounded-lg border border-gray-200" :style="{ backgroundColor: secondaryColorHex }"></div>
+                    <p class="text-[10px] text-gray-600 mt-1 font-mono">{{ secondaryColorHex }}</p>
+                  </div>
+                  <div class="text-center">
+                    <div class="w-full h-12 rounded-lg border border-gray-200" :style="{ backgroundColor: bodyBgHex }"></div>
+                    <p class="text-[10px] text-gray-600 mt-1 font-mono">{{ bodyBgHex }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -568,18 +207,18 @@
 </template>
 
 <script setup>
+const { t: $t } = useI18n()
 const supabase = useSupabaseClient()
-const { showError } = useErrorModal()
-const { showSuccess } = useSuccessSnackbar()
+const { showError, showSuccess } = useErrorModal()
 
 const loading = ref(true)
 const saving = ref(false)
 
 const colors = ref({
   id: null,
-  primary_color: '59, 130, 246',
+  primary_color: '37, 99, 235',
   primary_contrast_color: '255, 255, 255',
-  secondary_color: '236, 72, 153',
+  secondary_color: '107, 114, 128',
   secondary_contrast_color: '255, 255, 255',
   body_bg: '255, 255, 255',
   text_color: '17, 24, 39'
@@ -587,26 +226,28 @@ const colors = ref({
 
 const originalColors = ref(null)
 
-const primaryRgb = ref({ r: 59, g: 130, b: 246 })
+const primaryRgb = ref({ r: 37, g: 99, b: 235 })
 const primaryContrastRgb = ref({ r: 255, g: 255, b: 255 })
-const secondaryRgb = ref({ r: 236, g: 72, b: 153 })
+const secondaryRgb = ref({ r: 107, g: 114, b: 128 })
 const secondaryContrastRgb = ref({ r: 255, g: 255, b: 255 })
 const bodyBgRgb = ref({ r: 255, g: 255, b: 255 })
 const textColorRgb = ref({ r: 17, g: 24, b: 39 })
 
+// Helper functions
 const rgbToHex = (r, g, b) => {
-  r = Math.max(0, Math.min(255, Math.round(r)))
-  g = Math.max(0, Math.min(255, Math.round(g)))
-  b = Math.max(0, Math.min(255, Math.round(b)))
-  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()
+  return '#' + [r, g, b].map(x => {
+    const hex = x.toString(16)
+    return hex.length === 1 ? '0' + hex : hex
+  }).join('')
 }
 
 const hexToRgb = (hex) => {
-  hex = hex.replace('#', '')
-  const r = parseInt(hex.substring(0, 2), 16)
-  const g = parseInt(hex.substring(2, 4), 16)
-  const b = parseInt(hex.substring(4, 6), 16)
-  return { r, g, b }
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : { r: 0, g: 0, b: 0 }
 }
 
 const rgbStringToObject = (rgbString) => {
@@ -718,7 +359,7 @@ const loadColors = async () => {
     }
   } catch (error) {
     console.error('Error:', error)
-    showError('Impossible de charger les couleurs')
+    showError($t('admin.colors.errorLoading'))
   } finally {
     loading.value = false
   }
@@ -743,10 +384,10 @@ const saveColors = async () => {
     if (error) throw error
 
     originalColors.value = JSON.parse(JSON.stringify(colors.value))
-    showSuccess('Couleurs enregistrées')
+    showSuccess($t('admin.colors.savedSuccess'))
   } catch (error) {
     console.error('Error:', error)
-    showError('Erreur lors de l\'enregistrement')
+    showError($t('admin.colors.errorSaving'))
   } finally {
     saving.value = false
   }
@@ -754,8 +395,8 @@ const saveColors = async () => {
 
 onMounted(() => loadColors())
 
-useHead({
-  title: 'Couleurs du site',
-  meta: [{ name: 'description', content: 'Gérez la palette de couleurs' }]
-})
+useHead(() => ({
+  title: $t('admin.colors.pageTitle'),
+  meta: [{ name: 'description', content: $t('admin.colors.pageDescription') }]
+}))
 </script>
