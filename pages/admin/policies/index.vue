@@ -131,13 +131,7 @@
                     >
                       Modifier
                     </NuxtLink>
-                    <button
-                      @click="openModal(policy)"
-                      :disabled="isLoading"
-                      class="text-gray-600 hover:text-gray-900 mr-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Quick Edit
-                    </button>
+                  
                     <button
                       @click="deletePolicy(policy)"
                       :disabled="isLoading"
