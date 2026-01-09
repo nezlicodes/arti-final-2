@@ -1,186 +1,247 @@
 <template>
-  <div class="pt-3 px-4 sm:p-6">
-    <!-- En-tête -->
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h1 class="text-xl md:text-2xl font-medium text-gray-900">Témoignages</h1>
-        <p class="mt-2 text-sm text-gray-700">
-          Gérez les témoignages de vos clients (multilingue)
-        </p>
-      </div>
-      
-      <!-- Bouton de configuration -->
-      <div class="mt-4 sm:mt-0 sm:ml-4 sm:flex-none">
-        <button
-          @click="openConfigModal()"
-          :disabled="isLoading"
-          class="inline-flex items-center justify-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed mr-2"
-        >
-          Configurer
-        </button>
-      </div>
-      
-      <!-- Bouton d'ajout -->
-      <div class="mt-4 sm:mt-0 sm:ml-2 sm:flex-none">
-        <button
-          @click="openModal()"
-          :disabled="isLoading"
-          class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Ajouter un témoignage
-        </button>
-      </div>
-    </div>
-
-    <!-- Status Card -->
-    <div class="mt-4 bg-white shadow sm:rounded-lg" v-if="configData">
-      <div class="px-4 py-5 sm:p-6">
-        <div class="flex justify-between items-start">
-          <div>
-            <h3 class="text-lg font-medium leading-6 text-gray-900">
-              Configuration des Témoignages
-            </h3>
-            <div class="mt-2 text-sm text-gray-500">
-              <p>{{ configData.testimonials_enabled ? 'Section activée' : 'Section désactivée' }}</p>
+  <div class="min-h-screen bg-[#f1f1f1]">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3">
+            <NuxtLink
+              to="/admin/website"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <Icon name="ph:arrow-left-bold" class="w-5 h-5" />
+            </NuxtLink>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-900">
+                {{ $t("admin.testimonials.title") }}
+              </h1>
+              <p class="text-xs text-gray-500">
+                {{ $t("admin.testimonials.subtitle") }}
+              </p>
             </div>
           </div>
-          <span
-            :class="[
-              configData.testimonials_enabled
-                ? 'bg-green-100 text-green-800'
-                : 'bg-gray-100 text-gray-800',
-              'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
-            ]"
-          >
-            {{ configData.testimonials_enabled ? "Activé" : "Désactivé" }}
-          </span>
+          <div class="flex items-center gap-3">
+            <button
+              @click="openConfigModal()"
+              :disabled="isLoading"
+              class="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Icon name="ph:gear-bold" class="w-4 h-4" />
+              {{ $t("admin.testimonials.configure") }}
+            </button>
+            <button
+              @click="openModal()"
+              :disabled="isLoading"
+              class="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+            >
+              <Icon name="ph:plus-bold" class="w-4 h-4" />
+              {{ $t("admin.testimonials.addTestimonial") }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Tableau -->
-    <div class="mt-8 flex flex-col">
-      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-          <div
-            class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
-          >
-            <table class="min-w-full divide-y divide-gray-300">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Client
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Contenu (FR)
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Note
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Statut
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Langues
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Ordre
-                  </th>
-                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                    <span class="sr-only">Actions</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 bg-white">
-                <tr v-for="testimonial in testimonials" :key="testimonial.id">
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
-                    {{ testimonial.customer_name }}
-                  </td>
-                  <td class="px-3 py-4 text-sm text-gray-500 max-w-xs truncate">
-                    {{ testimonial.content_translations?.fr || 'Sans contenu' }}
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <div class="flex items-center">
-                      <span v-for="i in 5" :key="i">
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          viewBox="0 0 24 24" 
-                          fill="currentColor" 
-                          class="w-4 h-4"
-                          :class="i <= testimonial.rating ? 'text-yellow-400' : 'text-gray-200'"
-                        >
-                          <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                        </svg>
-                      </span>
-                    </div>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm">
-                    <span
+    <!-- Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Status Card -->
+      <div
+        class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6"
+        v-if="configData"
+      >
+        <div class="p-6">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-base font-semibold text-gray-900">
+                {{ $t("admin.testimonials.sectionConfig") }}
+              </h3>
+              <div class="mt-1 text-sm text-gray-500">
+                <p>
+                  {{
+                    configData.testimonials_enabled
+                      ? $t("admin.testimonials.sectionEnabled")
+                      : $t("admin.testimonials.sectionDisabled")
+                  }}
+                </p>
+              </div>
+            </div>
+            <span
+              :class="[
+                configData.testimonials_enabled
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-gray-100 text-gray-800',
+                'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium',
+              ]"
+            >
+              {{
+                configData.testimonials_enabled
+                  ? $t("admin.testimonials.enabled")
+                  : $t("admin.testimonials.disabled")
+              }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div
+        class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+      >
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {{ $t("admin.testimonials.customer") }}
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {{ $t("admin.testimonials.contentFr") }}
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {{ $t("admin.testimonials.rating") }}
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {{ $t("admin.testimonials.status") }}
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {{ $t("admin.testimonials.languages") }}
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {{ $t("admin.testimonials.order") }}
+                </th>
+                <th scope="col" class="relative px-6 py-3">
+                  <span class="sr-only">{{
+                    $t("admin.testimonials.actions")
+                  }}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <tr
+                v-for="testimonial in testimonials"
+                :key="testimonial.id"
+                class="hover:bg-gray-50 transition-colors"
+              >
+                <td
+                  class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900"
+                >
+                  {{ testimonial.customer_name }}
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500 max-w-xs">
+                  <div class="line-clamp-2">
+                    {{
+                      testimonial.content_translations?.fr ||
+                      $t("admin.testimonials.noContent")
+                    }}
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <div class="flex items-center gap-0.5">
+                    <Icon
+                      v-for="i in 5"
+                      :key="i"
+                      name="ph:star-fill"
                       :class="[
-                        testimonial.is_active
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800',
-                        'inline-flex rounded-full px-2 text-xs font-semibold leading-5',
+                        'w-4 h-4',
+                        i <= testimonial.rating
+                          ? 'text-yellow-400'
+                          : 'text-gray-200',
                       ]"
-                    >
-                      {{ testimonial.is_active ? "Actif" : "Inactif" }}
-                    </span>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <div class="flex gap-1">
-                      <span v-if="testimonial.content_translations?.fr" class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">FR</span>
-                      <span v-if="testimonial.content_translations?.ar" class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">AR</span>
-                      <span v-if="testimonial.content_translations?.en" class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded">EN</span>
-                    </div>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
-                    {{ testimonial.display_order || "-" }}
-                  </td>
-                  <td
-                    class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                    />
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 text-sm">
+                  <span
+                    :class="[
+                      testimonial.is_active
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-800',
+                      'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
+                    ]"
                   >
+                    {{
+                      testimonial.is_active
+                        ? $t("admin.testimonials.active")
+                        : $t("admin.testimonials.inactive")
+                    }}
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <div class="flex gap-1">
+                    <span
+                      v-if="testimonial.content_translations?.fr"
+                      class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md font-medium"
+                      >FR</span
+                    >
+                    <span
+                      v-if="testimonial.content_translations?.ar"
+                      class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-md font-medium"
+                      >AR</span
+                    >
+                    <span
+                      v-if="testimonial.content_translations?.en"
+                      class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-md font-medium"
+                      >EN</span
+                    >
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                  {{ testimonial.display_order || "-" }}
+                </td>
+                <td
+                  class="relative whitespace-nowrap px-6 py-4 text-right text-sm font-medium"
+                >
+                  <div class="flex items-center justify-end gap-2">
                     <button
                       @click="openModal(testimonial)"
                       :disabled="isLoading"
-                      class="text-blue-600 hover:text-blue-900 mr-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="inline-flex items-center px-3 py-1.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Modifier
+                      <Icon name="ph:pencil-bold" class="w-4 h-4 mr-1" />
+                      {{ $t("admin.testimonials.edit") }}
                     </button>
                     <button
                       @click="deleteTestimonial(testimonial)"
                       :disabled="isLoading"
-                      class="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="inline-flex items-center px-3 py-1.5 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Supprimer
+                      <Icon name="ph:trash-bold" class="w-4 h-4 mr-1" />
+                      {{ $t("admin.testimonials.delete") }}
                     </button>
-                  </td>
-                </tr>
-                <tr v-if="testimonials.length === 0">
-                  <td colspan="7" class="px-3 py-8 text-sm text-gray-500 text-center">
-                    Aucun témoignage disponible
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="testimonials.length === 0">
+                <td colspan="7" class="px-6 py-12 text-center">
+                  <Icon
+                    name="ph:chat-circle-text-bold"
+                    class="w-12 h-12 text-gray-400 mx-auto mb-3"
+                  />
+                  <p class="text-sm text-gray-600">
+                    {{ $t("admin.testimonials.noTestimonials") }}
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -217,7 +278,7 @@
                     currentLanguage === lang.code
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                    'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2'
+                    'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2',
                   ]"
                 >
                   <span>{{ lang.flag }}</span>
@@ -240,7 +301,10 @@
                     :disabled="isLoading || currentLanguage !== 'fr'"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                   />
-                  <p v-if="currentLanguage !== 'fr'" class="mt-1 text-xs text-gray-500">
+                  <p
+                    v-if="currentLanguage !== 'fr'"
+                    class="mt-1 text-xs text-gray-500"
+                  >
                     Modifiable uniquement sur l'onglet Français
                   </p>
                 </div>
@@ -251,14 +315,20 @@
                     Titre du client ({{ getCurrentLanguageName() }})
                   </label>
                   <input
-                    v-model="localForm.customer_title_translations[currentLanguage]"
+                    v-model="
+                      localForm.customer_title_translations[currentLanguage]
+                    "
                     type="text"
                     :disabled="isLoading"
                     :placeholder="getTitlePlaceholder()"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                   />
                   <p class="mt-1 text-xs text-gray-500">
-                    {{ currentLanguage === 'fr' ? 'Optionnel' : 'Optionnel - laissez vide pour utiliser la version française' }}
+                    {{
+                      currentLanguage === "fr"
+                        ? "Optionnel"
+                        : "Optionnel - laissez vide pour utiliser la version française"
+                    }}
                   </p>
                 </div>
 
@@ -276,18 +346,25 @@
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                   ></textarea>
                   <p class="mt-1 text-xs text-gray-500">
-                    {{ currentLanguage === 'fr' ? 'Requis' : 'Optionnel - laissez vide pour utiliser la version française' }}
+                    {{
+                      currentLanguage === "fr"
+                        ? "Requis"
+                        : "Optionnel - laissez vide pour utiliser la version française"
+                    }}
                   </p>
                 </div>
 
                 <!-- Settings (shown only on FR tab) -->
-                <div v-if="currentLanguage === 'fr'" class="space-y-4 pt-4 border-t border-gray-200">
+                <div
+                  v-if="currentLanguage === 'fr'"
+                  class="space-y-4 pt-4 border-t border-gray-200"
+                >
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Note (1-5 étoiles)
                     </label>
                     <div class="flex items-center">
-                      <button 
+                      <button
                         v-for="i in 5"
                         :key="i"
                         type="button"
@@ -295,14 +372,22 @@
                         class="focus:outline-none"
                         :disabled="isLoading"
                       >
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          viewBox="0 0 24 24" 
-                          fill="currentColor" 
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
                           class="w-6 h-6"
-                          :class="i <= localForm.rating ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-200'"
+                          :class="
+                            i <= localForm.rating
+                              ? 'text-yellow-400'
+                              : 'text-gray-300 hover:text-yellow-200'
+                          "
                         >
-                          <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                          <path
+                            fill-rule="evenodd"
+                            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                            clip-rule="evenodd"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -335,7 +420,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div
               class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3"
             >
@@ -476,6 +561,7 @@
 </template>
 
 <script setup>
+const { t: $t } = useI18n();
 const { showConfirmation } = useConfirmationModal();
 const { showError } = useErrorModal();
 const { showSuccess } = useSuccessSnackbar();
@@ -484,12 +570,12 @@ const supabase = useSupabaseClient();
 
 // Language management
 const languages = [
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇩🇿' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
+  { code: "ar", name: "العربية", flag: "🇩🇿" },
+  { code: "en", name: "English", flag: "🇬🇧" },
 ];
 
-const currentLanguage = ref('fr');
+const currentLanguage = ref("fr");
 
 // State
 const testimonials = ref([]);
@@ -501,9 +587,9 @@ const isLoading = ref(false);
 // Local form with translation structure
 const localForm = ref({
   id: null,
-  customer_name: '',
-  customer_title_translations: { fr: '', ar: '', en: '' },
-  content_translations: { fr: '', ar: '', en: '' },
+  customer_name: "",
+  customer_title_translations: { fr: "", ar: "", en: "" },
+  content_translations: { fr: "", ar: "", en: "" },
   rating: 5,
   is_active: true,
   display_order: 0,
@@ -516,19 +602,19 @@ const configForm = ref({
 
 // Helper functions
 const getCurrentLanguageName = () => {
-  return languages.find(l => l.code === currentLanguage.value)?.name || '';
+  return languages.find((l) => l.code === currentLanguage.value)?.name || "";
 };
 
 const getTitlePlaceholder = () => {
-  if (currentLanguage.value === 'fr') return 'Ex: Client Fidèle, Designer...';
-  
+  if (currentLanguage.value === "fr") return "Ex: Client Fidèle, Designer...";
+
   const frValue = localForm.value.customer_title_translations.fr;
   return frValue || `Entrez le titre en ${getCurrentLanguageName()}`;
 };
 
 const getContentPlaceholder = () => {
-  if (currentLanguage.value === 'fr') return 'Entrez le témoignage en français';
-  
+  if (currentLanguage.value === "fr") return "Entrez le témoignage en français";
+
   const frValue = localForm.value.content_translations.fr;
   return frValue || `Entrez le témoignage en ${getCurrentLanguageName()}`;
 };
@@ -547,7 +633,7 @@ const fetchTestimonials = async () => {
     testimonials.value = data || [];
   } catch (error) {
     console.error("Error fetching testimonials:", error);
-    showError("Impossible de charger les témoignages");
+    showError($t("admin.testimonials.errorLoading"));
   } finally {
     isLoading.value = false;
   }
@@ -569,7 +655,7 @@ const fetchConfig = async () => {
     }
   } catch (error) {
     console.error("Error fetching config:", error);
-    showError("Impossible de charger la configuration");
+    showError($t("admin.testimonials.errorLoadingConfig"));
   }
 };
 
@@ -579,8 +665,16 @@ const openModal = (testimonial = null) => {
     localForm.value = {
       id: testimonial.id,
       customer_name: testimonial.customer_name,
-      customer_title_translations: testimonial.customer_title_translations || { fr: '', ar: '', en: '' },
-      content_translations: testimonial.content_translations || { fr: '', ar: '', en: '' },
+      customer_title_translations: testimonial.customer_title_translations || {
+        fr: "",
+        ar: "",
+        en: "",
+      },
+      content_translations: testimonial.content_translations || {
+        fr: "",
+        ar: "",
+        en: "",
+      },
       rating: testimonial.rating || 5,
       is_active: testimonial.is_active ?? true,
       display_order: testimonial.display_order || 0,
@@ -589,28 +683,29 @@ const openModal = (testimonial = null) => {
   } else {
     localForm.value = {
       id: null,
-      customer_name: '',
-      customer_title_translations: { fr: '', ar: '', en: '' },
-      content_translations: { fr: '', ar: '', en: '' },
+      customer_name: "",
+      customer_title_translations: { fr: "", ar: "", en: "" },
+      content_translations: { fr: "", ar: "", en: "" },
       rating: 5,
       is_active: true,
       display_order: 0,
       image_url: null,
     };
   }
-  currentLanguage.value = 'fr';
+  currentLanguage.value = "fr";
   showModal.value = true;
 };
 
 const closeModal = () => {
   showModal.value = false;
-  currentLanguage.value = 'fr';
+  currentLanguage.value = "fr";
 };
 
 // Open config modal
 const openConfigModal = () => {
   if (configData.value) {
-    configForm.value.testimonials_enabled = configData.value.testimonials_enabled ?? true;
+    configForm.value.testimonials_enabled =
+      configData.value.testimonials_enabled ?? true;
   }
   showConfigModal.value = true;
 };
@@ -642,12 +737,12 @@ const saveTestimonial = async () => {
     await fetchTestimonials();
     showSuccess(
       localForm.value.id
-        ? "Témoignage mis à jour avec succès"
-        : "Témoignage créé avec succès"
+        ? $t("admin.testimonials.updateSuccess")
+        : $t("admin.testimonials.createSuccess")
     );
   } catch (error) {
     console.error("Error saving testimonial:", error);
-    showError("Impossible d'enregistrer le témoignage");
+    showError($t("admin.testimonials.errorSaving"));
   } finally {
     isLoading.value = false;
   }
@@ -663,16 +758,16 @@ const saveConfig = async () => {
         testimonials_enabled: configForm.value.testimonials_enabled,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', configData.value.id);
+      .eq("id", configData.value.id);
 
     if (error) throw error;
-    
+
     await fetchConfig();
     showConfigModal.value = false;
-    showSuccess('Configuration mise à jour');
+    showSuccess($t("admin.testimonials.configSaved"));
   } catch (error) {
     console.error("Error saving config:", error);
-    showError("Impossible de sauvegarder la configuration");
+    showError($t("admin.testimonials.errorSavingConfig"));
   } finally {
     isLoading.value = false;
   }
@@ -680,31 +775,30 @@ const saveConfig = async () => {
 
 // Delete testimonial
 const deleteTestimonial = async (testimonial) => {
-  showConfirmation({
-    title: "Supprimer le témoignage",
-    message: "Êtes-vous sûr de vouloir supprimer ce témoignage ?",
-    confirmText: "Supprimer",
-    cancelText: "Annuler",
-    onConfirm: async () => {
-      isLoading.value = true;
-      try {
-        const { error } = await supabase
-          .from("testimonials")
-          .delete()
-          .eq("id", testimonial.id);
+  const confirmed = await showConfirmation(
+    $t("admin.testimonials.deleteTitle"),
+    $t("admin.testimonials.deleteMessage")
+  );
 
-        if (error) throw error;
+  if (!confirmed) return;
 
-        await fetchTestimonials();
-        showSuccess("Témoignage supprimé avec succès");
-      } catch (error) {
-        console.error("Error deleting testimonial:", error);
-        showError("Impossible de supprimer le témoignage");
-      } finally {
-        isLoading.value = false;
-      }
-    },
-  });
+  isLoading.value = true;
+  try {
+    const { error } = await supabase
+      .from("testimonials")
+      .delete()
+      .eq("id", testimonial.id);
+
+    if (error) throw error;
+
+    await fetchTestimonials();
+    showSuccess($t("admin.testimonials.deleteSuccess"));
+  } catch (error) {
+    console.error("Error deleting testimonial:", error);
+    showError($t("admin.testimonials.errorDelete"));
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 // Initial fetch
@@ -713,13 +807,13 @@ onMounted(async () => {
   await fetchTestimonials();
 });
 
-useHead({
-  title: "Gestion des témoignages",
+useHead(() => ({
+  title: $t("admin.testimonials.pageTitle"),
   meta: [
     {
       name: "description",
-      content: "Gérez les témoignages de vos clients",
+      content: $t("admin.testimonials.pageDescription"),
     },
   ],
-});
+}));
 </script>
